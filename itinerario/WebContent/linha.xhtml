@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="headComplementar">
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<rich:messages id="mensagens" />
+		<h:form rendered="#{linhaMb.isListagem()}">
+			<h3>Cadastro de linha</h3>
+
+			<h:commandButton value="Nova" action="#{linhaMb.iniciarCriacao}" />
+			<rich:dataTable value="#{linhaMb.lista}" var="linha">
+				<rich:column>
+					<f:facet name="header">Nome</f:facet>
+					#{linha.nome}
+				</rich:column>
+				<rich:column>
+					<f:facet name="header">Km</f:facet>
+					#{linha.quilometragem}
+				</rich:column>
+				<rich:column>
+					<h:panelGroup>
+						<h:commandButton value="Editar"
+							action="#{linhaMb.iniciarAlteracao(linha)}" />
+						<h:commandButton value="Excluir"
+							action="#{linhaMb.iniciarExclusao(linha)}" />
+					</h:panelGroup>
+				</rich:column>
+			</rich:dataTable>
+		</h:form>
+
+		<h:form enctype="multipart/form-data" rendered="#{linhaMb.isCriacao()}">
+			<h3>Criar linha</h3>
+
+			<h:panelGrid columns="1">
+				<h:outputLabel value="Nome da linha" />
+				<h:inputText value="#{linhaMb.linha.nome}" />
+				<h:outputLabel value="Quilometragem" />
+				<h:inputText value="#{linhaMb.linha.quilometragem}" />
+			</h:panelGrid>
+			<br />
+			<p:fileUpload 
+				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
+				label="Arquivo com os pontos" update=":mensagens, @form" auto="true">
+			</p:fileUpload>
+			<br />
+			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
+				type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
+				style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+				<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
+			</p:gmap>
+
+			<h:commandButton value="Salvar"
+				action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
+			<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+		</h:form>
+
+		<h:form rendered="#{linhaMb.isAlteracao()}">
+			<h3>Editar linha</h3>
+
+			<h:panelGrid columns="1">
+				<h:outputLabel value="Nome da linha" />
+				<h:inputText value="#{linhaMb.linha.nome}" />
+				<h:outputLabel value="Quilometragem" />
+				<h:inputText value="#{linhaMb.linha.quilometragem}" />
+			</h:panelGrid>
+			<br />
+			<p:fileUpload 
+				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
+				label="Arquivo com os pontos" update=":mensagens, @form" auto="true">
+			</p:fileUpload>
+			<br />
+			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
+				type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
+				style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+				<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
+			</p:gmap>
+
+			<h:commandButton value="Salvar"
+				action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
+			<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+		</h:form>
+
+		<h:form rendered="#{linhaMb.isExclusao()}">
+			<h3>Excluir linha</h3>
+
+			<h:panelGrid columns="1">
+				<h:outputLabel value="Nome da linha" />
+				<h:outputText value="#{linhaMb.linha.nome}" />
+				<h:outputLabel value="Quilometragem" />
+				<h:outputText value="#{linhaMb.linha.quilometragem}" />
+			</h:panelGrid>
+			<h:commandButton value="Excluir" action="#{linhaMb.terminarExclusao}" />
+			<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+		</h:form>
+		<br />
+
+		<h:form>
+		</h:form>		
+	</ui:define>
+</ui:composition>

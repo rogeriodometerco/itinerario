@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<faces-config
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_1.xsd"
+    version="2.1">
+
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>criarLinha</from-outcome>
+			<to-view-id>/criarLinha.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>atualizarLinha</from-outcome>
+			<to-view-id>/atualizarLinha.xhtml</to-view-id>
+			<redirect/>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>listarLinhas</from-outcome>
+			<to-view-id>/listarLinhas.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+	<navigation-rule>
+		<navigation-case>
+			<from-outcome>excluirLinha</from-outcome>
+			<to-view-id>/excluirLinha.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
+
+</faces-config>

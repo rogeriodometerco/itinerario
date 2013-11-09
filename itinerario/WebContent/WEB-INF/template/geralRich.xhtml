@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<ui:insert name="headComplementar" />
+</h:head>
+
+<h:body >
+	<h:form>
+		<h2>Sistema Tal</h2>
+		<h:commandLink action="#" value="Menu principal" />
+		||  <h:commandLink action="#" value="Sair" />
+		|| <h:commandLink action="consultaAnalisesPorDiaRich"
+			value="Consultar análises (RichFaces)" />
+		|| <h:commandLink action="consultaAnalisesPorDia"
+			value="Consultar análises (Primefaces)" />
+		|| <h:commandLink action="linha" value="Cadastrar linha" />
+	</h:form>
+	<br />
+
+	<rich:panel>
+		<ui:insert name="conteudo" />
+	</rich:panel>
+
+</h:body>
+
+</html>
