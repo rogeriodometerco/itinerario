@@ -4,10 +4,10 @@ import java.util.List;
 
 import modelo.PosicaoVeiculo;
 
-public class HistoricoDePosicao {
+public class Viagem {
 	private List<PosicaoVeiculo> posicoes;
 	
-	public HistoricoDePosicao(List<PosicaoVeiculo> posicoes) {
+	public Viagem(List<PosicaoVeiculo> posicoes) {
 		this.posicoes = posicoes;
 	}
 	

@@ -19,8 +19,11 @@ public class LinhaFacade
 	}
 	
 	public Linha recuperarParaEdicao(Long id) throws Exception {
-		//TODO método para recuperar linha e seus filhos, para edição na página. 
-		return dao.recuperar(id);
+		// TODO Refactoring. Esta não é a melhor forma.
+		Linha linha = dao.recuperar(id);
+		linha.getPontos().size();
+		linha.getAgendamentos().size();
+		return linha;
 	}
 
 }

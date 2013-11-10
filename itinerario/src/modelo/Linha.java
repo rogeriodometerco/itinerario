@@ -1,6 +1,5 @@
 package modelo;
 
-import java.util.Calendar;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -20,6 +19,8 @@ public class Linha {
 	private Boolean ativa;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
 	private List<PontoLinha> pontos;
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
+	private List<AgendamentoLinha> agendamentos;
 	
 	public Long getId() {
 		return id;
@@ -56,6 +57,12 @@ public class Linha {
 	}
 	public void setAtiva(Boolean ativa) {
 		this.ativa = ativa;
+	}
+	public List<AgendamentoLinha> getAgendamentos() {
+		return agendamentos;
+	}
+	public void setAgendamentos(List<AgendamentoLinha> agendamentos) {
+		this.agendamentos = agendamentos;
 	}
 
 }

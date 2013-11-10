@@ -114,11 +114,13 @@ public class LinhaMb implements Serializable {
 		this.estadoView = CRIACAO;
 		this.linha = new Linha();
 		this.linha.setPontos(new ArrayList<PontoLinha>());
+		this.linha.setAtiva(true);
 	}
 
 	public void iniciarAlteracao(Linha linha) {
 		try {
 			this.linha = facade.recuperarParaEdicao(linha.getId());
+			sincronizarMapModel();
 			this.estadoView = ALTERACAO;
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar linha para edição: " + e.getMessage());
@@ -139,6 +141,7 @@ public class LinhaMb implements Serializable {
 
 	public void iniciarExclusao(Linha linha) {
 		this.linha = linha;
+		sincronizarMapModel();
 		this.estadoView = EXCLUSAO;
 	}
 
@@ -176,15 +179,17 @@ public class LinhaMb implements Serializable {
 
 	public void arquivoImportado(FileUploadEvent event) {
 		UploadedFile arquivo = event.getFile(); 
-		System.out.println(arquivo.getFileName() + " importado " + arquivo.getSize());
 		mapModel = new DefaultMapModel();
-
 		int cont = 1;
 		try {
 			Scanner s = new Scanner(arquivo.getInputstream());
 			PontoLinha pontoLinha = null;
 			MensagemRMC mensagem = null;
-			linha.getPontos().clear();
+			// TODO Excluir os pontos atuais para receber os novos pontos.
+			// O código abaixo não está removendo os pontos após salvar o objeto.
+			while (linha.getPontos().size() > 0) {
+				linha.getPontos().remove(0);
+			}
 			while (s.hasNext()) {
 				mensagem = new MensagemRMC(s.next());
 				pontoLinha = new PontoLinha();
@@ -193,7 +198,7 @@ public class LinhaMb implements Serializable {
 				pontoLinha.setSequencia(cont);
 				pontoLinha.setLinha(this.linha);
 				this.linha.getPontos().add(pontoLinha);
-				System.out.println(mensagem.toString());
+				//System.out.println(mensagem.toString());
 				cont ++;
 			}
 			sincronizarMapModel();

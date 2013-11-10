@@ -16,7 +16,7 @@ public class EscalaVeiculo {
 	@ManyToOne
 	private Veiculo veiculo;
 	@ManyToOne
-	private AgendaLinha agenda;
+	private AgendamentoLinha agendamento;
 	private Date inicioVigencia;
 	private Date terminoVigencia;
 	
@@ -32,11 +32,11 @@ public class EscalaVeiculo {
 	public void setVeiculo(Veiculo veiculo) {
 		this.veiculo = veiculo;
 	}
-	public AgendaLinha getAgenda() {
-		return agenda;
+	public AgendamentoLinha getAgendamento() {
+		return agendamento;
 	}
-	public void setAgenda(AgendaLinha agenda) {
-		this.agenda = agenda;
+	public void setAgendamento(AgendamentoLinha agendamento) {
+		this.agendamento = agendamento;
 	}
 	public Date getInicioVigencia() {
 		return inicioVigencia;

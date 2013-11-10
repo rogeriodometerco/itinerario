@@ -7,13 +7,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import modelo.AgendaLinha;
+import modelo.AgendamentoLinha;
 
 public class Teste {
 	public static void main(String[] args) {
 		
 		SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		AgendaLinha agenda = new AgendaLinha();
+		AgendamentoLinha agenda = new AgendamentoLinha();
 		
 		//Calendar a = Calendar.getInstance();
 		Calendar a = new GregorianCalendar(new Locale("pt", "br"));

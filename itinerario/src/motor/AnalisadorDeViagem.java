@@ -3,23 +3,23 @@ package motor;
 import java.util.ArrayList;
 import java.util.List;
 
-import modelo.AgendaLinha;
+import modelo.AgendamentoLinha;
 import modelo.EscalaVeiculo;
 import modelo.Linha;
 import modelo.PosicaoVeiculo;
 
-public class AnalisadorDePosicao {
+public class AnalisadorDeViagem {
 	private EscalaVeiculo escala;
 	private Trajeto trajeto;
-	private HistoricoDePosicao historico;
+	private Viagem viagem;
 	private List<AnaliseDePosicao> analises;
 	private double distanciaNoTrajeto;
 	private double distanciaForaDoTrajeto;
 	
-	public AnalisadorDePosicao(EscalaVeiculo escala, HistoricoDePosicao historico) {
+	public AnalisadorDeViagem(EscalaVeiculo escala, Viagem viagem) {
 		this.escala = escala;
-		this.trajeto = new Trajeto(escala.getAgenda().getLinha().getPontos());
-		this.historico = historico;
+		this.trajeto = new Trajeto(escala.getAgendamento().getLinha().getPontos());
+		this.viagem = viagem;
 		analisar();
 		calcularDistanciaNoTrajeto();
 		calcularDistanciaForaDoTrajeto();
@@ -27,7 +27,7 @@ public class AnalisadorDePosicao {
 	
 	private void analisar() {
 		analises = new ArrayList<AnaliseDePosicao>();
-		for (PosicaoVeiculo posicao: historico.getPosicoes()) {
+		for (PosicaoVeiculo posicao: viagem.getPosicoes()) {
 			analises.add(new AnaliseDePosicao(this.trajeto, posicao));
 		}
 	}
@@ -37,7 +37,7 @@ public class AnalisadorDePosicao {
 	}
 	
 	public double getDistanciaTotalPercorrida() {
-		return historico.getDistanciaPercorrida();
+		return viagem.getDistanciaPercorrida();
 	}
 	
 	private void calcularDistanciaNoTrajeto() {
@@ -85,11 +85,11 @@ public class AnalisadorDePosicao {
 	}
 	
 	public Linha getLinha() {
-		return escala.getAgenda().getLinha();
+		return escala.getAgendamento().getLinha();
 	}
 	
-	public AgendaLinha getAgenda() {
-		return escala.getAgenda();
+	public AgendamentoLinha getAgendamento() {
+		return escala.getAgendamento();
 	}
 	
 	public EscalaVeiculo getEscala() {

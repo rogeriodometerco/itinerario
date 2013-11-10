@@ -11,10 +11,9 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import modelo.PontoLinha;
-import motor.AnalisadorDePosicao;
+import motor.AnalisadorDeViagem;
 import motor.AnaliseDePosicao;
 
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
@@ -29,8 +28,8 @@ import facade.PosicaoVeiculoFacade;
 @ViewScoped
 public class AnaliseMb {
 	private Date data;
-	private List<AnalisadorDePosicao> analisadores;
-	private AnalisadorDePosicao analisadorNoMapa;
+	private List<AnalisadorDeViagem> analisadores;
+	private AnalisadorDeViagem analisadorNoMapa;
 	private String exibicao;
 	private Double diferencaTotalEmKm;
 	private Double kmTotalForaDoTrajeto;
@@ -62,11 +61,11 @@ public class AnaliseMb {
 		this.data = data;
 	}
 
-	public List<AnalisadorDePosicao> getAnalisadores() {
+	public List<AnalisadorDeViagem> getAnalisadores() {
 		return analisadores;
 	}
 
-	public AnalisadorDePosicao getAnalisadorNoMapa() {
+	public AnalisadorDeViagem getAnalisadorNoMapa() {
 		return analisadorNoMapa;
 	}
 
@@ -90,7 +89,7 @@ public class AnaliseMb {
 		return this.exibicao.equals(EXIBICAO_MAPA);
 	}
 
-	public void exibirMapa(AnalisadorDePosicao analisador) {
+	public void exibirMapa(AnalisadorDeViagem analisador) {
 		this.analisadorNoMapa = analisador;
 		this.exibicao = EXIBICAO_MAPA;
 		this.mapModel = new DefaultMapModel();
@@ -203,7 +202,7 @@ public class AnaliseMb {
 	private void totalizar() {
 		diferencaTotalEmKm = 0d;
 		kmTotalForaDoTrajeto = 0d;
-		for (AnalisadorDePosicao analisador: analisadores) {
+		for (AnalisadorDeViagem analisador: analisadores) {
 			diferencaTotalEmKm += analisador.getDiferencaDeDistancia();
 			kmTotalForaDoTrajeto += analisador.getDistanciaForaDoTrajeto();
 		}
