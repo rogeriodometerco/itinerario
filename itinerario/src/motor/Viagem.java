@@ -3,7 +3,7 @@ package motor;
 import java.util.List;
 
 import modelo.PosicaoVeiculo;
-
+ 
 public class Viagem {
 	private List<PosicaoVeiculo> posicoes;
 	
