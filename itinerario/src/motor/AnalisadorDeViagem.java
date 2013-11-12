@@ -41,21 +41,18 @@ public class AnalisadorDeViagem {
 	}
 	
 	private void calcularDistanciaNoTrajeto() {
+		System.out.println("Total de analises: " + analises.size());
 		double distancia = 0;
 		AnaliseDePosicao a1 = null;
 		AnaliseDePosicao a2 = null;
 		for (AnaliseDePosicao a: analises) {
-			if (a1 == null) {
-				a1 = a;
-			} else {
-				if (a2 == null) {
-					a2 = a;
-				} else {
-					a1 = a2;
-					a2 = a;
-				}
+			a1 = a2;
+			a2 = a;
+			if (a1 != null) {
 				if (a2.isNoTrajeto()) {
-					distancia += MathUtil.calcularDistancia(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
+					distancia += MathUtil.calcularDistancia(
+							a1.getPosicaoVeiculo(), 
+							a2.getPosicaoVeiculo());
 				}
 			}
 		}
@@ -67,15 +64,9 @@ public class AnalisadorDeViagem {
 		AnaliseDePosicao a1 = null;
 		AnaliseDePosicao a2 = null;
 		for (AnaliseDePosicao a: analises) {
-			if (a1 == null) {
-				a1 = a;
-			} else {
-				if (a2 == null) {
-					a2 = a;
-				} else {
-					a1 = a2;
-					a2 = a;
-				}
+			a1 = a2;
+			a2 = a;
+			if (a1 != null) {
 				if (!a2.isNoTrajeto()) {
 					distancia += MathUtil.calcularDistancia(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
 				}

@@ -46,7 +46,7 @@ public class AnaliseMb {
 	@PostConstruct
 	private void inicializar() {
 		Calendar c = Calendar.getInstance();
-		c.set(2013, 9, 25);
+		c.set(2013, 10, 6);
 		data = new Date(c.getTimeInMillis());
 		analisar();
 		resetarMapa();
@@ -94,7 +94,7 @@ public class AnaliseMb {
 		this.exibicao = EXIBICAO_MAPA;
 		this.mapModel = new DefaultMapModel();
 		resetarMapa();
-		//criarMarcadores();
+		criarMarcadores();
 		criarLinhas();
 	}
 
@@ -122,9 +122,10 @@ public class AnaliseMb {
 	}
 
 	private void criarMarcadores() {
+		/*
 		for (PontoLinha ponto: analisadorNoMapa.getLinha().getPontos()) {
 			criarMarcador(ponto);
-		}
+		}*/
 		for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
 			criarMarcador(analise);
 		}

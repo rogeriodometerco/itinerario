@@ -11,6 +11,7 @@ public class AnaliseDePosicao {
 		this.trajeto = trajeto;
 		this.posicaoVeiculo = posicao;
 		this.noTrajeto = trajeto.estaNoTrajeto(posicao);
+		System.out.println("Nova análise: " + posicao.getVeiculo().getIdentificacao());
 	}
 
 	public PosicaoVeiculo getPosicaoVeiculo() {

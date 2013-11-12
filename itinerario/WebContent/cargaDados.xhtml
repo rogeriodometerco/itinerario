@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="conteudo">
+		<rich:messages id="mensagens" />
+
+		<h:form enctype="multipart/form-data" >
+			<h3>Carga de dados do rastreador</h3>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Identificação do veículo" />
+				<h:inputText value="#{cargaDadosMb.identificacaoVeiculo}">
+					<f:ajax />
+				</h:inputText>
+			</h:panelGrid>
+			<br />
+			<p:fileUpload 
+				fileUploadListener="#{cargaDadosMb.arquivoImportado}" mode="advanced"
+				label="Selecionar arquivo" update=":mensagens, @form" auto="true" process="@form">
+			</p:fileUpload>
+
+		</h:form>
+		
+	</ui:define>
+</ui:composition>

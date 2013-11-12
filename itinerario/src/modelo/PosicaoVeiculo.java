@@ -17,7 +17,7 @@ public class PosicaoVeiculo {
 	private Date dataHora;
 	private Double lat;
 	private Double lng;
-	private Integer velocidade;
+	private Double velocidade;
 	private String mensagem;
 
 	public Long getId() {
@@ -50,10 +50,10 @@ public class PosicaoVeiculo {
 	public void setLng(Double lng) {
 		this.lng = lng;
 	}
-	public Integer getVelocidade() {
+	public Double getVelocidade() {
 		return velocidade;
 	}
-	public void setVelocidade(Integer velocidade) {
+	public void setVelocidade(Double velocidade) {
 		this.velocidade = velocidade;
 	}
 	public String getMensagem() {

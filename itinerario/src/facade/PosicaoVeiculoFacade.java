@@ -7,13 +7,14 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.NoResultException;
 
 import modelo.EscalaVeiculo;
 import modelo.PontoLinha;
 import modelo.PosicaoVeiculo;
+import modelo.Veiculo;
 import motor.AnalisadorDeViagem;
 import motor.Viagem;
-import motor.Trajeto;
 import dao.PosicaoVeiculoDao;
 
 @Stateless
@@ -85,4 +86,31 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 		}
 		return listaRetorno;
 	}
+	
+	public void salvar(List<PosicaoVeiculo> posicoes) throws Exception {
+		for (PosicaoVeiculo posicao: posicoes) {
+			if (recuperarPosicao(posicao.getVeiculo(), posicao.getDataHora()) == null) {
+				salvar(posicao);
+			}
+		}
+	}
+	
+	public PosicaoVeiculo recuperarPosicao(Veiculo veiculo, Date dataHora) 
+			throws Exception {
+		String sql = "select p from PosicaoVeiculo as p"
+				+ " where p.veiculo = :veiculo"
+				+ " and p.dataHora = :dataHora";
+
+		try {
+			return (PosicaoVeiculo)getEntityManager().createQuery(sql)
+				.setParameter("veiculo", veiculo)
+				.setParameter("dataHora", dataHora)
+				.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+		
+	}
+
+
 }
