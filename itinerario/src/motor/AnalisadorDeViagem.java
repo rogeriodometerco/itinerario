@@ -41,7 +41,6 @@ public class AnalisadorDeViagem {
 	}
 	
 	private void calcularDistanciaNoTrajeto() {
-		System.out.println("Total de analises: " + analises.size());
 		double distancia = 0;
 		AnaliseDePosicao a1 = null;
 		AnaliseDePosicao a2 = null;
@@ -56,7 +55,7 @@ public class AnalisadorDeViagem {
 				}
 			}
 		}
-		distanciaNoTrajeto = distancia;
+		distanciaNoTrajeto = Math.round(distancia * 10) / 10;
 	}
 	
 	private void calcularDistanciaForaDoTrajeto() {
@@ -68,11 +67,12 @@ public class AnalisadorDeViagem {
 			a2 = a;
 			if (a1 != null) {
 				if (!a2.isNoTrajeto()) {
+					System.out.println("Posição fora do trajeto");
 					distancia += MathUtil.calcularDistancia(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
 				}
 			}
 		}
-		distanciaForaDoTrajeto = distancia;
+		distanciaForaDoTrajeto = Math.round(distancia * 10) / 10;
 	}
 	
 	public Linha getLinha() {

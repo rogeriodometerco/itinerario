@@ -1,6 +1,5 @@
 package motor;
 
-
 public class LatLngUtil {
 
 	public static final int EQUIVALENCIA_GRAU_EM_METRO = 111133;
@@ -16,8 +15,8 @@ public class LatLngUtil {
 	 */
 	public static double calcularDistancia(double lat1, double lng1, double lat2, double lng2) {
 		Double cateto1 = Math.abs(lat2) - Math.abs(lat1);
-		Double cateto2 = Math.abs(lng2) - Math.abs(lng2);
+		Double cateto2 = Math.abs(lng2) - Math.abs(lng1);
 		return Math.sqrt(Math.pow(cateto1, 2) + Math.pow(cateto2, 2)) * EQUIVALENCIA_GRAU_EM_METRO;
 	}
-
+	
 }

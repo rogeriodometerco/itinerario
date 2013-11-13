@@ -20,6 +20,7 @@ import org.primefaces.model.UploadedFile;
 import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
+import org.primefaces.model.map.Marker;
 import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
@@ -73,6 +74,9 @@ public class LinhaMb implements Serializable {
 			for (PontoLinha ponto: linha.getPontos()) {
 				LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
 				polyline.getPaths().add(latLng);
+				if (ponto.getParada()) {
+					criarMarcadorDeParada(ponto);
+				}
 			}
 			polyline.setStrokeWeight(7);  
 			polyline.setStrokeColor("#0000FF");  
@@ -85,6 +89,17 @@ public class LinhaMb implements Serializable {
 			this.centroMapa = "-24.750573, -51.781526";
 		}
 		this.zoomMapa = 10;
+	}
+
+	private void criarMarcadorDeParada(PontoLinha pontoLinha) {
+		String icone = "mm_20_white.png";
+		LatLng latLng = new LatLng(pontoLinha.getLat(), 
+				pontoLinha.getLng());
+		Marker marker = new Marker(latLng, "", pontoLinha);
+		marker.setIcon("resources/icones/" + icone);
+		String titulo = "Ponto de parada";
+		marker.setTitle(titulo);
+		this.mapModel.addOverlay(marker);
 	}
 
 	public Linha getLinha() {
@@ -197,6 +212,7 @@ public class LinhaMb implements Serializable {
 				pontoLinha.setLng(mensagem.getLng());
 				pontoLinha.setSequencia(cont);
 				pontoLinha.setLinha(this.linha);
+				pontoLinha.setParada(mensagem.getVelocidade() == 0);
 				this.linha.getPontos().add(pontoLinha);
 				//System.out.println(mensagem.toString());
 				cont ++;

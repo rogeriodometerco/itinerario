@@ -13,6 +13,7 @@ public class PontoLinha {
 	private Integer sequencia;
 	private Double lat;
 	private Double lng;
+	private Boolean parada;
 	@ManyToOne
 	private Linha linha;
 	
@@ -39,6 +40,12 @@ public class PontoLinha {
 	}
 	public void setLng(Double lng) {
 		this.lng = lng;
+	}
+	public Boolean getParada() {
+		return parada;
+	}
+	public void setParada(Boolean parada) {
+		this.parada = parada;
 	}
 	public Linha getLinha() {
 		return linha;

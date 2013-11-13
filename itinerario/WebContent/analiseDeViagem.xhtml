@@ -17,12 +17,16 @@
 
 	<ui:define name="conteudo">
 		<h:form>
-			<h4>Consulta análise da movimentação de veículo por dia</h4>
+			<h4>Análise das viagens</h4>
 
 			<h:messages errorStyle="errorMsg" infoStyle="infoMsg" />
-			<h:outputLabel value="Data " />
-			<rich:calendar value="#{analiseMb.data}" enableManualInput="true"
-				datePattern="dd/MM/yyyy">
+			<h:outputLabel value="Data inicial " />
+			<rich:calendar value="#{analiseMb.dataInicial}"
+				enableManualInput="true" datePattern="dd/MM/yyyy">
+			</rich:calendar>
+			<h:outputLabel value="Data final " />
+			<rich:calendar value="#{analiseMb.dataFinal}"
+				enableManualInput="true" datePattern="dd/MM/yyyy">
 			</rich:calendar>
 			<h:commandButton action="#{analiseMb.analisar()}" value="Consultar" />
 			<br />
@@ -39,11 +43,15 @@
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Hr início</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaInicial}" />
+					<h:outputText value="#{analisador.agendamento.horaInicial}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Hr término</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaFinal}" />
+					<h:outputText value="#{analisador.agendamento.horaFinal}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Distância trajeto</f:facet>
@@ -66,16 +74,32 @@
 					<h:commandLink value="Exibir"
 						actionListener="#{analiseMb.exibirMapa(analisador)}" />
 				</rich:column>
+
+				<f:facet name="footer">
+					<rich:columnGroup>
+						<rich:column colspan="4">Total</rich:column>
+						<rich:column>
+							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
+							</h:outputText>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
+							</h:outputText>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
+							</h:outputText>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
+							</h:outputText>
+						</rich:column>
+						<rich:column>
+						</rich:column>
+					</rich:columnGroup>
+				</f:facet>
 			</rich:dataTable>
 			<br />
-
-
-			<h:panelGrid columns="2" rendered="#{analiseMb.exibicaoTabela}">
-				<h:outputLabel value="Diferença de km" />
-				<h:outputLabel value="#{analiseMb.diferencaTotalEmKm}" />
-				<h:outputLabel value="Fora do trajeto" />
-				<h:outputLabel value="#{analiseMb.kmTotalForaDoTrajeto}" />
-			</h:panelGrid>
 
 			<h:commandLink value="Voltar" action="#{analiseMb.exibirTabela()}"
 				rendered="#{analiseMb.exibicaoMapa}" />

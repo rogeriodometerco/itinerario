@@ -53,7 +53,7 @@
 			<br />
 			<p:fileUpload 
 				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
-				label="Arquivo com os pontos" update=":mensagens, @form" auto="true">
+				label="Arquivo com os pontos" process="@form" update=":mensagens, @form" auto="true">
 			</p:fileUpload>
 			<br />
 			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
@@ -79,7 +79,7 @@
 			<br />
 			<p:fileUpload 
 				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
-				label="Arquivo com os pontos" update=":mensagens, @form" auto="true">
+				label="Arquivo com os pontos" process="@form" update=":mensagens, @form" auto="true">
 			</p:fileUpload>
 			<br />
 			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"

@@ -18,8 +18,15 @@ public class Trajeto {
 	 * @return
 	 */
 	public boolean estaNoTrajeto(PosicaoVeiculo posicao) {
-		return obterPontoMaisProximo(posicao, 
-				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO) != null;
+		PontoLinha p = obterPontoMaisProximo(posicao, 
+				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
+
+		if (p == null) { 
+			System.out.println("Posição fora do trajeto: " + posicao.getId()); 
+		} else {
+			//System.out.println("Posição no trajeto: " + posicao.getId()); 
+		}
+		return p != null; 
 	}
 
 	/**
@@ -38,8 +45,21 @@ public class Trajeto {
 					posicao.getLat(), posicao.getLng(), ponto.getLat(), ponto.getLng()); 
 			if (distancia < menorDistancia && distancia <= raio) {
 				pontoMaisProximo = ponto;
+				menorDistancia = distancia;
+				/*
+				System.out.println("PONTO MAIS PRÓXIMO DE "
+						+ posicao.getId() + ": "
+						+ pontoMaisProximo.getId() 
+						+ " A " + menorDistancia + " METROS");
+				*/
 			}
 		}
+		/*		
+		if (posicao.getId() == 1631) {
+			System.out.println("PONTO MAIS PRÓXIMO DE 1631: " + pontoMaisProximo.getId() 
+					+ " A " + menorDistancia + " METROS");
+		}
+		 */
 		return pontoMaisProximo;
 	}
 	

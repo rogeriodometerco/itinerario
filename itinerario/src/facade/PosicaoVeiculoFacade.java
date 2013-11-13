@@ -66,17 +66,17 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 
 	/**
 	 * 
-	 * @param data
+	 * @param dataInicial
 	 * @return
 	 */
-	public List<AnalisadorDeViagem> analisarPosicoesDeCadaEscala(Date data) 
+	public List<AnalisadorDeViagem> analisarPosicoesDeCadaEscala(Date dataInicial, Date dataFinal) 
 			throws Exception {
 
 		List<AnalisadorDeViagem> listaRetorno = new ArrayList<AnalisadorDeViagem>();
 		List<PosicaoVeiculo> posicoes = null;
 		List<PontoLinha> pontos = null;
-		for (EscalaVeiculo escala: escalaFacade.recuperarEscalas(data)) {
-			posicoes = this.recuperarPosicoesParaAnalise(escala, data);
+		for (EscalaVeiculo escala: escalaFacade.recuperarEscalas(dataInicial)) {
+			posicoes = this.recuperarPosicoesParaAnalise(escala, dataInicial);
 			System.out.println(posicoes.size() + "posições recuperadas");
 			// TODO Recuperar entidades relacionadas já na leitura do banco.
 			escala.getAgendamento().getLinha().getPontos().size();

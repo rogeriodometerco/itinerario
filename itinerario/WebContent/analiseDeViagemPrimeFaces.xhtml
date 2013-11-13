@@ -24,7 +24,10 @@
 			<h4>Consulta análise da movimentação de veículo por dia</h4>
 
 			<h:outputLabel value="Data " />
-			<p:calendar value="#{analiseMb.data}" enableManualInput="true"
+			<p:calendar value="#{analiseMb.dataInicial}" enableManualInput="true"
+				pattern="dd/MM/yyyy">
+			</p:calendar>
+			<p:calendar value="#{analiseMb.dataFinal}" enableManualInput="true"
 				pattern="dd/MM/yyyy">
 			</p:calendar>
 			<p:commandButton action="#{analiseMb.analisar()}" value="Consultar"

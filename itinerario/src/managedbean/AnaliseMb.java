@@ -27,7 +27,8 @@ import facade.PosicaoVeiculoFacade;
 @ManagedBean
 @ViewScoped
 public class AnaliseMb {
-	private Date data;
+	private Date dataInicial;
+	private Date dataFinal;
 	private List<AnalisadorDeViagem> analisadores;
 	private AnalisadorDeViagem analisadorNoMapa;
 	private String exibicao;
@@ -47,18 +48,27 @@ public class AnaliseMb {
 	private void inicializar() {
 		Calendar c = Calendar.getInstance();
 		c.set(2013, 10, 6);
-		data = new Date(c.getTimeInMillis());
+		dataInicial = new Date(c.getTimeInMillis());
+		dataFinal = new Date(c.getTimeInMillis());
 		analisar();
 		resetarMapa();
 		this.exibicao = EXIBICAO_TABELA;
 	}
 
-	public Date getData() {
-		return data;
+	public Date getDataInicial() {
+		return dataInicial;
 	}
 
-	public void setData(Date data) {
-		this.data = data;
+	public void setDataInicial(Date data) {
+		this.dataInicial = data;
+	}
+	
+	public Date getDataFinal() {
+		return dataFinal;
+	}
+
+	public void setDataFinal(Date data) {
+		this.dataInicial = data;
 	}
 
 	public List<AnalisadorDeViagem> getAnalisadores() {
@@ -105,10 +115,10 @@ public class AnaliseMb {
 			polyline.getPaths().add(latLng);
 		}
 		polyline.setStrokeWeight(7);  
-		polyline.setStrokeColor("#AAAAFF");  
+		polyline.setStrokeColor("#0000FF");  
 		polyline.setStrokeOpacity(0.3);  
 		mapModel.addOverlay(polyline);  
-
+		/*
 		polyline = new Polyline();
 		for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
 			LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
@@ -116,9 +126,10 @@ public class AnaliseMb {
 			polyline.getPaths().add(latLng);
 		}
 		polyline.setStrokeWeight(4);  
-		polyline.setStrokeColor("#00FF00");  
+		polyline.setStrokeColor("#000000");  
 		polyline.setStrokeOpacity(0.3);  
-		mapModel.addOverlay(polyline);  
+		mapModel.addOverlay(polyline);
+		*/  
 	}
 
 	private void criarMarcadores() {
@@ -151,20 +162,30 @@ public class AnaliseMb {
 
 	private void criarMarcador(AnaliseDePosicao analise) {
 		String icone;
+		String legenda;
 		if (analise.isNoTrajeto()) {
-			icone = "mm_20_green.png";
+			if (analise.getPosicaoVeiculo().getVelocidade() > 0) {
+				// TODO Ícone que representa veículo parado.
+				icone = "mm_20_green.png";
+				legenda = "No trajeto";
+			} else {
+				icone = "mm_20_white.png";
+				legenda = "No trajeto, parado";
+			}
 		} else {
 			icone = "mm_20_red.png";
+			legenda = "Fora do trajeto";
 		}
 		LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
 				analise.getPosicaoVeiculo().getLng());
 		Marker marker = new Marker(latLng, "", analise);
 		marker.setIcon("resources/icones/" + icone);
 		String titulo = marker.getLatlng().toString()
+				+ "\n" + legenda
 				+ "\nVeículo: "
 				+ analise.getPosicaoVeiculo().getVeiculo().getIdentificacao()
 				+ "\nData e hora: " 
-				+ new SimpleDateFormat("dd/MM/yyyy HH:mm")
+				+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 		.format(analise.getPosicaoVeiculo().getDataHora())
 		+ "\nVelocidade: " 
 		+ analise.getPosicaoVeiculo().getVelocidade() + " km/h";
@@ -191,9 +212,9 @@ public class AnaliseMb {
 
 	public void analisar() {
 		try {
-			this.analisadores = facade.analisarPosicoesDeCadaEscala(data);
+			this.analisadores = facade.analisarPosicoesDeCadaEscala(dataInicial, dataFinal);
 			totalizar();
-			System.out.println("Ok. Data " + new SimpleDateFormat("dd/MM/yyyy").format(data));
+			exibirTabela();
 		} catch (Exception e) {
 			JsfUtil.addMsgErro(e.getMessage());
 			e.printStackTrace();
