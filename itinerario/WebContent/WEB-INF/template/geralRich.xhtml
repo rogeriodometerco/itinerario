@@ -37,26 +37,37 @@
 		</h:selectOneMenu> -->
 		</div>
 
-		<rich:toolbar height="25px" style="background-color: black" >
-			<h:commandLink action="analiseDeViagem" value="Análise de viagem" class="item-menu"/>
-		 <h:commandLink action="linha" value="Cadastrar linha" class="item-menu"/>
-		 <h:commandLink action="veiculo" value="Cadastrar veículo" class="item-menu"/>
-		 <h:commandLink action="cargaDados"
-				value="Carregar dados do rastreador" class="item-menu"/>
+		<div style="clear: both; background-color: #222; height: 3px">
+		</div>
+		<rich:toolbar height="25px" style="border-radius: 5">
+			<h:commandLink action="localizacaoDaFrota"
+				value="Localização da frota" class="item-menu" />
+			<h:commandLink action="analiseDeViagem" value="Análise de viagem"
+				class="item-menu" />
+			<h:commandLink action="linha" value="Cadastrar linha"
+				class="item-menu" />
+			<h:commandLink action="veiculo" value="Cadastrar veículo"
+				class="item-menu" />
+			<h:commandLink action="cargaDados"
+				value="Carregar dados do rastreador" class="item-menu" />
 		</rich:toolbar>
-
-<!-- 
-		<div style="clear: both; padding=10px; background-color: #006466" >
+		<!-- 
+		<div style="clear: both; padding=10px; background-color: #222; border-radius: 5; height: 35px" >
+			<h:commandLink action="localizacaoDaFrota" value="Localização da frota" class="item-menu"/>
 			<h:commandLink action="analiseDeViagem" value="Análise de viagem" class="item-menu"/>
 		 <h:commandLink action="linha" value="Cadastrar linha" class="item-menu"/>
 		 <h:commandLink action="veiculo" value="Cadastrar veículo" class="item-menu"/>
 		 <h:commandLink action="cargaDados"
 				value="Carregar dados do rastreador" class="item-menu"/>
 		</div>
- -->
- 	</h:form>
+		 -->
+
+	</h:form>
 
 	<rich:panel style="border-radius: 5; margin-top: 5px">
+		<f:facet name="header">
+			<ui:insert name="titulo" />
+		</f:facet>
 		<ui:insert name="conteudo" />
 	</rich:panel>
 

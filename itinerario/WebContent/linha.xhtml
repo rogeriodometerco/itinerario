@@ -15,10 +15,10 @@
 			type="text/javascript" />
 	</ui:define>
 
+	<ui:define name="titulo">Cadastro de linha</ui:define>
 	<ui:define name="conteudo">
 		<rich:messages id="mensagens" />
 		<h:form rendered="#{linhaMb.isListagem()}">
-			<h3>Cadastro de linha</h3>
 
 			<h:commandButton value="Nova" action="#{linhaMb.iniciarCriacao}" />
 			<rich:dataTable value="#{linhaMb.lista}" var="linha">
