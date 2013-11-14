@@ -19,8 +19,11 @@
 		<url-pattern>*.jsf</url-pattern>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
-	<!-- <context-param> <param-name>org.richfaces.skin</param-name> <param-value>blueSky</param-value> 
-		</context-param> -->
+	<!-- 
+	<context-param>
+		<param-name>org.richfaces.skin</param-name>
+		<param-value>#{skinBean.skin}</param-value>
+	</context-param>-->
 
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
@@ -38,16 +41,9 @@
 	</filter-mapping>
 
 	<!-- Upload de arquivos com Richfaces -->
-	<!-- 
-	<context-param>
-		<param-name>org.richfaces.fileUpload.createTempFiles</param-name>
-		<param-value>true</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.richfaces.fileUpload.maxRequestSize</param-name>
-		<param-value>2000000</param-value>
-	</context-param>
-	-->
+	<!-- <context-param> <param-name>org.richfaces.fileUpload.createTempFiles</param-name> 
+		<param-value>true</param-value> </context-param> <context-param> <param-name>org.richfaces.fileUpload.maxRequestSize</param-name> 
+		<param-value>2000000</param-value> </context-param> -->
 
 	<!-- contornando erro: Cannot create a session after the response has been 
 		committed -->

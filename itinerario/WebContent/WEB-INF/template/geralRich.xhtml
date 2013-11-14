@@ -6,23 +6,57 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<ui:insert name="headComplementar" />
 </h:head>
 
-<h:body >
+<h:body>
 	<h:form>
-		<h2>Sistema Tal</h2>
-		<h:commandLink action="analiseDeViagem"
-			value="Análise de viagem" />
-		|| <h:commandLink action="analiseDeViagemPrimeFaces"
-			value="Análise de viagem (Primefaces)" />
-		|| <h:commandLink action="linha" value="Cadastrar linha" />
-		|| <h:commandLink action="veiculo" value="Cadastrar veículo" />
-		|| <h:commandLink action="cargaDados" value="Carregar dados do rastreador" />
-	</h:form>
-	<br />
+		<h:outputStylesheet name="geral.css" library="css" />
 
-	<rich:panel>
+		<div style="float: left">
+			<a href='http://prefeituradepitanga.blogspot.com.br/'
+				style='display: inline; margin-top: 20px; margin-left: 30px'> <img
+				alt='Prefeitura Municipal de Pitanga' id='Header1_headerimg'
+				src='http://2.bp.blogspot.com/-Cq3nXYusAuc/UiZlQfNcSZI/AAAAAAAAFh4/BZHEQjEkSDY/s1600/logotipo.png'
+				style='display: inline' width='340px;  ' />
+			</a>
+		</div>
+		<div style="float: left;">
+			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
+			<!-- 
+		<h:selectOneMenu value="#{skinBean.skin}" >
+		   	<f:selectItem itemValue="wine" itemLabel="wine" />
+ 		  	<f:selectItem itemValue="ruby" itemLabel="ruby" />
+ 		  	<f:selectItem itemValue="japanCherry" itemLabel="japanCherry" />
+ 		  	<f:selectItem itemValue="emeraldTown" itemLabel="emeraldTown" />
+ 		  	<f:selectItem itemValue="deepMarine" itemLabel="deepMarine" />
+ 		  	<f:selectItem itemValue="classic" itemLabel="classic" />
+ 		  	<f:selectItem itemValue="blueSky" itemLabel="blueSky" />
+ 		  	<f:ajax execute="@all" render="@all"/>
+		</h:selectOneMenu> -->
+		</div>
+
+		<rich:toolbar height="25px" style="background-color: black" >
+			<h:commandLink action="analiseDeViagem" value="Análise de viagem" class="item-menu"/>
+		 <h:commandLink action="linha" value="Cadastrar linha" class="item-menu"/>
+		 <h:commandLink action="veiculo" value="Cadastrar veículo" class="item-menu"/>
+		 <h:commandLink action="cargaDados"
+				value="Carregar dados do rastreador" class="item-menu"/>
+		</rich:toolbar>
+
+<!-- 
+		<div style="clear: both; padding=10px; background-color: #006466" >
+			<h:commandLink action="analiseDeViagem" value="Análise de viagem" class="item-menu"/>
+		 <h:commandLink action="linha" value="Cadastrar linha" class="item-menu"/>
+		 <h:commandLink action="veiculo" value="Cadastrar veículo" class="item-menu"/>
+		 <h:commandLink action="cargaDados"
+				value="Carregar dados do rastreador" class="item-menu"/>
+		</div>
+ -->
+ 	</h:form>
+
+	<rich:panel style="border-radius: 5; margin-top: 5px">
 		<ui:insert name="conteudo" />
 	</rich:panel>
 
