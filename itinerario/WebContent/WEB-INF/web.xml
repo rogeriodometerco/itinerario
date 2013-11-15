@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>itinerario</display-name>
 	<welcome-file-list>
-		<welcome-file>localizacaoDaFrota.xhtml</welcome-file>
+		<welcome-file>ultimaPosicaoDaFrota.xhtml</welcome-file>
 	</welcome-file-list>
 
 	<servlet>
@@ -19,17 +19,20 @@
 		<url-pattern>*.jsf</url-pattern>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
+
 <!-- 
 	<context-param>
 		<param-name>org.richfaces.skin</param-name>
 		<param-value>pitanga</param-value>
 	</context-param>
-	
-	<context-param>  
-<param-name>org.richfaces.CONTROL_SKINNING</param-name>  
-<param-value>enable</param-value>  
-</context-param>  
--->
+
+	<context-param>
+		<param-name>org.richfaces.CONTROL_SKINNING</param-name>
+		<param-value>enable</param-value>
+	</context-param>
+ -->
+
+
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
 		<param-value>bootstrap</param-value>
@@ -55,6 +58,18 @@
 	<context-param>
 		<param-name>com.sun.faces.writeStateAtFormEnd</param-name>
 		<param-value>false</param-value>
+	</context-param>
+
+	<session-config>
+		<session-timeout>1440</session-timeout>
+	</session-config>
+	<context-param>
+		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+		<param-value>true</param-value>
 	</context-param>
 
 </web-app>

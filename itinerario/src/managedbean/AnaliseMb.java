@@ -191,14 +191,14 @@ public class AnaliseMb {
 
 	private void resetarMapa() {
 		if (analisadorNoMapa == null) {
-			this.centroMapa = "-24.750573,-51.781526";
+			this.centroMapa = "-24.753573,-51.762526";
 		} else {
 			this.centroMapa = 
 					analisadorNoMapa.getLinha().getPontos().get(0).getLat() 
 					+ ", " + analisadorNoMapa.getLinha().getPontos().get(0).getLng();
 		} 
 		//this.mapModel = new DefaultMapModel();
-		this.zoomMapa = 12;
+		this.zoomMapa = 13;
 	}
 
 	public String getExibicao() {
