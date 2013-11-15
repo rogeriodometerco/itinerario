@@ -32,11 +32,10 @@ public class AnaliseMb {
 	private List<AnalisadorDeViagem> analisadores;
 	private AnalisadorDeViagem analisadorNoMapa;
 	private String exibicao;
-	private Double diferencaTotalEmKm;
-	private Double kmTotalForaDoTrajeto;
 	private MapModel mapModel;
 	private String centroMapa;
 	private Integer zoomMapa;
+	private double[] total;
 
 	@EJB
 	private PosicaoVeiculoFacade facade;
@@ -62,7 +61,7 @@ public class AnaliseMb {
 	public void setDataInicial(Date data) {
 		this.dataInicial = data;
 	}
-	
+
 	public Date getDataFinal() {
 		return dataFinal;
 	}
@@ -75,16 +74,12 @@ public class AnaliseMb {
 		return analisadores;
 	}
 
+	public double[] getTotal() {
+		return total;
+	}
+
 	public AnalisadorDeViagem getAnalisadorNoMapa() {
 		return analisadorNoMapa;
-	}
-
-	public Double getDiferencaTotalEmKm() {
-		return this.diferencaTotalEmKm;
-	}
-
-	public Double getKmTotalForaDoTrajeto() {
-		return kmTotalForaDoTrajeto;
 	}
 
 	public void exibirTabela() {
@@ -119,24 +114,24 @@ public class AnaliseMb {
 		polyline.setStrokeOpacity(0.3);  
 		mapModel.addOverlay(polyline);  
 		/*
-		polyline = new Polyline();
-		for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
-			LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
-					analise.getPosicaoVeiculo().getLng());
-			polyline.getPaths().add(latLng);
-		}
-		polyline.setStrokeWeight(4);  
-		polyline.setStrokeColor("#000000");  
-		polyline.setStrokeOpacity(0.3);  
-		mapModel.addOverlay(polyline);
-		*/  
+                polyline = new Polyline();
+                for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
+                        LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
+                                        analise.getPosicaoVeiculo().getLng());
+                        polyline.getPaths().add(latLng);
+                }
+                polyline.setStrokeWeight(4);  
+                polyline.setStrokeColor("#000000");  
+                polyline.setStrokeOpacity(0.3);  
+                mapModel.addOverlay(polyline);
+		 */  
 	}
 
 	private void criarMarcadores() {
 		/*
-		for (PontoLinha ponto: analisadorNoMapa.getLinha().getPontos()) {
-			criarMarcador(ponto);
-		}*/
+                for (PontoLinha ponto: analisadorNoMapa.getLinha().getPontos()) {
+                        criarMarcador(ponto);
+                }*/
 		for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
 			criarMarcador(analise);
 		}
@@ -222,11 +217,16 @@ public class AnaliseMb {
 	}
 
 	private void totalizar() {
-		diferencaTotalEmKm = 0d;
-		kmTotalForaDoTrajeto = 0d;
+		total = new double[4];
+		for (int i=0; i <= 3; i++) {
+			total[i] = 0;
+		}
 		for (AnalisadorDeViagem analisador: analisadores) {
-			diferencaTotalEmKm += analisador.getDiferencaDeDistancia();
-			kmTotalForaDoTrajeto += analisador.getDistanciaForaDoTrajeto();
+			total[0] += analisador.getEscala()
+					.getAgendamento().getLinha().getQuilometragem();
+			total[1] += analisador.getDistanciaNoTrajeto();
+			total[2] += analisador.getDiferencaDeDistancia();
+			total[3] += analisador.getDistanciaForaDoTrajeto();
 		}
 	}
 

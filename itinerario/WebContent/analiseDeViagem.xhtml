@@ -1,123 +1,122 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:rich="http://richfaces.org/rich"
-	xmlns:p="http://primefaces.org/ui"
-	template="/WEB-INF/template/geralRich.xhtml">
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:rich="http://richfaces.org/rich"
+        xmlns:p="http://primefaces.org/ui"
+        template="/WEB-INF/template/geralRich.xhtml">
 
-	<ui:define name="headComplementar">
-		<script src="http://maps.google.com/maps/api/js?sensor=false"
-			type="text/javascript"></script>
-	</ui:define>
+        <ui:define name="headComplementar">
+                <script src="http://maps.google.com/maps/api/js?sensor=false"
+                        type="text/javascript"></script>
+        </ui:define>
 
-	<ui:define name="titulo">Análise de viagem</ui:define>
-	
-	<ui:define name="conteudo">
-		<h:form>
+        <ui:define name="titulo">Análise de viagem</ui:define>
+        
+        <ui:define name="conteudo">
+                <h:form>
 
-			<h:messages errorStyle="errorMsg" infoStyle="infoMsg" />
-			<h:outputLabel value="Data inicial " />
-			<rich:calendar value="#{analiseMb.dataInicial}"
-				enableManualInput="true" datePattern="dd/MM/yyyy">
-			</rich:calendar>
-			<h:outputLabel value="Data final " />
-			<rich:calendar value="#{analiseMb.dataFinal}"
-				enableManualInput="true" datePattern="dd/MM/yyyy">
-			</rich:calendar>
-			<h:commandButton action="#{analiseMb.analisar()}" value="Consultar" />
-			<br />
-			<br />
-			<rich:dataTable value="#{analiseMb.analisadores}" var="analisador"
-				rendered="#{analiseMb.exibicaoTabela}">
-				<rich:column>
-					<f:facet name="header">Veículo</f:facet>
-					<h:outputText value="#{analisador.escala.veiculo.identificacao}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Linha</f:facet>
-					<h:outputText value="#{analisador.linha.nome}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Hr início</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaInicial}">
-						<f:convertDateTime pattern="HH:mm" />
-					</h:outputText>
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Hr término</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaFinal}">
-						<f:convertDateTime pattern="HH:mm" />
-					</h:outputText>
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Distância trajeto</f:facet>
-					<h:outputText value="#{analisador.linha.quilometragem}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Percorrido no trajeto</f:facet>
-					<h:outputText value="#{analisador.distanciaNoTrajeto}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Diferença</f:facet>
-					<h:outputText value="#{analisador.diferencaDeDistancia}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Percorrido fora do trajeto</f:facet>
-					<h:outputText value="#{analisador.distanciaForaDoTrajeto}" />
-				</rich:column>
-				<rich:column>
-					<f:facet name="header">Mapa</f:facet>
-					<h:commandLink value="Exibir"
-						actionListener="#{analiseMb.exibirMapa(analisador)}" />
-				</rich:column>
+                        <h:messages errorStyle="errorMsg" infoStyle="infoMsg" />
+                        <h:outputLabel value="Data inicial " />
+                        <rich:calendar value="#{analiseMb.dataInicial}"
+                                enableManualInput="true" datePattern="dd/MM/yyyy">
+                        </rich:calendar>
+                        <h:outputLabel value="Data final " />
+                        <rich:calendar value="#{analiseMb.dataFinal}"
+                                enableManualInput="true" datePattern="dd/MM/yyyy">
+                        </rich:calendar>
+                        <h:commandButton action="#{analiseMb.analisar()}" value="Consultar" />
+                        <br />
+                        <br />
+                        <rich:dataTable value="#{analiseMb.analisadores}" var="analisador"
+                                rendered="#{analiseMb.exibicaoTabela}">
+                                <rich:column>
+                                        <f:facet name="header">Veículo</f:facet>
+                                        <h:outputText value="#{analisador.escala.veiculo.identificacao}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Linha</f:facet>
+                                        <h:outputText value="#{analisador.linha.nome}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Hr início</f:facet>
+                                        <h:outputText value="#{analisador.agendamento.horaInicial}">
+                                                <f:convertDateTime pattern="HH:mm" />
+                                        </h:outputText>
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Hr término</f:facet>
+                                        <h:outputText value="#{analisador.agendamento.horaFinal}">
+                                                <f:convertDateTime pattern="HH:mm" />
+                                        </h:outputText>
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Distância trajeto</f:facet>
+                                        <h:outputText value="#{analisador.linha.quilometragem}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Percorrido no trajeto</f:facet>
+                                        <h:outputText value="#{analisador.distanciaNoTrajeto}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Diferença</f:facet>
+                                        <h:outputText value="#{analisador.diferencaDeDistancia}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Percorrido fora do trajeto</f:facet>
+                                        <h:outputText value="#{analisador.distanciaForaDoTrajeto}" />
+                                </rich:column>
+                                <rich:column>
+                                        <f:facet name="header">Mapa</f:facet>
+                                        <h:commandLink value="Exibir"
+                                                actionListener="#{analiseMb.exibirMapa(analisador)}" />
+                                </rich:column>
 
-				<f:facet name="footer">
-					<rich:columnGroup>
-						<rich:column colspan="4">Total</rich:column>
-						<rich:column>
-							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
-							</h:outputText>
-						</rich:column>
-						<rich:column>
-							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
-							</h:outputText>
-						</rich:column>
-						<rich:column>
-							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
-							</h:outputText>
-						</rich:column>
-						<rich:column>
-							<h:outputText value="#{analiseMb.diferencaTotalEmKm}">
-							</h:outputText>
-						</rich:column>
-						<rich:column>
-						</rich:column>
-					</rich:columnGroup>
-				</f:facet>
-			</rich:dataTable>
-			<br />
+                                <f:facet name="footer">
+                                        <rich:columnGroup>
+                                                <rich:column colspan="4">Total</rich:column>
+                                                <rich:column>
+                                                        <h:outputText value="#{analiseMb.total[0]}">
+                                                        </h:outputText>
+                                                </rich:column>
+                                                <rich:column>
+                                                        <h:outputText value="#{analiseMb.total[1]}">
+                                                        </h:outputText>
+                                                </rich:column>
+                                                <rich:column>
+                                                        <h:outputText value="#{analiseMb.total[2]}">
+                                                        </h:outputText>
+                                                </rich:column>
+                                                <rich:column>
+                                                        <h:outputText value="#{analiseMb.total[3]}">
+                                                        </h:outputText>
+                                                </rich:column>
+                                                <rich:column>
+                                                </rich:column>
+                                        </rich:columnGroup>
+                                </f:facet>
+                        </rich:dataTable>
+                        <br />
 
-			<h:commandLink value="Voltar" action="#{analiseMb.exibirTabela()}"
-				rendered="#{analiseMb.exibicaoMapa}" />
-			<h:panelGrid columns="2" rendered="#{analiseMb.exibicaoMapa}">
-				<h:outputLabel value="Veículo" />
-				<h:outputLabel
-					value="#{analiseMb.analisadorNoMapa.escala.veiculo.identificacao}" />
-			</h:panelGrid>
-			<p:gmap id="mapa" center="#{analiseMb.centroMapa}"
-				zoom="#{analiseMb.zoomMapa}" type="ROADMAP"
-				style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
-				model="#{analiseMb.mapModel}" widgetVar="mapa"
-				rendered="#{analiseMb.exibicaoMapa}">
-				<p:ajax event="stateChange" listener="#{analiseMb.onStateChange}" />
-			</p:gmap>
+                        <h:commandLink value="Voltar" action="#{analiseMb.exibirTabela()}"
+                                rendered="#{analiseMb.exibicaoMapa}" />
+                        <h:panelGrid columns="2" rendered="#{analiseMb.exibicaoMapa}">
+                                <h:outputLabel value="Veículo" />
+                                <h:outputLabel
+                                        value="#{analiseMb.analisadorNoMapa.escala.veiculo.identificacao}" />
+                        </h:panelGrid>
+                        <p:gmap id="mapa" center="#{analiseMb.centroMapa}"
+                                zoom="#{analiseMb.zoomMapa}" type="ROADMAP"
+                                style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
+                                model="#{analiseMb.mapModel}" widgetVar="mapa"
+                                rendered="#{analiseMb.exibicaoMapa}">
+                                <p:ajax event="stateChange" listener="#{analiseMb.onStateChange}" />
+                        </p:gmap>
 
-		</h:form>
-	</ui:define>
+                </h:form>
+        </ui:define>
 </ui:composition>
-

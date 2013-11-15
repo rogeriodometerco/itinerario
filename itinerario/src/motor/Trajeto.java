@@ -22,7 +22,7 @@ public class Trajeto {
 				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
 
 		if (p == null) { 
-			System.out.println("Posição fora do trajeto: " + posicao.getId()); 
+			//System.out.println("Posição fora do trajeto: " + posicao.getId()); 
 		} else {
 			//System.out.println("Posição no trajeto: " + posicao.getId()); 
 		}
