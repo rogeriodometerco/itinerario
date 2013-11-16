@@ -7,18 +7,19 @@ import modelo.AgendamentoLinha;
 import modelo.EscalaVeiculo;
 import modelo.Linha;
 import modelo.PosicaoVeiculo;
+import modelo.ProgramacaoLinha;
 
 public class AnalisadorDeViagem {
-	private EscalaVeiculo escala;
+	private ProgramacaoLinha programacao;
 	private Trajeto trajeto;
 	private Viagem viagem;
 	private List<AnaliseDePosicao> analises;
 	private double distanciaNoTrajeto;
 	private double distanciaForaDoTrajeto;
 	
-	public AnalisadorDeViagem(EscalaVeiculo escala, Viagem viagem) {
-		this.escala = escala;
-		this.trajeto = new Trajeto(escala.getAgendamento().getLinha().getPontos());
+	public AnalisadorDeViagem(ProgramacaoLinha programacao, Viagem viagem) {
+		this.programacao = programacao;
+		this.trajeto = new Trajeto(programacao.getLinha().getPontos());
 		this.viagem = viagem;
 		analisar();
 		calcularDistanciaNoTrajeto();
@@ -76,15 +77,11 @@ public class AnalisadorDeViagem {
 	}
 	
 	public Linha getLinha() {
-		return escala.getAgendamento().getLinha();
+		return programacao.getLinha();
 	}
 	
-	public AgendamentoLinha getAgendamento() {
-		return escala.getAgendamento();
-	}
-	
-	public EscalaVeiculo getEscala() {
-		return escala;
+	public ProgramacaoLinha getProgramacao() {
+		return programacao;
 	}
 	
 	public double getDistanciaNoTrajeto() {

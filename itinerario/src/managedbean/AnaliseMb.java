@@ -207,7 +207,7 @@ public class AnaliseMb {
 
 	public void analisar() {
 		try {
-			this.analisadores = facade.analisarPosicoesDeCadaEscala(dataInicial, dataFinal);
+			this.analisadores = facade.analisarPosicoesDeCadaProgramacao(dataInicial, dataFinal);
 			totalizar();
 			exibirTabela();
 		} catch (Exception e) {
@@ -222,8 +222,7 @@ public class AnaliseMb {
 			total[i] = 0;
 		}
 		for (AnalisadorDeViagem analisador: analisadores) {
-			total[0] += analisador.getEscala()
-					.getAgendamento().getLinha().getQuilometragem();
+			total[0] += analisador.getProgramacao().getLinha().getQuilometragem();
 			total[1] += analisador.getDistanciaNoTrajeto();
 			total[2] += analisador.getDiferencaDeDistancia();
 			total[3] += analisador.getDistanciaForaDoTrajeto();

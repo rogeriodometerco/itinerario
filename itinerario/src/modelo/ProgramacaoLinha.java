@@ -10,7 +10,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @Entity
-public class AgendamentoLinha {
+public class ProgramacaoLinha {
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -21,7 +21,9 @@ public class AgendamentoLinha {
 	private Date horaInicial;
 	@Temporal(value=TemporalType.TIME)
 	private Date horaFinal;
-
+	@ManyToOne
+	private Veiculo veiculo;
+	
 	public Long getId() {
 		return id;
 	}
@@ -52,4 +54,11 @@ public class AgendamentoLinha {
 	public void setHoraFinal(Date horaFinal) {
 		this.horaFinal = horaFinal;
 	}
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+	public void setVeiculo(Veiculo veiculo) {
+		this.veiculo = veiculo;
+	}
+
 }

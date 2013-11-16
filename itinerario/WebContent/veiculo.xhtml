@@ -10,10 +10,10 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
 	template="/WEB-INF/template/geralRich.xhtml">
 
+	<ui:define name="titulo">Cadastro de veículo</ui:define>
 	<ui:define name="conteudo">
 		<rich:messages id="mensagens" />
 		<h:form rendered="#{veiculoMb.isListagem()}">
-			<h3>Cadastro de veículo</h3>
 
 			<h:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}" />
 			<rich:dataTable value="#{veiculoMb.lista}" var="veiculo">

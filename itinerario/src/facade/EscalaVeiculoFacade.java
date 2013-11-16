@@ -22,7 +22,7 @@ public class EscalaVeiculoFacade
 		return dao;
 	}
 	
-	public List<EscalaVeiculo> recuperarEscalas(Date data) throws Exception {
+	public List<EscalaVeiculo> recuperarEscalas(Date dataInicial, Date dataFinal) throws Exception {
 		// TODO filtro considerando a data.
 		return listar();
 	}

@@ -11,6 +11,7 @@ import modelo.AgendamentoLinha;
 
 public class Teste {
 	public static void main(String[] args) {
+		System.out.println("Domingo: "+ Calendar.SUNDAY);
 		
 		SimpleDateFormat s = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		AgendamentoLinha agenda = new AgendamentoLinha();

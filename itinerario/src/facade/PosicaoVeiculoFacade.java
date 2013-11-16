@@ -9,9 +9,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import modelo.EscalaVeiculo;
-import modelo.PontoLinha;
 import modelo.PosicaoVeiculo;
+import modelo.ProgramacaoLinha;
 import modelo.Veiculo;
 import motor.AnalisadorDeViagem;
 import motor.Viagem;
@@ -26,6 +25,8 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	@EJB
 	private EscalaVeiculoFacade escalaFacade;
 	@EJB
+	private ProgramacaoLinhaFacade programacaoFacade;
+	@EJB
 	private PontoLinhaFacade pontoLinhaFacade;
 
 	@Override
@@ -36,15 +37,14 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	/**
 	 * Recupera os registros de posição de um veículo que devem ser analisados em relação
 	 * a sua escala num determinado dia.
-	 * @param escala
+	 * @param programacao
 	 * @return
 	 */
 	private List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
-			EscalaVeiculo escala, Date data) {
+			ProgramacaoLinha programacao, Date data) {
 
 		// TODO Refactoring. Não está legal.
-		// O parâmetro data está atrelado ao agendamento cuja escala está
-		// associada, e a origem tem que se preocupar com isso. 
+		// O parâmetro data está atrelada a programação, e a origem tem que se preocupar com isso. 
 
 		// Objeto auxiliar.
 		Calendar paramData = Calendar.getInstance();
@@ -52,36 +52,35 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 
 		// Data e hora inicial.
 		Calendar c1 = Calendar.getInstance();
-		c1.setTime(escala.getAgendamento().getHoraInicial());
+		c1.setTime(programacao.getHoraInicial());
 		c1.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
 
 		// Data e hora final.
 		Calendar c2 = Calendar.getInstance();
-		c2.setTime(escala.getAgendamento().getHoraFinal());
+		c2.setTime(programacao.getHoraFinal());
 		c2.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
 
-		return getDao().recuperar(escala.getVeiculo(), c1.getTime(), c2.getTime());
+		return getDao().recuperar(programacao.getVeiculo(), c1.getTime(), c2.getTime());
 
 	}
+
 
 	/**
 	 * 
 	 * @param dataInicial
 	 * @return
 	 */
-	public List<AnalisadorDeViagem> analisarPosicoesDeCadaEscala(Date dataInicial, Date dataFinal) 
+	public List<AnalisadorDeViagem> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal) 
 			throws Exception {
 
 		List<AnalisadorDeViagem> listaRetorno = new ArrayList<AnalisadorDeViagem>();
 		List<PosicaoVeiculo> posicoes = null;
-		List<PontoLinha> pontos = null;
-		for (EscalaVeiculo escala: escalaFacade.recuperarEscalas(dataInicial)) {
-			posicoes = this.recuperarPosicoesParaAnalise(escala, dataInicial);
+		for (ProgramacaoLinha programacao: programacaoFacade.recuperarProgramacoes(dataInicial, dataFinal)) {
+			posicoes = this.recuperarPosicoesParaAnalise(programacao, dataInicial);
 			System.out.println(posicoes.size() + "posições recuperadas");
 			// TODO Recuperar entidades relacionadas já na leitura do banco.
-			escala.getAgendamento().getLinha().getPontos().size();
-			pontos = pontoLinhaFacade.recuperarPontos(escala.getAgendamento().getLinha()); 
-			AnalisadorDeViagem analisador = new AnalisadorDeViagem(escala, new Viagem(posicoes));
+			programacao.getLinha().getPontos().size();
+			AnalisadorDeViagem analisador = new AnalisadorDeViagem(programacao, new Viagem(posicoes));
 			listaRetorno.add(analisador);
 		}
 		return listaRetorno;

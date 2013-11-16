@@ -36,7 +36,7 @@
 				rendered="#{analiseMb.exibicaoTabela}">
 				<rich:column>
 					<f:facet name="header">Veículo</f:facet>
-					<h:outputText value="#{analisador.escala.veiculo.identificacao}" />
+					<h:outputText value="#{analisador.programacao.veiculo.identificacao}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Linha</f:facet>
@@ -44,13 +44,13 @@
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Hr início</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaInicial}">
+					<h:outputText value="#{analisador.programacao.horaInicial}">
 						<f:convertDateTime pattern="HH:mm" />
 					</h:outputText>
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Hr término</f:facet>
-					<h:outputText value="#{analisador.agendamento.horaFinal}">
+					<h:outputText value="#{analisador.programacao.horaFinal}">
 						<f:convertDateTime pattern="HH:mm" />
 					</h:outputText>
 				</rich:column>
@@ -107,7 +107,7 @@
 			<h:panelGrid columns="2" rendered="#{analiseMb.exibicaoMapa}">
 				<h:outputLabel value="Veículo" />
 				<h:outputLabel
-					value="#{analiseMb.analisadorNoMapa.escala.veiculo.identificacao}" />
+					value="#{analiseMb.analisadorNoMapa.programacao.veiculo.identificacao}" />
 			</h:panelGrid>
 			<p:gmap id="mapa" center="#{analiseMb.centroMapa}"
 				zoom="#{analiseMb.zoomMapa}" type="ROADMAP"

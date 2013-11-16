@@ -9,9 +9,13 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.model.SelectItem;
 
+import modelo.AgendamentoLinha;
 import modelo.Linha;
 import modelo.PontoLinha;
+import modelo.ProgramacaoLinha;
+import modelo.Veiculo;
 import motor.MensagemRMC;
 
 import org.primefaces.event.FileUploadEvent;
@@ -25,6 +29,7 @@ import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
 import facade.LinhaFacade;
+import facade.VeiculoFacade;
 
 @ManagedBean
 @ViewScoped
@@ -35,10 +40,15 @@ public class LinhaMb implements Serializable {
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
 	private Linha linha;
+	private AgendamentoLinha agendamento;
 	private List<Linha> lista;
 	private String estadoView;
+
 	@EJB
 	private LinhaFacade facade;
+
+	@EJB
+	private VeiculoFacade veiculoFacade;
 
 	private MapModel mapModel;
 	private String centroMapa;
@@ -110,6 +120,14 @@ public class LinhaMb implements Serializable {
 		this.linha = linha;
 	}
 
+	public AgendamentoLinha getAgendamento() {
+		return agendamento;
+	}
+
+	public void setAgendamento(AgendamentoLinha agendamento) {
+		this.agendamento = agendamento;
+	}
+
 	public void listar() { 
 		try {
 			this.lista = facade.listar();
@@ -129,12 +147,14 @@ public class LinhaMb implements Serializable {
 		this.estadoView = CRIACAO;
 		this.linha = new Linha();
 		this.linha.setPontos(new ArrayList<PontoLinha>());
+		this.linha.setAgendamentos(new ArrayList<AgendamentoLinha>());
+		this.linha.setProgramacoes(new ArrayList<ProgramacaoLinha>());
 		this.linha.setAtiva(true);
 	}
 
 	public void iniciarAlteracao(Linha linha) {
 		try {
-			this.linha = facade.recuperarParaEdicao(linha.getId());
+			this.linha = facade.recuperarParaEdicaoOuExclusao(linha.getId());
 			sincronizarMapModel();
 			this.estadoView = ALTERACAO;
 		} catch (Exception e) {
@@ -154,10 +174,26 @@ public class LinhaMb implements Serializable {
 
 	}
 
+	public void inicializarVeiculo(ProgramacaoLinha programacao) {
+		try {
+			programacao.setVeiculo(veiculoFacade.recuperarPorIdentificacao(programacao.getVeiculo().getIdentificacao()));
+			if (programacao.getVeiculo() == null) {
+				JsfUtil.addMsgErro("Veiculo " + programacao.getVeiculo().getIdentificacao() 
+						+ " não cadastrado.");
+			}
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao consultar veículo: " + e.getMessage());
+		}
+	}
+
 	public void iniciarExclusao(Linha linha) {
-		this.linha = linha;
-		sincronizarMapModel();
-		this.estadoView = EXCLUSAO;
+		try {
+			this.linha = facade.recuperarParaEdicaoOuExclusao(linha.getId());
+			sincronizarMapModel();
+			this.estadoView = EXCLUSAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar linha para exclusão: " + e.getMessage());
+		}
 	}
 
 	public void terminarExclusao() {
@@ -175,6 +211,30 @@ public class LinhaMb implements Serializable {
 		listar();
 		this.estadoView = LISTAGEM;
 	}
+
+	public void novoAgendamento() {
+		System.out.println("novoAgendamento()");
+		AgendamentoLinha agendamento = new AgendamentoLinha();
+		agendamento.setLinha(linha);
+		linha.getAgendamentos().add(agendamento);
+	}
+
+	public void removerAgendamento(AgendamentoLinha agendamento) {
+		this.linha.getAgendamentos().remove(agendamento);
+	}
+
+	public void novaProgramacao() {
+		System.out.println("novaProgramacao()");
+		ProgramacaoLinha programacao = new ProgramacaoLinha();
+		programacao.setVeiculo(new Veiculo());
+		programacao.setLinha(linha);
+		linha.getProgramacoes().add(programacao);
+	}
+
+	public void removerProgramacao(ProgramacaoLinha programacao) {
+		this.linha.getProgramacoes().remove(programacao);
+	}
+
 
 	public Boolean isListagem() {
 		return this.estadoView != null && this.estadoView.equals(LISTAGEM);

@@ -41,65 +41,181 @@
 			</rich:dataTable>
 		</h:form>
 
-		<h:form enctype="multipart/form-data" rendered="#{linhaMb.isCriacao()}">
+		<h:form enctype="multipart/form-data"
+			rendered="#{linhaMb.isCriacao()}">
 			<h3>Criar linha</h3>
 
-			<h:panelGrid columns="1">
-				<h:outputLabel value="Nome da linha" />
-				<h:inputText value="#{linhaMb.linha.nome}" />
-				<h:outputLabel value="Quilometragem" />
-				<h:inputText value="#{linhaMb.linha.quilometragem}" />
-			</h:panelGrid>
-			<br />
-			<p:fileUpload 
-				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
-				label="Arquivo com os pontos" process="@form" update=":mensagens, @form" auto="true">
-			</p:fileUpload>
-			<br />
-			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
-				type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
-				style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
-				<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
-			</p:gmap>
+			<div style="float: left; width: 30%">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Nome da linha" />
+					<h:outputLabel value="Quilometragem" />
+					<h:inputText value="#{linhaMb.linha.nome}" />
+					<h:inputText value="#{linhaMb.linha.quilometragem}" />
+				</h:panelGrid>
+				<rich:panel>
+					<f:facet name="header">Programação da linha</f:facet>
+					<h:commandButton value="Nova"
+						actionListener="#{linhaMb.novaProgramacao()}">
+						<f:ajax execute="@this" render="tabProgramacoes" />
+					</h:commandButton>
+					<rich:dataTable id="tabProgramacoes"
+						value="#{linhaMb.linha.programacoes}" var="programacao">
+						<rich:column>
+							<f:facet name="header">Dia</f:facet>
+							<h:inputHidden value="#{programacao.diaSemana}" style="width: 100%" />
+							<h:selectOneMenu
+								value="#{programacao.diaSemana}" style="width: 60px">
+								<f:selectItem itemLabel="Dom" itemValue="1" />
+								<f:selectItem itemLabel="Seg" itemValue="2" />
+								<f:selectItem itemLabel="Ter" itemValue="3" />
+								<f:selectItem itemLabel="Qua" itemValue="4" />
+								<f:selectItem itemLabel="Qui" itemValue="5" />
+								<f:selectItem itemLabel="Sex" itemValue="6" />
+								<f:selectItem itemLabel="Sab" itemValue="7" />
+							</h:selectOneMenu>
 
-			<h:commandButton value="Salvar"
-				action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
-			<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Hr inicial</f:facet>
+							<h:inputText value="#{programacao.horaInicial}"
+								style="width: 100%">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:inputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Hr final</f:facet>
+							<h:inputText value="#{programacao.horaFinal}" style="width: 100%">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:inputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Veiculo</f:facet>
+							<h:inputText value="#{programacao.veiculo.identificacao}"
+								style="width: 100%">
+								<f:ajax execute="@this" event="change"
+									listener="#{linhaMb.inicializarVeiculo(programacao)}"
+									render=":mensagens" />
+							</h:inputText>
+						</rich:column>
+
+						<rich:column>
+							<h:commandButton value="Excluir"
+								actionListener="#{linhaMb.removerProgramacao(programacao)}">
+								<f:ajax execute="@this" render="tabProgramacoes" />
+							</h:commandButton>
+						</rich:column>
+					</rich:dataTable>
+				</rich:panel>
+			</div>
+			<div style="float: left; margin-left: 20px">
+				<p:fileUpload fileUploadListener="#{linhaMb.arquivoImportado}"
+					mode="advanced" label="Arquivo com os pontos" process="@form"
+					update=":mensagens, @form" auto="true">
+				</p:fileUpload>
+				<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
+					type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
+					style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+					<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
+				</p:gmap>
+			</div>
+
+			<div style="clear: both; margin-top: 20px">
+				<h:commandButton value="Salvar"
+					action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
+				<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+			</div>
 		</h:form>
 
 		<h:form rendered="#{linhaMb.isAlteracao()}">
 			<h3>Editar linha</h3>
 
-			<h:panelGrid columns="1">
-				<h:outputLabel value="Nome da linha" />
-				<h:inputText value="#{linhaMb.linha.nome}" />
-				<h:outputLabel value="Quilometragem" />
-				<h:inputText value="#{linhaMb.linha.quilometragem}" />
-			</h:panelGrid>
-			<br />
-			<p:fileUpload 
-				fileUploadListener="#{linhaMb.arquivoImportado}" mode="advanced"
-				label="Arquivo com os pontos" process="@form" update=":mensagens, @form" auto="true">
-			</p:fileUpload>
-			<br />
-			<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
-				type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
-				style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
-				<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
-			</p:gmap>
+			<div style="float: left; width: 30%">
+				<h:panelGrid columns="2">
+					<h:outputLabel value="Nome da linha" />
+					<h:outputLabel value="Quilometragem" />
+					<h:inputText value="#{linhaMb.linha.nome}" />
+					<h:inputText value="#{linhaMb.linha.quilometragem}" />
+				</h:panelGrid>
+				<rich:panel>
+					<f:facet name="header">Programação da linha</f:facet>
+					<h:commandButton value="Nova"
+						actionListener="#{linhaMb.novaProgramacao()}">
+						<f:ajax execute="@this" render="tabProgramacoes" />
+					</h:commandButton>
+					<rich:dataTable id="tabProgramacoes"
+						value="#{linhaMb.linha.programacoes}" var="programacao">
+						<rich:column>
+							<f:facet name="header">Dia</f:facet>
+							<h:selectOneMenu
+								value="#{programacao.diaSemana}" style="width: 60px">
+								<f:selectItem itemLabel="Dom" itemValue="1" />
+								<f:selectItem itemLabel="Seg" itemValue="2" />
+								<f:selectItem itemLabel="Ter" itemValue="3" />
+								<f:selectItem itemLabel="Qua" itemValue="4" />
+								<f:selectItem itemLabel="Qui" itemValue="5" />
+								<f:selectItem itemLabel="Sex" itemValue="6" />
+								<f:selectItem itemLabel="Sab" itemValue="7" />
+								
+							</h:selectOneMenu>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Hr inicial</f:facet>
+							<h:inputText value="#{programacao.horaInicial}"
+								style="width: 100%">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:inputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Hr final</f:facet>
+							<h:inputText value="#{programacao.horaFinal}" style="width: 100%">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:inputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">Veiculo</f:facet>
+							<h:inputText value="#{programacao.veiculo.identificacao}"
+								style="width: 100%">
+								<f:ajax execute="@this" event="change"
+									listener="#{linhaMb.inicializarVeiculo(programacao)}" 
+									render=":mensagens"/>
+							</h:inputText>
+						</rich:column>
 
-			<h:commandButton value="Salvar"
-				action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
-			<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+						<rich:column>
+							<h:commandButton value="Excluir"
+								actionListener="#{linhaMb.removerProgramacao(programacao)}">
+								<f:ajax execute="@this" render="tabProgramacoes" />
+							</h:commandButton>
+						</rich:column>
+					</rich:dataTable>
+				</rich:panel>
+			</div>
+			<div style="float: left; margin-left: 20px">
+				<p:fileUpload fileUploadListener="#{linhaMb.arquivoImportado}"
+					mode="advanced" label="Arquivo com os pontos" process="@form"
+					update=":mensagens, @form" auto="true">
+				</p:fileUpload>
+				<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
+					type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
+					style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+					<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
+				</p:gmap>
+			</div>
+
+			<div style="clear: both; margin-top: 20px">
+				<h:commandButton value="Salvar"
+					action="#{linhaMb.terminarCriacaoOuAlteracao()}" />
+				<h:commandButton value="Cancelar" action="#{linhaMb.cancelar}" />
+			</div>
 		</h:form>
 
 		<h:form rendered="#{linhaMb.isExclusao()}">
 			<h3>Excluir linha</h3>
 
-			<h:panelGrid columns="1">
+			<h:panelGrid columns="2">
 				<h:outputLabel value="Nome da linha" />
-				<h:outputText value="#{linhaMb.linha.nome}" />
 				<h:outputLabel value="Quilometragem" />
+				<h:outputText value="#{linhaMb.linha.nome}" />
 				<h:outputText value="#{linhaMb.linha.quilometragem}" />
 			</h:panelGrid>
 			<h:commandButton value="Excluir" action="#{linhaMb.terminarExclusao}" />
@@ -107,7 +223,5 @@
 		</h:form>
 		<br />
 
-		<h:form>
-		</h:form>		
 	</ui:define>
 </ui:composition>

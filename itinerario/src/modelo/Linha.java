@@ -21,6 +21,8 @@ public class Linha {
 	private List<PontoLinha> pontos;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
 	private List<AgendamentoLinha> agendamentos;
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
+	private List<ProgramacaoLinha> programacoes;
 	
 	public Long getId() {
 		return id;
@@ -63,6 +65,12 @@ public class Linha {
 	}
 	public void setAgendamentos(List<AgendamentoLinha> agendamentos) {
 		this.agendamentos = agendamentos;
+	}
+	public List<ProgramacaoLinha> getProgramacoes() {
+		return programacoes;
+	}
+	public void setProgramacoes(List<ProgramacaoLinha> programacoes) {
+		this.programacoes = programacoes;
 	}
 
 }
