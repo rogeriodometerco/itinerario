@@ -11,6 +11,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import modelo.PontoLinha;
+import modelo.Veiculo;
 import motor.AnalisadorDeViagem;
 import motor.AnaliseDePosicao;
 
@@ -23,12 +24,15 @@ import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
 import facade.PosicaoVeiculoFacade;
+import facade.VeiculoFacade;
 
 @ManagedBean
 @ViewScoped
 public class AnaliseMb {
 	private Date dataInicial;
 	private Date dataFinal;
+	private String identificacaoVeiculo;
+	private Veiculo veiculo;
 	private List<AnalisadorDeViagem> analisadores;
 	private AnalisadorDeViagem analisadorNoMapa;
 	private String exibicao;
@@ -39,6 +43,8 @@ public class AnaliseMb {
 
 	@EJB
 	private PosicaoVeiculoFacade facade;
+	@EJB
+	private VeiculoFacade veiculoFacade;
 
 	public static String EXIBICAO_TABELA = "TABELA";
 	public static String EXIBICAO_MAPA = "MAPA";
@@ -68,6 +74,31 @@ public class AnaliseMb {
 
 	public void setDataFinal(Date data) {
 		this.dataInicial = data;
+	}
+
+	public String getIdentificacaoVeiculo() {
+		return identificacaoVeiculo;
+	}
+
+	public void setIdentificacaoVeiculo(String identificacaoVeiculo) {
+		this.identificacaoVeiculo = identificacaoVeiculo;
+	}
+
+	public void recuperarVeiculo() {
+		try {
+			if (identificacaoVeiculo != null) {
+				this.veiculo = veiculoFacade.recuperarPorIdentificacao(identificacaoVeiculo);
+				if (veiculo == null) {
+					JsfUtil.addMsgErro("Veículo não cadastrado.");
+				} else {
+					System.out.println("encontrou o veículo");
+				}
+			} else {
+				this.veiculo = null;
+			}
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar veículo: " + e.getMessage());
+		}
 	}
 
 	public List<AnalisadorDeViagem> getAnalisadores() {
@@ -207,7 +238,7 @@ public class AnaliseMb {
 
 	public void analisar() {
 		try {
-			this.analisadores = facade.analisarPosicoesDeCadaProgramacao(dataInicial, dataFinal);
+			this.analisadores = facade.analisarPosicoesDeCadaProgramacao(dataInicial, dataFinal, veiculo);
 			totalizar();
 			exibirTabela();
 		} catch (Exception e) {

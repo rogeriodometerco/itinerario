@@ -41,14 +41,14 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 * @return
 	 */
 	private List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
-			ProgramacaoLinha programacao, Date data) {
+			ProgramacaoLinha programacao, Date dataInicial, Date dataFinal) {
 
 		// TODO Refactoring. Não está legal.
 		// O parâmetro data está atrelada a programação, e a origem tem que se preocupar com isso. 
 
 		// Objeto auxiliar.
 		Calendar paramData = Calendar.getInstance();
-		paramData.setTime(data);
+		paramData.setTime(dataInicial);
 
 		// Data e hora inicial.
 		Calendar c1 = Calendar.getInstance();
@@ -62,6 +62,31 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 
 		return getDao().recuperar(programacao.getVeiculo(), c1.getTime(), c2.getTime());
 
+		/*
+		
+		List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();
+
+		while (!paramData.after(dataFinal)) {
+
+			if (paramData.get(Calendar.DAY_OF_WEEK) == programacao.getDiaSemana()) {
+				System.out.println("paramData.get(Calendar.DAY_OF_WEEK) == programacao.getDiaSemana() " 
+						+ programacao.getDiaSemana() + " - id da programacao: " + programacao.getId());
+				// Data e hora inicial.
+				Calendar c1 = Calendar.getInstance();
+				c1.setTime(programacao.getHoraInicial());
+				c1.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
+
+				// Data e hora final.
+				Calendar c2 = Calendar.getInstance();
+				c2.setTime(programacao.getHoraFinal());
+				c2.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
+
+				posicoes.addAll(getDao().recuperar(programacao.getVeiculo(), c1.getTime(), c2.getTime()));
+			}
+			paramData.add(Calendar.DAY_OF_MONTH, 1);
+		}
+		return posicoes;
+		*/
 	}
 
 
@@ -70,13 +95,13 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 * @param dataInicial
 	 * @return
 	 */
-	public List<AnalisadorDeViagem> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal) 
-			throws Exception {
+	public List<AnalisadorDeViagem> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal,
+			Veiculo veiculo) throws Exception {
 
 		List<AnalisadorDeViagem> listaRetorno = new ArrayList<AnalisadorDeViagem>();
 		List<PosicaoVeiculo> posicoes = null;
 		for (ProgramacaoLinha programacao: programacaoFacade.recuperarProgramacoes(dataInicial, dataFinal)) {
-			posicoes = this.recuperarPosicoesParaAnalise(programacao, dataInicial);
+			posicoes = this.recuperarPosicoesParaAnalise(programacao, dataInicial, dataFinal);
 			System.out.println(posicoes.size() + "posições recuperadas");
 			// TODO Recuperar entidades relacionadas já na leitura do banco.
 			programacao.getLinha().getPontos().size();
@@ -109,6 +134,32 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 			return null;
 		}
 
+	}
+
+	/**
+	 * Recupera as posições de um veículo numa data.
+	 * @param veiculo
+	 * @param data
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<PosicaoVeiculo> recuperarPosicoes(Veiculo veiculo, Date data) 
+			throws Exception {
+		Calendar aux = Calendar.getInstance();
+		aux.setTime(data);
+		aux.add(Calendar.DAY_OF_MONTH, 1);
+		String sql = "select p from PosicaoVeiculo as p"
+				+ " where p.veiculo = :veiculo"
+				+ " and p.dataHora >= :dataInicial"
+				+ " and p.dataHora < :dataFinal"
+				+ " order by p.dataHora";
+
+		return (List<PosicaoVeiculo>)getEntityManager().createQuery(sql)
+				.setParameter("veiculo", veiculo)
+				.setParameter("dataInicial", data)
+				.setParameter("dataFinal", aux.getTime())
+				.getResultList();
 	}
 
 

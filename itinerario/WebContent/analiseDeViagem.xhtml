@@ -20,7 +20,7 @@
 	<ui:define name="conteudo">
 		<h:form>
 
-			<h:messages errorStyle="errorMsg" infoStyle="infoMsg" />
+			<h:messages id="mensagens" errorStyle="errorMsg" infoStyle="infoMsg" />
 			<h:outputLabel value="Data inicial " />
 			<rich:calendar value="#{analiseMb.dataInicial}"
 				enableManualInput="true" datePattern="dd/MM/yyyy">
@@ -29,6 +29,11 @@
 			<rich:calendar value="#{analiseMb.dataFinal}"
 				enableManualInput="true" datePattern="dd/MM/yyyy">
 			</rich:calendar>
+			<h:outputLabel value="Veículo " />
+			<h:inputText value="#{analiseMb.identificacaoVeiculo}">
+				<f:ajax execute="@this" listener="#{analiseMb.recuperarVeiculo()}"
+					render="mensagens" />
+			</h:inputText>
 			<h:commandButton action="#{analiseMb.analisar()}" value="Consultar" />
 			<br />
 			<br />
@@ -36,37 +41,38 @@
 				rendered="#{analiseMb.exibicaoTabela}">
 				<rich:column>
 					<f:facet name="header">Veículo</f:facet>
-					<h:outputText value="#{analisador.programacao.veiculo.identificacao}" />
+					<h:outputText
+						value="#{analisador.programacao.veiculo.identificacao}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Linha</f:facet>
 					<h:outputText value="#{analisador.linha.nome}" />
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Hr início</f:facet>
 					<h:outputText value="#{analisador.programacao.horaInicial}">
 						<f:convertDateTime pattern="HH:mm" />
 					</h:outputText>
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Hr término</f:facet>
 					<h:outputText value="#{analisador.programacao.horaFinal}">
 						<f:convertDateTime pattern="HH:mm" />
 					</h:outputText>
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Distância trajeto</f:facet>
 					<h:outputText value="#{analisador.linha.quilometragem}" />
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Percorrido no trajeto</f:facet>
 					<h:outputText value="#{analisador.distanciaNoTrajeto}" />
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Diferença</f:facet>
 					<h:outputText value="#{analisador.diferencaDeDistancia}" />
 				</rich:column>
-				<rich:column>
+				<rich:column style="text-align: center">
 					<f:facet name="header">Percorrido fora do trajeto</f:facet>
 					<h:outputText value="#{analisador.distanciaForaDoTrajeto}" />
 				</rich:column>
