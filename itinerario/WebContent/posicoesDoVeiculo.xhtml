@@ -36,7 +36,7 @@
 			<br />
 			<br />
 
-			<div style="width: 40%">
+			<div>
 				<rich:dataTable id="tabPosicoes"
 					value="#{posicaoVeiculoMb.posicoes}" var="posicao"
 					rows="15">
@@ -58,8 +58,22 @@
 						<f:facet name="header">Velocidade</f:facet>
 						<h:outputText value="#{posicao.velocidade}" />
 					</rich:column>
+					<rich:column>
+						<f:facet name="header">Linha programada</f:facet>
+						<h:outputText value="a implementar" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">Horário</f:facet>
+						<h:outputText value="a implementar" />
+					</rich:column>
+					<rich:column>
+						<f:facet name="header">Análise</f:facet>
+						<h:outputText value="no trecho / fora do trecho" />
+					</rich:column>
+					
 				</rich:dataTable>
 				<rich:dataScroller for="tabPosicoes" maxPages="5" style="margin: auto"/>
+				** falta apresentar conteúdo das últimas colunas e visualização no mapa **
 			</div>
 		</h:form>
 	</ui:define>
