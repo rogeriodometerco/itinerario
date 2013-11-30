@@ -1,9 +1,14 @@
 package facade;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import modelo.Linha;
+import modelo.PontoLinha;
+import modelo.ProgramacaoLinha;
 import dao.LinhaDao;
 
 @Stateless
@@ -26,5 +31,5 @@ public class LinhaFacade
 		linha.getProgramacoes().size();
 		return linha;
 	}
-
+	 
 }

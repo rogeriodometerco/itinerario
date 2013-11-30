@@ -2,6 +2,7 @@ package managedbean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -9,7 +10,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.SelectItem;
 
 import modelo.AgendamentoLinha;
 import modelo.Linha;
@@ -64,7 +64,15 @@ public class LinhaMb implements Serializable {
 		zoomMapa = event.getZoomLevel();
 		centroMapa = event.getCenter().getLat() + ", " + event.getCenter().getLng();
 	}
-
+/*
+	public List<ProgramacaoLinha> getProgramacoes() {
+		return linha.getProgramacoes();
+	}
+	
+	public void setProgramacoes(List<ProgramacaoLinha> lista) {
+		this.linha.setProgramacoes(lista);
+	}*/
+	
 	public MapModel getMapModel() {
 		return mapModel;
 	}
@@ -117,6 +125,7 @@ public class LinhaMb implements Serializable {
 	}
 
 	public void setLinha(Linha linha) {
+		System.out.println("setLinha() ");
 		this.linha = linha;
 	}
 
@@ -176,8 +185,13 @@ public class LinhaMb implements Serializable {
 
 	public void inicializarVeiculo(ProgramacaoLinha programacao) {
 		try {
+			String identificacao = programacao.getVeiculo().getIdentificacao();
 			programacao.setVeiculo(veiculoFacade.recuperarPorIdentificacao(programacao.getVeiculo().getIdentificacao()));
 			if (programacao.getVeiculo() == null) {
+				// Volta o estado do veículo.
+				programacao.setVeiculo(new Veiculo());
+				programacao.getVeiculo().setIdentificacao(identificacao);
+				
 				JsfUtil.addMsgErro("Veiculo " + programacao.getVeiculo().getIdentificacao() 
 						+ " não cadastrado.");
 			}
@@ -226,11 +240,26 @@ public class LinhaMb implements Serializable {
 	public void novaProgramacao() {
 		System.out.println("novaProgramacao()");
 		ProgramacaoLinha programacao = new ProgramacaoLinha();
-		programacao.setVeiculo(new Veiculo());
-		programacao.setLinha(linha);
+		// Inicializa alguns atributos.
+		if (!linha.getProgramacoes().isEmpty()) {
+				copiarAtributos(linha.getProgramacoes().get(
+							linha.getProgramacoes().size()-1), programacao);
+		} else {
+			programacao.setDiaSemana(Calendar.MONDAY);
+			programacao.setVeiculo(new Veiculo());
+			programacao.setLinha(linha);
+		}
 		linha.getProgramacoes().add(programacao);
 	}
 
+	private void copiarAtributos(ProgramacaoLinha de, ProgramacaoLinha para) {
+		para.setDiaSemana(de.getDiaSemana() + 1);
+		para.setHoraInicial(de.getHoraInicial());
+		para.setHoraFinal(de.getHoraFinal());
+		para.setLinha(de.getLinha());
+		para.setVeiculo(de.getVeiculo());
+	}
+	
 	public void removerProgramacao(ProgramacaoLinha programacao) {
 		this.linha.getProgramacoes().remove(programacao);
 	}

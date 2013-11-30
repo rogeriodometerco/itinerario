@@ -23,10 +23,10 @@ public class VeiculoFacade
 			throws Exception {
 		System.out.println("recuperarPorIdentificacao() " + identificacao);
 		String sql = "select v from Veiculo as v"
-				+ " where v.identificacao = :identificacao";
+				+ " where upper(v.identificacao) = :identificacao";
 		try {
 			return (Veiculo)getEntityManager().createQuery(sql)
-				.setParameter("identificacao", identificacao)
+				.setParameter("identificacao",identificacao.toUpperCase())
 				.getSingleResult();
 		} catch (NoResultException e) {
 			return null;

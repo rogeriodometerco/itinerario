@@ -56,14 +56,15 @@
 					<f:facet name="header">Programação da linha</f:facet>
 					<h:commandButton value="Nova"
 						actionListener="#{linhaMb.novaProgramacao()}">
-						<f:ajax execute="@this" render="tabProgramacoes" />
+						<f:ajax execute="@form" render="tabProgramacoes" />
 					</h:commandButton>
+					
 					<rich:dataTable id="tabProgramacoes"
 						value="#{linhaMb.linha.programacoes}" var="programacao">
 						<rich:column>
 							<f:facet name="header">Dia</f:facet>
 							<h:inputHidden value="#{programacao.diaSemana}" style="width: 100%" />
-							<h:selectOneMenu
+							<h:selectOneMenu 
 								value="#{programacao.diaSemana}" style="width: 60px">
 								<f:selectItem itemLabel="Dom" itemValue="1" />
 								<f:selectItem itemLabel="Seg" itemValue="2" />
@@ -126,7 +127,8 @@
 			</div>
 		</h:form>
 
-		<h:form rendered="#{linhaMb.isAlteracao()}">
+		<h:form enctype="multipart/form-data" 
+			rendered="#{linhaMb.isAlteracao()}">
 			<h3>Editar linha</h3>
 
 			<div style="float: left; width: 30%">
@@ -140,12 +142,14 @@
 					<f:facet name="header">Programação da linha</f:facet>
 					<h:commandButton value="Nova"
 						actionListener="#{linhaMb.novaProgramacao()}">
-						<f:ajax execute="@this" render="tabProgramacoes" />
+						<f:ajax execute="@form" render="tabProgramacoes" />
 					</h:commandButton>
+					
 					<rich:dataTable id="tabProgramacoes"
 						value="#{linhaMb.linha.programacoes}" var="programacao">
 						<rich:column>
 							<f:facet name="header">Dia</f:facet>
+							<h:inputHidden value="#{programacao.diaSemana}" style="width: 100%" />
 							<h:selectOneMenu
 								value="#{programacao.diaSemana}" style="width: 60px">
 								<f:selectItem itemLabel="Dom" itemValue="1" />
@@ -155,8 +159,8 @@
 								<f:selectItem itemLabel="Qui" itemValue="5" />
 								<f:selectItem itemLabel="Sex" itemValue="6" />
 								<f:selectItem itemLabel="Sab" itemValue="7" />
-								
 							</h:selectOneMenu>
+
 						</rich:column>
 						<rich:column>
 							<f:facet name="header">Hr inicial</f:facet>
@@ -176,8 +180,8 @@
 							<h:inputText value="#{programacao.veiculo.identificacao}"
 								style="width: 100%">
 								<f:ajax execute="@this" event="change"
-									listener="#{linhaMb.inicializarVeiculo(programacao)}" 
-									render=":mensagens"/>
+									listener="#{linhaMb.inicializarVeiculo(programacao)}"
+									render=":mensagens" />
 							</h:inputText>
 						</rich:column>
 

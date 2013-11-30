@@ -17,11 +17,11 @@ public class Linha {
 	private String descricao;
 	private Double quilometragem;
 	private Boolean ativa;
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha", orphanRemoval=true)
 	private List<PontoLinha> pontos;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
 	private List<AgendamentoLinha> agendamentos;
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="linha", orphanRemoval=true)
 	private List<ProgramacaoLinha> programacoes;
 	
 	public Long getId() {
