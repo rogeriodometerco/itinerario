@@ -49,8 +49,10 @@
 				<h:panelGrid columns="2">
 					<h:outputLabel value="Nome da linha" />
 					<h:outputLabel value="Quilometragem" />
-					<h:inputText value="#{linhaMb.linha.nome}" />
-					<h:inputText value="#{linhaMb.linha.quilometragem}" />
+					<h:inputText value="#{linhaMb.linha.nome}">
+					</h:inputText>
+					<h:inputText value="#{linhaMb.linha.quilometragem}">
+					</h:inputText>
 				</h:panelGrid>
 				<rich:panel>
 					<f:facet name="header">Programação da linha</f:facet>
@@ -136,7 +138,8 @@
 					<h:outputLabel value="Nome da linha" />
 					<h:outputLabel value="Quilometragem" />
 					<h:inputText value="#{linhaMb.linha.nome}" />
-					<h:inputText value="#{linhaMb.linha.quilometragem}" />
+					<h:inputText value="#{linhaMb.linha.quilometragem}">
+					</h:inputText>
 				</h:panelGrid>
 				<rich:panel>
 					<f:facet name="header">Programação da linha</f:facet>

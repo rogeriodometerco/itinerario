@@ -46,6 +46,7 @@ public class Linha {
 		return quilometragem;
 	}
 	public void setQuilometragem(Double quilometragem) {
+		//System.out.println("setQuilometragem() " + quilometragem);
 		this.quilometragem = quilometragem;
 	}
 	public List<PontoLinha> getPontos() {
