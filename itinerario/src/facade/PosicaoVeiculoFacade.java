@@ -23,8 +23,6 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	@EJB
 	private PosicaoVeiculoDao dao;
 	@EJB
-	private EscalaVeiculoFacade escalaFacade;
-	@EJB
 	private ProgramacaoLinhaFacade programacaoFacade;
 	@EJB
 	private PontoLinhaFacade pontoLinhaFacade;

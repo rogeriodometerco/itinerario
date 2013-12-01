@@ -11,7 +11,6 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import modelo.AgendamentoLinha;
 import modelo.Linha;
 import modelo.PontoLinha;
 import modelo.ProgramacaoLinha;
@@ -40,7 +39,6 @@ public class LinhaMb implements Serializable {
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
 	private Linha linha;
-	private AgendamentoLinha agendamento;
 	private List<Linha> lista;
 	private String estadoView;
 
@@ -129,14 +127,6 @@ public class LinhaMb implements Serializable {
 		this.linha = linha;
 	}
 
-	public AgendamentoLinha getAgendamento() {
-		return agendamento;
-	}
-
-	public void setAgendamento(AgendamentoLinha agendamento) {
-		this.agendamento = agendamento;
-	}
-
 	public void listar() { 
 		try {
 			this.lista = facade.listar();
@@ -156,7 +146,6 @@ public class LinhaMb implements Serializable {
 		this.estadoView = CRIACAO;
 		this.linha = new Linha();
 		this.linha.setPontos(new ArrayList<PontoLinha>());
-		this.linha.setAgendamentos(new ArrayList<AgendamentoLinha>());
 		this.linha.setProgramacoes(new ArrayList<ProgramacaoLinha>());
 		this.linha.setAtiva(true);
 	}
@@ -224,17 +213,6 @@ public class LinhaMb implements Serializable {
 	public void cancelar() {
 		listar();
 		this.estadoView = LISTAGEM;
-	}
-
-	public void novoAgendamento() {
-		System.out.println("novoAgendamento()");
-		AgendamentoLinha agendamento = new AgendamentoLinha();
-		agendamento.setLinha(linha);
-		linha.getAgendamentos().add(agendamento);
-	}
-
-	public void removerAgendamento(AgendamentoLinha agendamento) {
-		this.linha.getAgendamentos().remove(agendamento);
 	}
 
 	public void novaProgramacao() {

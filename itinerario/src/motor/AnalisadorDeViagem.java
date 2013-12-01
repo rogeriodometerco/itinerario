@@ -3,8 +3,6 @@ package motor;
 import java.util.ArrayList;
 import java.util.List;
 
-import modelo.AgendamentoLinha;
-import modelo.EscalaVeiculo;
 import modelo.Linha;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoLinha;
