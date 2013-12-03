@@ -3,6 +3,7 @@ package managedbean;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -58,6 +59,7 @@ public class AnaliseMb {
 		analisar();
 		resetarMapa();
 		this.exibicao = EXIBICAO_TABELA;
+		System.out.println("inicializar()");
 	}
 
 	public Date getDataInicial() {
@@ -73,7 +75,7 @@ public class AnaliseMb {
 	}
 
 	public void setDataFinal(Date data) {
-		this.dataInicial = data;
+		this.dataFinal = data;
 	}
 
 	public String getIdentificacaoVeiculo() {
