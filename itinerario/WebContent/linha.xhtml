@@ -17,6 +17,7 @@
 
 	<ui:define name="titulo">Cadastro de linha</ui:define>
 	<ui:define name="conteudo">
+	
 		<rich:messages id="mensagens" />
 		<h:form rendered="#{linhaMb.isListagem()}">
 
@@ -117,7 +118,7 @@
 				</p:fileUpload>
 				<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
 					type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
-					style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+					style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
 					<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
 				</p:gmap>
 			</div>
@@ -188,6 +189,19 @@
 							</h:inputText>
 						</rich:column>
 
+						<!-- 
+						<rich:column>
+							<f:facet name="header">Veiculo</f:facet>
+							<rich:autocomplete value="#{programacao.veiculo}"
+								autocompleteMethod="#{veiculoMb.autocomplete}" var="veiculo"
+								converter="#{veiculoConverter}"
+								style="width: 100%">
+								<rich:column>
+									#{veiculo.identificacao}
+								</rich:column>
+							</rich:autocomplete>
+						</rich:column>
+ -->
 						<rich:column>
 							<h:commandButton value="Excluir"
 								actionListener="#{linhaMb.removerProgramacao(programacao)}">
@@ -204,7 +218,7 @@
 				</p:fileUpload>
 				<p:gmap center="#{linhaMb.centroMapa}" zoom="#{linhaMb.zoomMapa}"
 					type="ROADMAP" model="#{linhaMb.mapModel}" widgetVar="mapa"
-					style="height: 400px; width: 550px; border: 1px solid #c0c0d1;">
+					style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
 					<p:ajax event="stateChange" listener="#{linhaMb.onMapStateChange}" />
 				</p:gmap>
 			</div>

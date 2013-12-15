@@ -8,9 +8,7 @@ import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 
-import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoLinha;
 import dao.ProgramacaoLinhaDao;
 

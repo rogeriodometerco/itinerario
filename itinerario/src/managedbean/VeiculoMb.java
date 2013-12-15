@@ -47,6 +47,15 @@ public class VeiculoMb implements Serializable {
 		}
 	}
 
+	public List<Veiculo> autocomplete(String parteDaIdentificacao) {
+		try {
+			return facade.listarPorParteDaIdentificacao(parteDaIdentificacao);
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para veículo: " + e.getMessage());
+		}
+		return null;
+	}
+	
 	public List<Veiculo> getLista() {
 		if (lista == null) {
 			listar();

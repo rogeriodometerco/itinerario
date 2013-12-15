@@ -84,15 +84,22 @@ public class LinhaMb implements Serializable {
 	}
 
 	private void sincronizarMapModel() {
+		int numeroParada = 1;
+		int cont = 1;
 		mapModel = new DefaultMapModel();
 		if (linha != null && linha.getPontos().size() > 0) {
 			Polyline polyline = new Polyline();
 			for (PontoLinha ponto: linha.getPontos()) {
 				LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
 				polyline.getPaths().add(latLng);
-				if (ponto.getParada()) {
-					criarMarcadorDeParada(ponto);
+				if (cont == 1) {
+					criarMarcadorDeInicio(ponto);
+				} else if (cont == linha.getPontos().size()) {
+					criarMarcadorDeTermino(ponto);
+				} else if (ponto.getParada()) {
+					criarMarcadorDeParada(numeroParada++, ponto);
 				}
+				cont++;
 			}
 			polyline.setStrokeWeight(7);  
 			polyline.setStrokeColor("#0000FF");  
@@ -107,13 +114,44 @@ public class LinhaMb implements Serializable {
 		this.zoomMapa = 10;
 	}
 
-	private void criarMarcadorDeParada(PontoLinha pontoLinha) {
-		String icone = "mm_20_white.png";
+	private void criarMarcadorDeParada(int numeroParada, PontoLinha pontoLinha) {
+		String numero = null;
+		if (numeroParada < 10) {
+			numero = "0" + numeroParada;
+		} else {
+			numero = String.valueOf(numeroParada);
+		}
+		String icone = "black" + numero+".png";
+		System.out.println(icone);
 		LatLng latLng = new LatLng(pontoLinha.getLat(), 
 				pontoLinha.getLng());
 		Marker marker = new Marker(latLng, "", pontoLinha);
 		marker.setIcon("resources/icones/" + icone);
 		String titulo = "Ponto de parada";
+		marker.setTitle(titulo);
+		this.mapModel.addOverlay(marker);
+	}
+
+	private void criarMarcadorDeInicio(PontoLinha pontoLinha) {
+		String icone = "start-race-2.png";
+		System.out.println(icone);
+		LatLng latLng = new LatLng(pontoLinha.getLat(), 
+				pontoLinha.getLng());
+		Marker marker = new Marker(latLng, "", pontoLinha);
+		marker.setIcon("resources/icones/" + icone);
+		String titulo = "Ponto de início";
+		marker.setTitle(titulo);
+		this.mapModel.addOverlay(marker);
+	}
+	
+	private void criarMarcadorDeTermino(PontoLinha pontoLinha) {
+		String icone = "finish.png";
+		System.out.println(icone);
+		LatLng latLng = new LatLng(pontoLinha.getLat(), 
+				pontoLinha.getLng());
+		Marker marker = new Marker(latLng, "", pontoLinha);
+		marker.setIcon("resources/icones/" + icone);
+		String titulo = "Ponto de término";
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}
@@ -148,6 +186,7 @@ public class LinhaMb implements Serializable {
 		this.linha.setPontos(new ArrayList<PontoLinha>());
 		this.linha.setProgramacoes(new ArrayList<ProgramacaoLinha>());
 		this.linha.setAtiva(true);
+		sincronizarMapModel();
 	}
 
 	public void iniciarAlteracao(Linha linha) {
