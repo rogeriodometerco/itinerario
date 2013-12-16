@@ -1,0 +1,3 @@
+A rota poderá ser alterada? 
+Se sim, não será possível comparar uma movimentação antiga com a rota, a não ser que se faça um esquema de histórico em todas as tabelas, mas acho que não seria por aí. Do passado, o usuário teria os relatórios como fonte correta das análises.
+
