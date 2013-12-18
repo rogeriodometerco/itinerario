@@ -2,34 +2,36 @@ package facade;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import modelo.ProgramacaoLinha;
-import dao.ProgramacaoLinhaDao;
+import modelo.PosicaoVeiculo;
+import modelo.ProgramacaoRota;
+import modelo.Veiculo;
+import dao.ProgramacaoRotaDao;
 
 
-@Deprecated 
 @Stateless
-public class ProgramacaoLinhaFacade 
-	extends GenericCrudFacade<ProgramacaoLinha> {
+public class ProgramacaoRotaFacade 
+	extends GenericCrudFacade<ProgramacaoRota> {
 
 	@EJB
-	private ProgramacaoLinhaDao dao;
+	private ProgramacaoRotaDao dao;
 	
 	@Override
-	protected ProgramacaoLinhaDao getDao() {
+	protected ProgramacaoRotaDao getDao() {
 		return dao;
 	}
 	
+	@Deprecated
 	@SuppressWarnings("unchecked")
-	public List<ProgramacaoLinha> recuperarProgramacoes(Date dataInicial, Date dataFinal) throws Exception {
-		// TODO filtro considerando a data.
+	public List<ProgramacaoRota> recuperarProgramacoes(Date dataInicial, Date dataFinal) throws Exception {
+		// TODO filtro .
+		return dao.listar();
 
+		/*
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(dataInicial);
 		Calendar c2 = Calendar.getInstance();
@@ -42,16 +44,23 @@ public class ProgramacaoLinhaFacade
 
 		// Período contém todos os dias da semana.
 		if (diasSemana.size() == 7) {
-			System.out.println("ProgramacaoLinha - listar()");
 			return listar();
 		} else {
-			String sql = "select p from ProgramacaoLinha as p"
+			String sql = "select p from ProgramacaoRota as p"
 					 + " where p.diaSemana in (:diasSemana)";
-			System.out.println("ProgramacaoLinha - filtro");
-			return (List<ProgramacaoLinha>)getEntityManager().createQuery(sql)
+			return (List<ProgramacaoRota>)getEntityManager().createQuery(sql)
 				.setParameter("diasSemana", diasSemana)
 				.getResultList();
 		}
+		*/
 	}
+
+	@SuppressWarnings("unchecked")
+	public List<ProgramacaoRota> recuperarProgramacoes(Date data) throws Exception {
+		// TODO Implementar.
+		return dao.listar();
+
+	}
+	
 
 }

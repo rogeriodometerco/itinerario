@@ -18,7 +18,6 @@ public class ProgramacaoRota {
 	private Long id;
 	@ManyToOne
 	private Rota rota;
-	private Integer diaSemana;
 	@Temporal(value=TemporalType.TIME)
 	private Date horaInicial;
 	@Temporal(value=TemporalType.TIME)
@@ -26,7 +25,7 @@ public class ProgramacaoRota {
 	private Date inicioPeriodo;
 	private Date terminoPeriodo;
 	//@Enumerated(EnumType.ORDINAL)
-	private PeriodoProgramacaoEnum tipoPeriodo;
+	private CalendarioEnum calendario;
 	@ManyToOne
 	private Veiculo veiculo;
 	public Long getId() {
@@ -40,12 +39,6 @@ public class ProgramacaoRota {
 	}
 	public void setRota(Rota rota) {
 		this.rota = rota;
-	}
-	public Integer getDiaSemana() {
-		return diaSemana;
-	}
-	public void setDiaSemana(Integer diaSemana) {
-		this.diaSemana = diaSemana;
 	}
 	public Date getHoraInicial() {
 		return horaInicial;
@@ -71,11 +64,11 @@ public class ProgramacaoRota {
 	public void setTerminoPeriodo(Date terminoPeriodo) {
 		this.terminoPeriodo = terminoPeriodo;
 	}
-	public PeriodoProgramacaoEnum getTipoPeriodo() {
-		return tipoPeriodo;
+	public CalendarioEnum getCalendario() {
+		return calendario;
 	}
-	public void setTipoPeriodo(PeriodoProgramacaoEnum tipoPeriodo) {
-		this.tipoPeriodo = tipoPeriodo;
+	public void setCalendario(CalendarioEnum calendario) {
+		this.calendario = calendario;
 	}
 	public Veiculo getVeiculo() {
 		return veiculo;

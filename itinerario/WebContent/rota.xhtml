@@ -98,7 +98,7 @@
 						</rich:column>
 						<rich:column>
 							<f:facet name="header">Calendário</f:facet>
-							<h:selectOneMenu value="#{programacao.tipoPeriodo}"
+							<h:selectOneMenu value="#{programacao.calendario}"
 								style="width: 60px">
 								<f:selectItems value="#{rotaMb.opcoesTipoPeriodo}" />
 							</h:selectOneMenu>
@@ -163,22 +163,6 @@
 
 					<rich:dataTable id="tabProgramacoes"
 						value="#{rotaMb.rota.programacoes}" var="programacao">
-						<rich:column>
-							<f:facet name="header">Dia</f:facet>
-							<h:inputHidden value="#{programacao.diaSemana}"
-								style="width: 100%" />
-							<h:selectOneMenu value="#{programacao.diaSemana}"
-								style="width: 60px">
-								<f:selectItem itemLabel="Dom" itemValue="1" />
-								<f:selectItem itemLabel="Seg" itemValue="2" />
-								<f:selectItem itemLabel="Ter" itemValue="3" />
-								<f:selectItem itemLabel="Qua" itemValue="4" />
-								<f:selectItem itemLabel="Qui" itemValue="5" />
-								<f:selectItem itemLabel="Sex" itemValue="6" />
-								<f:selectItem itemLabel="Sab" itemValue="7" />
-							</h:selectOneMenu>
-
-						</rich:column>
 						<rich:column>
 							<f:facet name="header">Hr inicial</f:facet>
 							<h:inputText value="#{programacao.horaInicial}"

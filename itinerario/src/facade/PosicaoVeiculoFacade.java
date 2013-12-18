@@ -38,6 +38,7 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 * @param programacao
 	 * @return
 	 */
+	@Deprecated
 	private List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
 			ProgramacaoLinha programacao, Date dataInicial, Date dataFinal) {
 

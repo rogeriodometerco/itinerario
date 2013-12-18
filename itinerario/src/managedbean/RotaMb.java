@@ -12,7 +12,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
-import modelo.PeriodoProgramacaoEnum;
+import modelo.CalendarioEnum;
 import modelo.PontoRota;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -256,7 +256,6 @@ public class RotaMb implements Serializable {
 				copiarAtributos(rota.getProgramacoes().get(
 							rota.getProgramacoes().size()-1), programacao);
 		} else {
-			programacao.setDiaSemana(Calendar.MONDAY);
 			programacao.setVeiculo(new Veiculo());
 			programacao.setRota(rota);
 		}
@@ -264,7 +263,6 @@ public class RotaMb implements Serializable {
 	}
 
 	private void copiarAtributos(ProgramacaoRota de, ProgramacaoRota para) {
-		para.setDiaSemana(de.getDiaSemana() + 1);
 		para.setHoraInicial(de.getHoraInicial());
 		para.setHoraFinal(de.getHoraFinal());
 		para.setRota(de.getRota());
@@ -328,8 +326,8 @@ public class RotaMb implements Serializable {
 
 	public List<SelectItem> getOpcoesTipoPeriodo() {
 		List<SelectItem> opcoes = new ArrayList<SelectItem>();
-		opcoes.add(new SelectItem(PeriodoProgramacaoEnum.CALENDARIO_LETIVO, "Letivo"));
-		opcoes.add(new SelectItem(PeriodoProgramacaoEnum.CALENDARIO_NORMAL, "Normal"));
+		opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
+		opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
 		return opcoes;
 	}
 
