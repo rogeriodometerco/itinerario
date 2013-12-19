@@ -3,8 +3,6 @@ package modelo;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -25,7 +23,8 @@ public class ProgramacaoRota {
 	private Date inicioPeriodo;
 	private Date terminoPeriodo;
 	//@Enumerated(EnumType.ORDINAL)
-	private CalendarioEnum calendario;
+	private CalendarioEnum tipoCalendario;
+	private CalendarioLetivo calendarioLetivo;
 	@ManyToOne
 	private Veiculo veiculo;
 	public Long getId() {
@@ -64,11 +63,17 @@ public class ProgramacaoRota {
 	public void setTerminoPeriodo(Date terminoPeriodo) {
 		this.terminoPeriodo = terminoPeriodo;
 	}
-	public CalendarioEnum getCalendario() {
-		return calendario;
+	public CalendarioEnum getTipoCalendario() {
+		return tipoCalendario;
 	}
-	public void setCalendario(CalendarioEnum calendario) {
-		this.calendario = calendario;
+	public void setTipoCalendario(CalendarioEnum tipoCalendario) {
+		this.tipoCalendario = tipoCalendario;
+	}
+	public CalendarioLetivo getCalendarioLetivo() {
+		return calendarioLetivo;
+	}
+	public void setCalendarioLetivo(CalendarioLetivo calendarioLetivo) {
+		this.calendarioLetivo = calendarioLetivo;
 	}
 	public Veiculo getVeiculo() {
 		return veiculo;

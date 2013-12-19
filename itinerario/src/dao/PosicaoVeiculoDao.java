@@ -14,7 +14,7 @@ public class PosicaoVeiculoDao extends GenericDao<PosicaoVeiculo> {
 
 	@SuppressWarnings("unchecked")
 	public List<PosicaoVeiculo> recuperar(
-			Veiculo veiculo, Date dataInicial, Date dataFinal) {
+			Veiculo veiculo, Date dataHoraInicial, Date dataHoraFinal) {
 		String sql = "select p"
 				+ " from PosicaoVeiculo as p" 
 				+ " where p.veiculo = :veiculo"
@@ -23,8 +23,8 @@ public class PosicaoVeiculoDao extends GenericDao<PosicaoVeiculo> {
 
 		return (List<PosicaoVeiculo>) getEntityManager().createQuery(sql)
 			.setParameter("veiculo", veiculo)
-			.setParameter("dataInicial", dataInicial, TemporalType.TIMESTAMP)
-			.setParameter("dataFinal", dataFinal, TemporalType.TIMESTAMP)
+			.setParameter("dataInicial", dataHoraInicial, TemporalType.TIMESTAMP)
+			.setParameter("dataFinal", dataHoraFinal, TemporalType.TIMESTAMP)
 			.getResultList();
 	}
 }

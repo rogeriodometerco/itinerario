@@ -11,6 +11,7 @@ import javax.persistence.NoResultException;
 
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoLinha;
+import modelo.ProgramacaoRota;
 import modelo.Veiculo;
 import motor.AnalisadorDeViagem;
 import motor.Viagem;
@@ -38,6 +39,7 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 * @param programacao
 	 * @return
 	 */
+	// TODO eliminar este método assim que não estiver mais sendo utilizado.
 	@Deprecated
 	private List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
 			ProgramacaoLinha programacao, Date dataInicial, Date dataFinal) {
@@ -89,11 +91,20 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	}
 
 
+	public List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
+			Veiculo veiculo, Date dataHoraInicial, Date dataHoraFinal) throws Exception {
+
+		return getDao().recuperar(veiculo, dataHoraInicial, dataHoraFinal);
+
+	}
+
 	/**
 	 * 
 	 * @param dataInicial
 	 * @return
 	 */
+	// TODO Eliminar este método assim que não estiver mais sendo utilizado.
+	@Deprecated
 	public List<AnalisadorDeViagem> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal,
 			Veiculo veiculo) throws Exception {
 
