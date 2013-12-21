@@ -13,8 +13,8 @@ import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoLinha;
 import modelo.ProgramacaoRota;
 import modelo.Veiculo;
-import motor.AnalisadorDeViagem;
-import motor.Viagem;
+import motor.AnalisadorDeViagemAntigo;
+import motor.ViagemAntigo;
 import dao.PosicaoVeiculoDao;
 
 @Stateless
@@ -91,7 +91,7 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	}
 
 
-	public List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
+	public List<PosicaoVeiculo> recuperarPosicoes(
 			Veiculo veiculo, Date dataHoraInicial, Date dataHoraFinal) throws Exception {
 
 		return getDao().recuperar(veiculo, dataHoraInicial, dataHoraFinal);
@@ -105,17 +105,17 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 */
 	// TODO Eliminar este método assim que não estiver mais sendo utilizado.
 	@Deprecated
-	public List<AnalisadorDeViagem> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal,
+	public List<AnalisadorDeViagemAntigo> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal,
 			Veiculo veiculo) throws Exception {
 
-		List<AnalisadorDeViagem> listaRetorno = new ArrayList<AnalisadorDeViagem>();
+		List<AnalisadorDeViagemAntigo> listaRetorno = new ArrayList<AnalisadorDeViagemAntigo>();
 		List<PosicaoVeiculo> posicoes = null;
 		for (ProgramacaoLinha programacao: programacaoFacade.recuperarProgramacoes(dataInicial, dataFinal)) {
 			posicoes = this.recuperarPosicoesParaAnalise(programacao, dataInicial, dataFinal);
 			System.out.println(posicoes.size() + "posições recuperadas");
 			// TODO Recuperar entidades relacionadas já na leitura do banco.
 			programacao.getLinha().getPontos().size();
-			AnalisadorDeViagem analisador = new AnalisadorDeViagem(programacao, new Viagem(posicoes));
+			AnalisadorDeViagemAntigo analisador = new AnalisadorDeViagemAntigo(programacao, new ViagemAntigo(posicoes));
 			listaRetorno.add(analisador);
 		}
 		return listaRetorno;

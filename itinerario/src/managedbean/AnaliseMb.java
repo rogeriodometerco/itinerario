@@ -12,8 +12,9 @@ import javax.faces.bean.ViewScoped;
 
 import modelo.PontoLinha;
 import modelo.Veiculo;
-import motor.AnalisadorDeViagem;
+import motor.AnalisadorDeViagemAntigo;
 import motor.AnaliseDePosicao;
+import motor.AnaliseDePosicaoAntigo;
 
 import org.primefaces.event.map.StateChangeEvent;
 import org.primefaces.model.map.DefaultMapModel;
@@ -33,8 +34,8 @@ public class AnaliseMb {
 	private Date dataFinal;
 	private String identificacaoVeiculo;
 	private Veiculo veiculo;
-	private List<AnalisadorDeViagem> analisadores;
-	private AnalisadorDeViagem analisadorNoMapa;
+	private List<AnalisadorDeViagemAntigo> analisadores;
+	private AnalisadorDeViagemAntigo analisadorNoMapa;
 	private String exibicao;
 	private MapModel mapModel;
 	private String centroMapa;
@@ -102,7 +103,7 @@ public class AnaliseMb {
 		}
 	}
 
-	public List<AnalisadorDeViagem> getAnalisadores() {
+	public List<AnalisadorDeViagemAntigo> getAnalisadores() {
 		return analisadores;
 	}
 
@@ -110,7 +111,7 @@ public class AnaliseMb {
 		return total;
 	}
 
-	public AnalisadorDeViagem getAnalisadorNoMapa() {
+	public AnalisadorDeViagemAntigo getAnalisadorNoMapa() {
 		return analisadorNoMapa;
 	}
 
@@ -126,7 +127,7 @@ public class AnaliseMb {
 		return this.exibicao.equals(EXIBICAO_MAPA);
 	}
 
-	public void exibirMapa(AnalisadorDeViagem analisador) {
+	public void exibirMapa(AnalisadorDeViagemAntigo analisador) {
 		this.analisadorNoMapa = analisador;
 		this.exibicao = EXIBICAO_MAPA;
 		this.mapModel = new DefaultMapModel();
@@ -164,7 +165,7 @@ public class AnaliseMb {
                 for (PontoLinha ponto: analisadorNoMapa.getLinha().getPontos()) {
                         criarMarcador(ponto);
                 }*/
-		for (AnaliseDePosicao analise: analisadorNoMapa.getAnalises()) {
+		for (AnaliseDePosicaoAntigo analise: analisadorNoMapa.getAnalises()) {
 			criarMarcador(analise);
 		}
 		System.out.println(mapModel.getMarkers().size() + " marcadores no mapa");
@@ -187,7 +188,7 @@ public class AnaliseMb {
 
 	}
 
-	private void criarMarcador(AnaliseDePosicao analise) {
+	private void criarMarcador(AnaliseDePosicaoAntigo analise) {
 		String icone;
 		String legenda;
 		if (analise.isNoTrajeto()) {
@@ -253,7 +254,7 @@ public class AnaliseMb {
 		for (int i=0; i <= 3; i++) {
 			total[i] = 0;
 		}
-		for (AnalisadorDeViagem analisador: analisadores) {
+		for (AnalisadorDeViagemAntigo analisador: analisadores) {
 			total[0] += analisador.getProgramacao().getLinha().getQuilometragem();
 			total[1] += analisador.getDistanciaNoTrajeto();
 			total[2] += analisador.getDiferencaDeDistancia();

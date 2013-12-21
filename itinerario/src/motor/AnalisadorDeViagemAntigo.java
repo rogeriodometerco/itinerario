@@ -3,21 +3,21 @@ package motor;
 import java.util.ArrayList;
 import java.util.List;
 
+import modelo.Linha;
 import modelo.PosicaoVeiculo;
-import modelo.ProgramacaoRota;
-import modelo.Rota;
+import modelo.ProgramacaoLinha;
 
-public class AnalisadorDeViagem {
-	private ProgramacaoRota programacao;
-	private Trajeto trajeto;
-	private Viagem viagem;
-	private List<AnaliseDePosicao> analises;
+public class AnalisadorDeViagemAntigo {
+	private ProgramacaoLinha programacao;
+	private TrajetoAntigo trajeto;
+	private ViagemAntigo viagem;
+	private List<AnaliseDePosicaoAntigo> analises;
 	private double distanciaNoTrajeto;
 	private double distanciaForaDoTrajeto;
 	
-	public AnalisadorDeViagem(ProgramacaoRota programacao, Viagem viagem) {
+	public AnalisadorDeViagemAntigo(ProgramacaoLinha programacao, ViagemAntigo viagem) {
 		this.programacao = programacao;
-		this.trajeto = new Trajeto(programacao.getRota().getPontos());
+		this.trajeto = new TrajetoAntigo(programacao.getLinha().getPontos());
 		this.viagem = viagem;
 		analisar();
 		calcularDistanciaNoTrajeto();
@@ -25,13 +25,13 @@ public class AnalisadorDeViagem {
 	}
 	
 	private void analisar() {
-		analises = new ArrayList<AnaliseDePosicao>();
+		analises = new ArrayList<AnaliseDePosicaoAntigo>();
 		for (PosicaoVeiculo posicao: viagem.getPosicoes()) {
-			analises.add(new AnaliseDePosicao(this.trajeto, posicao));
+			analises.add(new AnaliseDePosicaoAntigo(this.trajeto, posicao));
 		}
 	}
 	
-	public List<AnaliseDePosicao> getAnalises() {
+	public List<AnaliseDePosicaoAntigo> getAnalises() {
 		return analises;
 	}
 	
@@ -41,9 +41,9 @@ public class AnalisadorDeViagem {
 	
 	private void calcularDistanciaNoTrajeto() {
 		double distancia = 0;
-		AnaliseDePosicao a1 = null;
-		AnaliseDePosicao a2 = null;
-		for (AnaliseDePosicao a: analises) {
+		AnaliseDePosicaoAntigo a1 = null;
+		AnaliseDePosicaoAntigo a2 = null;
+		for (AnaliseDePosicaoAntigo a: analises) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {
@@ -59,9 +59,9 @@ public class AnalisadorDeViagem {
 	
 	private void calcularDistanciaForaDoTrajeto() {
 		double distancia = 0;
-		AnaliseDePosicao a1 = null;
-		AnaliseDePosicao a2 = null;
-		for (AnaliseDePosicao a: analises) {
+		AnaliseDePosicaoAntigo a1 = null;
+		AnaliseDePosicaoAntigo a2 = null;
+		for (AnaliseDePosicaoAntigo a: analises) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {
@@ -74,11 +74,11 @@ public class AnalisadorDeViagem {
 		distanciaForaDoTrajeto = Math.round(distancia * 10) / 10;
 	}
 	
-	public Rota getRota() {
-		return programacao.getRota();
+	public Linha getLinha() {
+		return programacao.getLinha();
 	}
 	
-	public ProgramacaoRota getProgramacao() {
+	public ProgramacaoLinha getProgramacao() {
 		return programacao;
 	}
 	
@@ -91,7 +91,7 @@ public class AnalisadorDeViagem {
 	}
 
 	public double getDiferencaDeDistancia() {
-		return getDistanciaNoTrajeto() - getRota().getQuilometragem();
+		return getDistanciaNoTrajeto() - getLinha().getQuilometragem();
 	}
 }
 	

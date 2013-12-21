@@ -2,23 +2,23 @@ package motor;
 
 import java.util.List;
 
-import modelo.PontoRota;
+import modelo.PontoLinha;
 import modelo.PosicaoVeiculo;
 
-public class Trajeto {
-	private List<PontoRota> pontos;
+public class TrajetoAntigo {
+	private List<PontoLinha> pontos;
 
-	public Trajeto(List<PontoRota> pontos) {
+	public TrajetoAntigo(List<PontoLinha> pontos) {
 		this.pontos = pontos;
 	}
 	
 	/**
-	 * Verifica se um registro de posição está no trajeto de uma rota.
+	 * Verifica se um registro de posição está no trajeto de uma linha.
 	 * @param posicao
 	 * @return
 	 */
 	public boolean estaNoTrajeto(PosicaoVeiculo posicao) {
-		PontoRota p = obterPontoMaisProximo(posicao, 
+		PontoLinha p = obterPontoMaisProximo(posicao, 
 				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
 
 		if (p == null) { 
@@ -36,11 +36,11 @@ public class Trajeto {
 	 * @param raio
 	 * @return
 	 */
-	public PontoRota obterPontoMaisProximo(PosicaoVeiculo posicao, int raio) {
-		PontoRota pontoMaisProximo = null;
+	public PontoLinha obterPontoMaisProximo(PosicaoVeiculo posicao, int raio) {
+		PontoLinha pontoMaisProximo = null;
 		double menorDistancia = Double.POSITIVE_INFINITY;
 		double distancia = 0;
-		for (PontoRota ponto: pontos) {
+		for (PontoLinha ponto: pontos) {
 			distancia = LatLngUtil.calcularDistancia(
 					posicao.getLat(), posicao.getLng(), ponto.getLat(), ponto.getLng()); 
 			if (distancia < menorDistancia && distancia <= raio) {
@@ -64,12 +64,12 @@ public class Trajeto {
 	}
 	
 
-	public PontoRota getPontoDoTrajeto(PosicaoVeiculo posicao) {
+	public PontoLinha getPontoDoTrajeto(PosicaoVeiculo posicao) {
 		return obterPontoMaisProximo(posicao, 
 				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
 	}
 
-	public List<PontoRota> getPontos() {
+	public List<PontoLinha> getPontos() {
 		return pontos;
 	}
 }
