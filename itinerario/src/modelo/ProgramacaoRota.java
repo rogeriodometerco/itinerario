@@ -24,6 +24,7 @@ public class ProgramacaoRota {
 	private Date terminoPeriodo;
 	//@Enumerated(EnumType.ORDINAL)
 	private CalendarioEnum tipoCalendario;
+	@ManyToOne
 	private CalendarioLetivo calendarioLetivo;
 	@ManyToOne
 	private Veiculo veiculo;

@@ -1,5 +1,6 @@
 package facade;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -10,6 +11,9 @@ import javax.ejb.Stateless;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
+import motor.AnaliseDeViagem;
+import motor.AnaliseDePosicao;
+import motor.Viagem;
 
 @Stateless 
 public class AnalisadorFacade {
@@ -50,13 +54,13 @@ public class AnalisadorFacade {
 						.recuperarPosicoes(p.getVeiculo(), c1.getTime(), c2.getTime());
 				
 				//
-				criarAnalises(p.getRota(), posicoes);
+				criarAnalises(p, new Viagem(posicoes));
 				
 			}
 		}
 	}
 	
-	private void criarAnalises(Rota rota, List<PosicaoVeiculo> posicoes) {
-		
+	private void criarAnalises(ProgramacaoRota programacao, Viagem viagem) {
+		AnaliseDeViagem analisador = new AnaliseDeViagem(programacao, viagem);
 	}
 }

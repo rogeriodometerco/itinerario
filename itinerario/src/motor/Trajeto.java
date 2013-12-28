@@ -1,5 +1,6 @@
 package motor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import modelo.PontoRota;
@@ -21,11 +22,6 @@ public class Trajeto {
 		PontoRota p = obterPontoMaisProximo(posicao, 
 				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
 
-		if (p == null) { 
-			//System.out.println("Posição fora do trajeto: " + posicao.getId()); 
-		} else {
-			//System.out.println("Posição no trajeto: " + posicao.getId()); 
-		}
 		return p != null; 
 	}
 
@@ -46,20 +42,8 @@ public class Trajeto {
 			if (distancia < menorDistancia && distancia <= raio) {
 				pontoMaisProximo = ponto;
 				menorDistancia = distancia;
-				/*
-				System.out.println("PONTO MAIS PRÓXIMO DE "
-						+ posicao.getId() + ": "
-						+ pontoMaisProximo.getId() 
-						+ " A " + menorDistancia + " METROS");
-				*/
 			}
 		}
-		/*		
-		if (posicao.getId() == 1631) {
-			System.out.println("PONTO MAIS PRÓXIMO DE 1631: " + pontoMaisProximo.getId() 
-					+ " A " + menorDistancia + " METROS");
-		}
-		 */
 		return pontoMaisProximo;
 	}
 	
@@ -71,5 +55,22 @@ public class Trajeto {
 
 	public List<PontoRota> getPontos() {
 		return pontos;
+	}
+	
+	/**
+	 * Retorna os pontos do trajeto onde o veículo deve parar.
+	 * @return
+	 */
+	public List<PontoRota> getPontosDeParada() {
+		List<PontoRota> lista = new ArrayList<PontoRota>();
+		for (PontoRota p: pontos) {
+			if (p.getParada()) {
+				lista.add(p);
+			}
+		}
+		if (lista.size() == 0) {
+			lista = null;
+		}
+		return lista;
 	}
 }

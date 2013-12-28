@@ -3,19 +3,22 @@ package motor;
 import java.util.ArrayList;
 import java.util.List;
 
+import modelo.PontoRota;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
 
-public class AnalisadorDeViagem {
+public class AnaliseDeViagem {
 	private ProgramacaoRota programacao;
 	private Trajeto trajeto;
 	private Viagem viagem;
-	private List<AnaliseDePosicao> analises;
+	private List<AnaliseDePosicao> analisesDePosicao;
+	private List<AnaliseDeParada> analisesDeParada;
+	private List<PontoRota> pontosDoTrajetoVisitados;
 	private double distanciaNoTrajeto;
 	private double distanciaForaDoTrajeto;
 	
-	public AnalisadorDeViagem(ProgramacaoRota programacao, Viagem viagem) {
+	public AnaliseDeViagem(ProgramacaoRota programacao, Viagem viagem) {
 		this.programacao = programacao;
 		this.trajeto = new Trajeto(programacao.getRota().getPontos());
 		this.viagem = viagem;
@@ -25,14 +28,25 @@ public class AnalisadorDeViagem {
 	}
 	
 	private void analisar() {
-		analises = new ArrayList<AnaliseDePosicao>();
+		// Análises de posição.
+		analisesDePosicao = new ArrayList<AnaliseDePosicao>();
 		for (PosicaoVeiculo posicao: viagem.getPosicoes()) {
-			analises.add(new AnaliseDePosicao(this.trajeto, posicao));
+			analisesDePosicao.add(new AnaliseDePosicao(this.trajeto, posicao));
 		}
+
+		// Análises de parada.
+		analisesDeParada = new ArrayList<AnaliseDeParada>();
+		for (PontoRota ponto: trajeto.getPontosDeParada()) {
+			analisesDeParada.add(new AnaliseDeParada(this.viagem, ponto));
+		}
+}
+	
+	public List<AnaliseDePosicao> getAnalisesDePosicao() {
+		return analisesDePosicao;
 	}
 	
-	public List<AnaliseDePosicao> getAnalises() {
-		return analises;
+	public List<AnaliseDeParada> getAnalisesDeParada() {
+		return analisesDeParada;
 	}
 	
 	public double getDistanciaTotalPercorrida() {
@@ -43,7 +57,7 @@ public class AnalisadorDeViagem {
 		double distancia = 0;
 		AnaliseDePosicao a1 = null;
 		AnaliseDePosicao a2 = null;
-		for (AnaliseDePosicao a: analises) {
+		for (AnaliseDePosicao a: analisesDePosicao) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {
@@ -61,7 +75,7 @@ public class AnalisadorDeViagem {
 		double distancia = 0;
 		AnaliseDePosicao a1 = null;
 		AnaliseDePosicao a2 = null;
-		for (AnaliseDePosicao a: analises) {
+		for (AnaliseDePosicao a: analisesDePosicao) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {

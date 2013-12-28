@@ -2,6 +2,7 @@ package motor;
 
 import java.util.List;
 
+import modelo.PontoRota;
 import modelo.PosicaoVeiculo;
  
 public class Viagem {
@@ -14,6 +15,23 @@ public class Viagem {
 	public List<PosicaoVeiculo> getPosicoes() {
 		return posicoes;
 	}
+	
+	public boolean parouEm(PontoRota ponto) {
+		boolean parou = false;
+		double distancia = 0;
+		for (PosicaoVeiculo p: posicoes) {
+			if (p.getVelocidade() == 0) { // veículo parado
+				distancia = LatLngUtil.calcularDistancia(
+						p.getLat(), p.getLng(), ponto.getLat(), ponto.getLng()); 
+				if (distancia <= LatLngUtil.DISTANCIA_LIMITE_DO_LOCAL_DE_PARADA) {
+					parou = true;
+					break;
+				}
+			}
+		}
+		return parou;
+	}
+		
 	
 	public double getDistanciaPercorrida() {
 		double distancia = 0;

@@ -4,6 +4,7 @@ public class LatLngUtil {
 
 	public static final int EQUIVALENCIA_GRAU_EM_METRO = 111133;
 	public static final int DISTANCIA_LIMITE_DENTRO_DO_TRAJETO = 100;
+	public static final int DISTANCIA_LIMITE_DO_LOCAL_DE_PARADA = 30;
 	
 	/**
 	 * Calcula a distância entre dois pontos.
