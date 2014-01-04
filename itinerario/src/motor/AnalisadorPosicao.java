@@ -2,12 +2,12 @@ package motor;
 
 import modelo.PosicaoVeiculo;
 
-public class AnaliseDePosicao {
+public class AnalisadorPosicao {
 	private Trajeto trajeto;
 	private PosicaoVeiculo posicaoVeiculo;
 	private boolean noTrajeto;
 	
-	public AnaliseDePosicao(Trajeto trajeto, PosicaoVeiculo posicao) {
+	public AnalisadorPosicao(Trajeto trajeto, PosicaoVeiculo posicao) {
 		this.trajeto = trajeto;
 		this.posicaoVeiculo = posicao;
 		this.noTrajeto = trajeto.estaNoTrajeto(posicao);

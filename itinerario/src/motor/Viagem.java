@@ -1,5 +1,7 @@
 package motor;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import modelo.PontoRota;
@@ -47,10 +49,17 @@ public class Viagem {
 					p1 = p2;
 					p2 = p;
 				}
-				distancia += MathUtil.calcularDistancia(p1, p2);
+				distancia += MathUtil.calcularDistanciaEmKm(p1, p2);
 			}
 		}
 		return distancia;
+	}
+	
+	public Date getDataReferencia() {
+		Calendar c = Calendar.getInstance();
+		c.setTime(this.posicoes.get(0).getDataHora());
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		return c.getTime();
 	}
 	
 }

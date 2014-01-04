@@ -29,7 +29,7 @@ public class ViagemAntigo {
 					p1 = p2;
 					p2 = p;
 				}
-				distancia += MathUtil.calcularDistancia(p1, p2);
+				distancia += MathUtil.calcularDistanciaEmKm(p1, p2);
 			}
 		}
 		return distancia;

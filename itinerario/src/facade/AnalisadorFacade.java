@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
-import motor.AnaliseDeViagem;
-import motor.AnaliseDePosicao;
+import motor.AnalisadorViagem;
+import motor.AnalisadorPosicao;
 import motor.Viagem;
 
 @Stateless 
@@ -61,6 +61,6 @@ public class AnalisadorFacade {
 	}
 	
 	private void criarAnalises(ProgramacaoRota programacao, Viagem viagem) {
-		AnaliseDeViagem analisador = new AnaliseDeViagem(programacao, viagem);
+		AnalisadorViagem analisador = new AnalisadorViagem(programacao, viagem);
 	}
 }

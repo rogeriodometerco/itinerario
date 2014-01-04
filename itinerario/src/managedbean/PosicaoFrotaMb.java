@@ -18,7 +18,7 @@ import util.JsfUtil;
 import facade.PosicaoVeiculoFacade;
 
 import modelo.PosicaoVeiculo;
-import motor.AnaliseDePosicao;
+import motor.AnalisadorPosicao;
 
 @ManagedBean
 @ViewScoped

@@ -2,12 +2,12 @@ package motor;
 
 import modelo.PontoRota;
 
-public class AnaliseDeParada {
+public class AnalisadorParada {
 	private Viagem viagem;
 	private PontoRota pontoParada;
 	private boolean parouNoPonto;
 	
-	public AnaliseDeParada(Viagem viagem, PontoRota pontoParada) {
+	public AnalisadorParada(Viagem viagem, PontoRota pontoParada) {
 		this.viagem = viagem;
 		this.pontoParada = pontoParada;
 		this.parouNoPonto = viagem.parouEm(pontoParada);

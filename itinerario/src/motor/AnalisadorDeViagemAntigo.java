@@ -48,7 +48,7 @@ public class AnalisadorDeViagemAntigo {
 			a2 = a;
 			if (a1 != null) {
 				if (a2.isNoTrajeto()) {
-					distancia += MathUtil.calcularDistancia(
+					distancia += MathUtil.calcularDistanciaEmKm(
 							a1.getPosicaoVeiculo(), 
 							a2.getPosicaoVeiculo());
 				}
@@ -67,7 +67,7 @@ public class AnalisadorDeViagemAntigo {
 			if (a1 != null) {
 				if (!a2.isNoTrajeto()) {
 					System.out.println("Posição fora do trajeto");
-					distancia += MathUtil.calcularDistancia(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
+					distancia += MathUtil.calcularDistanciaEmKm(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
 				}
 			}
 		}

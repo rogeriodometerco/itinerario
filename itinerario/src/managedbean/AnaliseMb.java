@@ -13,7 +13,7 @@ import javax.faces.bean.ViewScoped;
 import modelo.PontoLinha;
 import modelo.Veiculo;
 import motor.AnalisadorDeViagemAntigo;
-import motor.AnaliseDePosicao;
+import motor.AnalisadorPosicao;
 import motor.AnaliseDePosicaoAntigo;
 
 import org.primefaces.event.map.StateChangeEvent;
