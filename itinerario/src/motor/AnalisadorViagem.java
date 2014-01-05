@@ -4,63 +4,42 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import modelo.AnaliseParada;
+import modelo.AnalisePosicao;
 import modelo.AnaliseViagem;
 import modelo.PontoRota;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
-import modelo.Rota;
 
 public class AnalisadorViagem {
+	private Date data;
 	private ProgramacaoRota programacao;
 	private Trajeto trajeto;
 	private Viagem viagem;
-	private List<AnalisadorPosicao> analisesDePosicao;
-	private List<AnalisadorParada> analisadoresDeParada;
-	//private List<PontoRota> pontosDoTrajetoVisitados;
-	//private double distanciaNoTrajeto;
-	//private double distanciaForaDoTrajeto;
-	
-	public AnalisadorViagem(ProgramacaoRota programacao, Viagem viagem) {
+	private AnaliseViagem analiseViagem;
+	private List<AnalisadorPosicao> analisadoresPosicao;
+	private List<AnalisadorParada> analisadoresParada;
+
+	public AnalisadorViagem(Date data, ProgramacaoRota programacao, Viagem viagem) {
+		this.data = data;
 		this.programacao = programacao;
 		this.trajeto = new Trajeto(programacao.getRota().getPontos());
 		this.viagem = viagem;
-		analisar();
-		//calcularDistanciaNoTrajeto();
-		//calcularDistanciaForaDoTrajeto();
 	}
-	
-	private void analisar() {
-		// Análises de posição.
-		analisesDePosicao = new ArrayList<AnalisadorPosicao>();
-		for (PosicaoVeiculo posicao: viagem.getPosicoes()) {
-			analisesDePosicao.add(new AnalisadorPosicao(this.trajeto, posicao));
-		}
 
-		// Análises de parada.
-		analisadoresDeParada = new ArrayList<AnalisadorParada>();
-		for (PontoRota ponto: trajeto.getPontosDeParada()) {
-			analisadoresDeParada.add(new AnalisadorParada(this.viagem, ponto));
-		}
-}
-	
 	public List<AnalisadorPosicao> getAnalisesDePosicao() {
-		return analisesDePosicao;
+		return analisadoresPosicao;
 	}
-	
+
 	public List<AnalisadorParada> getAnalisadoresDeParada() {
-		return analisadoresDeParada;
+		return analisadoresParada;
 	}
-	/*
-	public double getDistanciaTotalPercorrida() {
-		return viagem.getDistanciaPercorrida();
-	}
-	*/
-	
-	private double calcularDistanciaNoTrajeto() {
+
+	private double calcularKmNoTrajeto() {
 		double distancia = 0;
 		AnalisadorPosicao a1 = null;
 		AnalisadorPosicao a2 = null;
-		for (AnalisadorPosicao a: analisesDePosicao) {
+		for (AnalisadorPosicao a: analisadoresPosicao) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {
@@ -71,78 +50,92 @@ public class AnalisadorViagem {
 				}
 			}
 		}
-		//distanciaNoTrajeto = Math.round(distancia * 10) / 10;
-		return Math.round(distancia * 10) / 10;
+		// Arredonda para 2 casas decimais.
+		//return Math.round(distancia * 10) / 10;
+		return distancia;
 	}
-	
-	private double calcularDistanciaForaDoTrajeto() {
+
+	private double calcularKmForaDoTrajeto() {
 		double distancia = 0;
 		AnalisadorPosicao a1 = null;
 		AnalisadorPosicao a2 = null;
-		for (AnalisadorPosicao a: analisesDePosicao) {
+		for (AnalisadorPosicao a: analisadoresPosicao) {
 			a1 = a2;
 			a2 = a;
 			if (a1 != null) {
 				if (!a2.isNoTrajeto()) {
-					System.out.println("Posição fora do trajeto");
 					distancia += MathUtil.calcularDistanciaEmKm(a1.getPosicaoVeiculo(), a2.getPosicaoVeiculo());
+					System.out.println("AnalidadorViagem - fora do trajeto. ID: " + a2.getPosicaoVeiculo().getId() + " distancia: " + distancia);
+					
 				}
 			}
 		}
-		//distanciaForaDoTrajeto = Math.round(distancia * 10) / 10;
-		return Math.round(distancia * 10) / 10;
-	}
-	
-	public Rota getRota() {
-		return programacao.getRota();
-	}
-	
-	public ProgramacaoRota getProgramacao() {
-		return programacao;
-	}
-	/*
-	public double getDistanciaNoTrajeto() {
-		return distanciaNoTrajeto;
-	}
-	
-	public double getDistanciaForaDoTrajeto() {
-		return distanciaForaDoTrajeto;
+		// Arredonda para 2 casas decimais.
+		//return Math.round(distancia * 10) / 10;
+		return distancia;
 	}
 
-	public double getDiferencaDeDistancia() {
-		return getDistanciaNoTrajeto() - getRota().getQuilometragem();
-	}
-*/	
-	public AnaliseViagem getAnaliseViagem() {
-		AnaliseViagem analise = new AnaliseViagem();
-		 //TODO Inicialização dos atributos.
-		analise.setDataAnalise(new Date());
-		analise.setDataViagem(viagem.getDataReferencia());
-		analise.setProgramacao(programacao);
-		analise.setKmCumprida(1.0);
-		analise.setKmForaTrajeto(calcularDistanciaForaDoTrajeto());
-		analise.setKmNoTrajeto(calcularDistanciaNoTrajeto());
-		analise.setKmPago(1.0);
-		analise.setKmPrevisto(programacao.getRota().getQuilometragem());
-		analise.setKmRealizado(viagem.getDistanciaPercorrida()/1000);
-		analise.setValorKm(1.0);
-		analise.setParadasCumpridas(calcularParadasCumpridas());
-		analise.setParadasPrevistas(calcularParadasPrevistas());
-		return analise;
-	}
-	
 	private int calcularParadasCumpridas() {
 		int paradasCumpridas = 0;
-		for (AnalisadorParada analisador: this.analisadoresDeParada) {
+		for (AnalisadorParada analisador: this.analisadoresParada) {
 			if (analisador.getParouNoPonto()) {
 				paradasCumpridas++;
 			}
 		}
 		return paradasCumpridas;
 	}
-	
+
 	private int calcularParadasPrevistas() {
-		return this.analisadoresDeParada.size();
+		return this.analisadoresParada.size();
 	}
+
+	private void criarAnalises() {
+		// Análises de posição.
+		analisadoresPosicao = new ArrayList<AnalisadorPosicao>();
+		for (PosicaoVeiculo posicao: viagem.getPosicoes()) {
+			analisadoresPosicao.add(new AnalisadorPosicao(this.trajeto, posicao));
+		}
+
+		// Análises de parada.
+		analisadoresParada = new ArrayList<AnalisadorParada>();
+		for (PontoRota ponto: trajeto.getPontosDeParada()) {
+			analisadoresParada.add(new AnalisadorParada(this.viagem, ponto));
+		}
+	}
+
+	public AnaliseViagem getAnaliseViagem() {
+		if (analiseViagem == null) {
+			criarAnalises();
+			analiseViagem = new AnaliseViagem();
+			//TODO Checar inicialização dos atributos.
+			analiseViagem.setDataAnalise(new Date());
+			analiseViagem.setDataViagem(data);
+			analiseViagem.setProgramacao(programacao);
+			analiseViagem.setKmForaTrajeto(calcularKmForaDoTrajeto());
+			analiseViagem.setKmNoTrajeto(calcularKmNoTrajeto());
+			analiseViagem.setKmPago(null);
+			analiseViagem.setKmPrevisto(programacao.getRota().getQuilometragem());
+			analiseViagem.setKmRealizado(viagem.getDistanciaPercorrida()/1000);
+			analiseViagem.setValorKm(1.0);
+			analiseViagem.setParadasCumpridas(calcularParadasCumpridas());
+			analiseViagem.setParadasPrevistas(calcularParadasPrevistas());
+			// Seta análises de posição.
+			analiseViagem.setAnalisesPosicao(new ArrayList<AnalisePosicao>());
+			for (AnalisadorPosicao analisadorPosicao: analisadoresPosicao) {
+				analiseViagem.getAnalisesPosicao().add(
+						new AnalisePosicao(analiseViagem, analisadorPosicao.getPosicaoVeiculo(), 
+								analisadorPosicao.isNoTrajeto()));
+			}
+			// Seta análises de parada.
+			analiseViagem.setAnalisesParada(new ArrayList<AnaliseParada>());
+			for (AnalisadorParada analisadorParada: analisadoresParada) {
+				analiseViagem.getAnalisesParada().add(
+						new AnaliseParada(analiseViagem, analisadorParada.getPontoParada(), 
+								analisadorParada.getParouNoPonto()));
+			}
+		}
+		return analiseViagem;
+	}
+
 }
-	
+

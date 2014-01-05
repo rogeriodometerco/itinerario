@@ -17,6 +17,18 @@ public class AnaliseParada {
 	@ManyToOne
 	private PontoRota pontoParada;
 	private Boolean cumprida;
+	
+	public AnaliseParada() {
+		
+	}
+	
+	public AnaliseParada(AnaliseViagem analiseViagem, PontoRota pontoParada, boolean cumprida) {
+		this.analiseViagem = analiseViagem;
+		this.pontoParada = pontoParada;
+		this.cumprida = cumprida;
+	}
+
+	
 	public Long getId() {
 		return id;
 	}

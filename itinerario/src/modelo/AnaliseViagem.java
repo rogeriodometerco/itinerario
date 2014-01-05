@@ -1,11 +1,14 @@
 package modelo;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class AnaliseViagem {
@@ -16,11 +19,14 @@ public class AnaliseViagem {
 	private Date dataAnalise;
 	@ManyToOne
 	private ProgramacaoRota programacao;
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="analiseViagem", orphanRemoval=true)
+	private List<AnalisePosicao> analisesPosicao;
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="analiseViagem", orphanRemoval=true)
+	private List<AnaliseParada> analisesParada;
 	private Double kmPrevisto;
 	private Double kmRealizado;
 	private Double kmNoTrajeto;
 	private Double kmForaTrajeto;
-	private Double kmCumprida;
 	private Integer paradasPrevistas;
 	private Integer paradasCumpridas;
 	private Double kmPago;
@@ -50,6 +56,18 @@ public class AnaliseViagem {
 	public void setProgramacao(ProgramacaoRota programacao) {
 		this.programacao = programacao;
 	}
+	public List<AnalisePosicao> getAnalisesPosicao() {
+		return analisesPosicao;
+	}
+	public void setAnalisesPosicao(List<AnalisePosicao> analisesPosicao) {
+		this.analisesPosicao = analisesPosicao;
+	}
+	public List<AnaliseParada> getAnalisesParada() {
+		return analisesParada;
+	}
+	public void setAnalisesParada(List<AnaliseParada> analisesParada) {
+		this.analisesParada = analisesParada;
+	}
 	public Double getKmPrevisto() {
 		return kmPrevisto;
 	}
@@ -73,12 +91,6 @@ public class AnaliseViagem {
 	}
 	public void setKmForaTrajeto(Double kmForaTrajeto) {
 		this.kmForaTrajeto = kmForaTrajeto;
-	}
-	public Double getKmCumprida() {
-		return kmCumprida;
-	}
-	public void setKmCumprida(Double kmCumprida) {
-		this.kmCumprida = kmCumprida;
 	}
 	public Integer getParadasPrevistas() {
 		return paradasPrevistas;

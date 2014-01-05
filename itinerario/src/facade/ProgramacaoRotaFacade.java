@@ -34,7 +34,7 @@ public class ProgramacaoRotaFacade
 	@SuppressWarnings("unchecked")
 	public List<ProgramacaoRota> recuperarProgramacoes(Date data) throws Exception {
 		String sql = "select p from ProgramacaoRota as p"
-				 + " where p.inicioperiodo <= :data and p.terminoPeriodo >= :data";
+				 + " where p.inicioPeriodo <= :data and p.terminoPeriodo >= :data";
 		List<ProgramacaoRota> lista = (List<ProgramacaoRota>)getEntityManager()
 				.createQuery(sql)
 				.setParameter("data", data, TemporalType.TIMESTAMP)

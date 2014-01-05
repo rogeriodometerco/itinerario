@@ -22,6 +22,14 @@ public class Trajeto {
 		PontoRota p = obterPontoMaisProximo(posicao, 
 				LatLngUtil.DISTANCIA_LIMITE_DENTRO_DO_TRAJETO);
 
+		if (posicao.getVeiculo().getId() == 9104) {
+			if (p == null) {
+				System.out.println("Trajeto.estaNoTrajeto() - Posição fora do trajeto. ID: " + posicao.getId());
+			} else {
+				//System.out.println("Trajeto.estaNoTrajeto() - Posição no trajeto. ID: " + posicao.getId() +  ". Ponto ID: " + p.getId());
+				
+			}
+		}
 		return p != null; 
 	}
 

@@ -6,6 +6,7 @@ import javax.faces.bean.RequestScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
 
 import util.JsfUtil;
 
@@ -20,10 +21,11 @@ public class VeiculoConverter implements Converter {
 	private VeiculoFacade facade;
 	
 
+	@Override
 	public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {
 		if (!submittedValue.trim().equals("")  && submittedValue != null) {
 			try {
-				return facade.recuperar(Long.parseLong(submittedValue));
+				return facade.recuperarPorIdentificacao(submittedValue);
 			}
 			catch (Exception e) {
 				//TODO Como tratar exceção
@@ -33,12 +35,13 @@ public class VeiculoConverter implements Converter {
 		return null;
 	}
 
+	@Override
 	public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
 		if (value == null || value.equals("")) {
 			return null;
 		}
 		else {
-			return String.valueOf(((Veiculo)value).getId());
+			return String.valueOf(((Veiculo)value).getIdentificacao());
 		}
 	}
 }

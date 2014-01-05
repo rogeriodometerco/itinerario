@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import modelo.AnaliseViagem;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -29,7 +30,8 @@ public class AnalisadorFacade {
 	 * a programação de suas rotas. 
 	 * @param data
 	 */
-	public void gerarAnalises(Date data) throws Exception {
+	public List<AnaliseViagem> criarAnalises(Date data) throws Exception {
+		List<AnaliseViagem> analises = new ArrayList<AnaliseViagem>();
 		List<ProgramacaoRota> programacoes = programacaoFacade.recuperarProgramacoes(data);
 		for (ProgramacaoRota p: programacoes) {
 			if (p.getVeiculo() != null) {
@@ -54,13 +56,17 @@ public class AnalisadorFacade {
 						.recuperarPosicoes(p.getVeiculo(), c1.getTime(), c2.getTime());
 				
 				//
-				criarAnalises(p, new Viagem(posicoes));
-				
+				analises.add(criarAnalise(data, p, new Viagem(posicoes)));
 			}
 		}
+		if (analises.size() == 0) {
+			return null;
+		}
+		return analises;
 	}
 	
-	private void criarAnalises(ProgramacaoRota programacao, Viagem viagem) {
-		AnalisadorViagem analisador = new AnalisadorViagem(programacao, viagem);
+	private AnaliseViagem criarAnalise(Date data, ProgramacaoRota programacao, Viagem viagem) {
+		AnalisadorViagem analisador = new AnalisadorViagem(data, programacao, viagem);
+		return analisador.getAnaliseViagem();
 	}
 }
