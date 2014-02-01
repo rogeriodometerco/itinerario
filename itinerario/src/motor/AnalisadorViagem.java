@@ -51,8 +51,7 @@ public class AnalisadorViagem {
 			}
 		}
 		// Arredonda para 2 casas decimais.
-		//return Math.round(distancia * 10) / 10;
-		return distancia;
+		return Math.round(distancia * 10) / 10;
 	}
 
 	private double calcularKmForaDoTrajeto() {
@@ -71,8 +70,7 @@ public class AnalisadorViagem {
 			}
 		}
 		// Arredonda para 2 casas decimais.
-		//return Math.round(distancia * 10) / 10;
-		return distancia;
+		return Math.round(distancia * 10) / 10;
 	}
 
 	private int calcularParadasCumpridas() {
@@ -115,10 +113,14 @@ public class AnalisadorViagem {
 			analiseViagem.setKmNoTrajeto(calcularKmNoTrajeto());
 			analiseViagem.setKmPago(null);
 			analiseViagem.setKmPrevisto(programacao.getRota().getQuilometragem());
-			analiseViagem.setKmRealizado(viagem.getDistanciaPercorrida()/1000);
+			// deixa 2 casas decimais.
+			double kmRealizado = Math.round(viagem.getDistanciaPercorrida() * 10) / 10;
+			analiseViagem.setKmRealizado(kmRealizado); 
 			analiseViagem.setValorKm(1.0);
 			analiseViagem.setParadasCumpridas(calcularParadasCumpridas());
 			analiseViagem.setParadasPrevistas(calcularParadasPrevistas());
+			analiseViagem.setVeiculo(programacao.getVeiculo());
+			analiseViagem.setRota(programacao.getRota());
 			// Seta análises de posição.
 			analiseViagem.setAnalisesPosicao(new ArrayList<AnalisePosicao>());
 			for (AnalisadorPosicao analisadorPosicao: analisadoresPosicao) {

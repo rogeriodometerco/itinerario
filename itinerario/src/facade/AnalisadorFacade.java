@@ -11,9 +11,7 @@ import javax.ejb.Stateless;
 import modelo.AnaliseViagem;
 import modelo.PosicaoVeiculo;
 import modelo.ProgramacaoRota;
-import modelo.Rota;
 import motor.AnalisadorViagem;
-import motor.AnalisadorPosicao;
 import motor.Viagem;
 
 @Stateless 
@@ -24,15 +22,18 @@ public class AnalisadorFacade {
 	private PosicaoVeiculoFacade posicaoFacade;
 	@EJB
 	private PontoRotaFacade pontoFacade;
-
+	@EJB
+	private AnaliseViagemFacade analiseViagemFacade;
+	
 	/**
 	 * Gera as análises de movimentação de veículo numa data conforme 
 	 * a programação de suas rotas. 
 	 * @param data
 	 */
-	public List<AnaliseViagem> criarAnalises(Date data) throws Exception {
+	public List<AnaliseViagem> analisarViagens(Date data) throws Exception {
 		List<AnaliseViagem> analises = new ArrayList<AnaliseViagem>();
 		List<ProgramacaoRota> programacoes = programacaoFacade.recuperarProgramacoes(data);
+		System.out.println("analisadorFacade recuperou " + programacoes.size());
 		for (ProgramacaoRota p: programacoes) {
 			if (p.getVeiculo() != null) {
 				// Monta os parâmetros para recuperar as posições do veículo.
@@ -55,18 +56,24 @@ public class AnalisadorFacade {
 				List<PosicaoVeiculo> posicoes = posicaoFacade
 						.recuperarPosicoes(p.getVeiculo(), c1.getTime(), c2.getTime());
 				
-				//
-				analises.add(criarAnalise(data, p, new Viagem(posicoes)));
+				// Recupera a análise de viagem se já existir.
+				AnaliseViagem analiseViagem = analiseViagemFacade.recuperarAnaliseViagem(p, data);
+				// Só faz a análise se ela não está associada a um fechamento.
+				if (analiseViagem == null || analiseViagem.getFechamentoRota() == null) {
+					// Se a análise existe, remove e cria novamente.
+					if (analiseViagem != null) {
+						analiseViagemFacade.excluir(analiseViagem);
+					}
+					analises.add(criarAnalise(data, p, new Viagem(posicoes)));
+				}
 			}
-		}
-		if (analises.size() == 0) {
-			return null;
 		}
 		return analises;
 	}
 	
-	private AnaliseViagem criarAnalise(Date data, ProgramacaoRota programacao, Viagem viagem) {
+	private AnaliseViagem criarAnalise(Date data, ProgramacaoRota programacao, Viagem viagem) 
+			throws Exception {
 		AnalisadorViagem analisador = new AnalisadorViagem(data, programacao, viagem);
-		return analisador.getAnaliseViagem();
+		return analiseViagemFacade.salvar(analisador.getAnaliseViagem());
 	}
 }

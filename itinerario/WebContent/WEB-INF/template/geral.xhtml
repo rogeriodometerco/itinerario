@@ -1,32 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:rich="http://richfaces.org/rich"
 	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
-	<ui:insert name="headComplementar" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </h:head>
 
-<h:body style="font-size: 11px;">
+<h:body>
 	<h:form>
-		<h2>Sistema Tal</h2>
-		<p:commandLink action="analiseDeViagem"
-			value="Análise de viagem" />
-		|| <p:commandLink action="analiseDeViagemPrimeFaces"
-			value="Análise de viagem (Primefaces)" />
-		|| <p:commandLink action="listaLinha" value="Cadastrar linha" />
-		|| <p:commandLink action="veiculo" value="Cadastrar veículo" />
-		|| <p:commandLink action="cargaDados" value="Carregar dados do rastreador" />
-	</h:form>
-	<br />
+		<h:outputStylesheet name="geral.css" library="css" />
 
-	<p:panel>
-		<ui:insert name="mensagens" />
-		<ui:insert name="conteudo" />
-	</p:panel>
+		<div style="float: left">
+			<a href='http://prefeituradepitanga.blogspot.com.br/'
+				style='display: inline; margin-top: 20px; margin-left: 30px'> <img
+				alt='Prefeitura Municipal de Pitanga' id='Header1_headerimg'
+				src='http://2.bp.blogspot.com/-Cq3nXYusAuc/UiZlQfNcSZI/AAAAAAAAFh4/BZHEQjEkSDY/s1600/logotipo.png'
+				style='display: inline' width='250px;  ' />
+			</a>
+		</div>
+		<div style="float: left;">
+			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
+		</div>
+
+		<div style="clear: both; background-color: #222; height: 3px"></div>
+		<p:menubar>
+			<p:menuitem value="Analisar viagens" action="analiseViagem" />
+			<p:menuitem value="Cadastrar rota" action="rota" />
+		</p:menubar>
+		<p/>
+		<p:panel>
+			<ui:insert name="corpo" />
+			teste geral.xhtml
+		</p:panel>
+	</h:form>
 </h:body>
 
 </html>

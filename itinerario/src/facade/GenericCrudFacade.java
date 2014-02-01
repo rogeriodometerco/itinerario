@@ -1,5 +1,6 @@
 package facade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -33,6 +34,14 @@ public abstract class GenericCrudFacade<T> {
 	
 	public List<T> listar() throws Exception {
 		return getDao().listar();
+	}
+
+	public List<T> salvar(List<T> lista) throws Exception {
+		List<T> retorno = new ArrayList<T>();
+		for (T entidade: lista) {
+			retorno.add(getDao().salvar(entidade));
+		}
+		return retorno;
 	}
 
 	protected abstract GenericDao<T> getDao();

@@ -25,12 +25,31 @@ public class VeiculoMb implements Serializable {
 	private String estadoView;
 	@EJB
 	private VeiculoFacade facade;
+	
+	//@ManagedProperty(value="#{rotaMb}")
+	//private RotaMb rotaMb;
 
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
 	}
+	
+/*	public RotaMb getRotaMb() {
+		return rotaMb;
+	}
+	
+	public void setRotaMb(RotaMb r) {
+		this.rotaMb = r;
+	}
 
+	public String teste() {
+		JsfUtil.addMsgSucesso("A rota selecionada é: " + rotaMb.getRota().getCodigo());
+		JsfUtil.addMsgSucesso("Quantidade de rotas listadas: " + rotaMb.getLista().size());
+		rotaMb.getLista().get(0).setNome("rogerio fernando dometerco");
+		//return "veiculo";
+		return null;
+	}
+	*/
 	public Veiculo getveiculo() {
 		return veiculo;
 	}

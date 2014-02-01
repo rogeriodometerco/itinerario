@@ -23,6 +23,12 @@ public class AnaliseViagem {
 	private List<AnalisePosicao> analisesPosicao;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="analiseViagem", orphanRemoval=true)
 	private List<AnaliseParada> analisesParada;
+	@ManyToOne
+	private FechamentoRota fechamentoRota;
+	@ManyToOne
+	private Veiculo veiculo;
+	@ManyToOne
+	private Rota rota;
 	private Double kmPrevisto;
 	private Double kmRealizado;
 	private Double kmNoTrajeto;
@@ -31,6 +37,7 @@ public class AnaliseViagem {
 	private Integer paradasCumpridas;
 	private Double kmPago;
 	private Double valorKm;
+	private Double valorPago;
 	private String observacao;
 	public Long getId() {
 		return id;
@@ -67,6 +74,24 @@ public class AnaliseViagem {
 	}
 	public void setAnalisesParada(List<AnaliseParada> analisesParada) {
 		this.analisesParada = analisesParada;
+	}
+	public FechamentoRota getFechamentoRota() {
+		return fechamentoRota;
+	}
+	public void setFechamentoRota(FechamentoRota fechamentoRota) {
+		this.fechamentoRota = fechamentoRota;
+	}
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
+	public void setVeiculo(Veiculo veiculo) {
+		this.veiculo = veiculo;
+	}
+	public Rota getRota() {
+		return rota;
+	}
+	public void setRota(Rota rota) {
+		this.rota = rota;
 	}
 	public Double getKmPrevisto() {
 		return kmPrevisto;
@@ -115,6 +140,12 @@ public class AnaliseViagem {
 	}
 	public void setValorKm(Double valorKm) {
 		this.valorKm = valorKm;
+	}
+	public Double getValorPago() {
+		return valorPago;
+	}
+	public void setValorPago(Double valorPago) {
+		this.valorPago = valorPago;
 	}
 	public String getObservacao() {
 		return observacao;

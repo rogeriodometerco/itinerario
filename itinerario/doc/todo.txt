@@ -1,5 +1,12 @@
 1 - Calendário
+
 	- modelar calendário letivo e seus dias, criar dao, facade.
 	- criar e implementar operação no facade
 		- public List<Date> getDiasUteis(Date dataInicial, Date dataFinal) throws Exception
 	
+
+Análise de viagens: apresenta os totais somente quando consulta e não muda durante as alterações. Fazer com que isso ocorra.
+AnalisadorDeViagem: o que fazer quando o veículo não realizou a viagem e a mesma é refenciada, causando NullPointerException.
+
+processar análises
+	dar uma mensagem para o usuário de que as análises estão sendo feitas, pois demora o processamento.

@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.event.ValueChangeEvent;
 
 import modelo.AnalisePosicao;
 import modelo.AnaliseViagem;
@@ -34,7 +33,7 @@ import facade.VeiculoFacade;
 
 @ManagedBean
 @ViewScoped
-public class AnaliseViagemMb {
+public class ConsultaAnaliseViagemMb {
 	private Date dataViagem;
 	private Date dataInicial;
 	private Date dataFinal;
@@ -73,7 +72,7 @@ public class AnaliseViagemMb {
 		dataFinal = new Date(c.getTimeInMillis());
 		veiculo = new Veiculo();
 		rota = new Rota();
-		consultar();
+		analisar();
 		resetarMapa();
 		this.exibicao = EXIBICAO_TABELA;
 	}
@@ -135,10 +134,6 @@ public class AnaliseViagemMb {
 		return analises;
 	}
 
-	public void setAnalises(List<AnaliseViagem> analises) {
-		this.analises = analises;
-	}
-
 	public AnaliseViagem getAnaliseNoMapa() {
 		return analiseNoMapa;
 	}
@@ -180,17 +175,17 @@ public class AnaliseViagemMb {
 		polyline.setStrokeOpacity(0.3);  
 		mapModel.addOverlay(polyline);
 		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar linhas: " + e.getMessage());
+			JsfUtil.addMsgErro("Erro ao recuperar pontos da rota: " + e.getMessage());
 		}
 	}
 
 	private void criarMarcadores() {
+		//TODO Avaliar
 		try {
-		for (AnalisePosicao analise: analisePosicaoFacade.recuperarAnalisesPosicao(analiseNoMapa)) {
-			criarMarcador(analise);
-		}
+			for (AnalisePosicao analise: analisePosicaoFacade.recuperarAnalisesPosicao(analiseNoMapa)) {
+				criarMarcador(analise);
+			}
 		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar marcadores: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -248,10 +243,6 @@ public class AnaliseViagemMb {
 	}
 
 	public void processarAnalises() {
-		if (dataViagem == null) {
-			JsfUtil.addMsgErro("Informe a data para processar a análise das viagens.");
-			return;
-		}
 		try {
 			analisadorFacade.analisarViagens(dataViagem);
 			JsfUtil.addMsgSucesso("Processo de análise das viagens concluído com sucesso.");
@@ -260,35 +251,26 @@ public class AnaliseViagemMb {
 		}
 	}
 	
-	public void consultar() {
+	public void analisar() {
 		try {
 			if (dataInicial == null || dataFinal == null) {
 				throw new Exception("Data inicial e final são obrigatórios para esta consulta.");
 			}
 			if (getVeiculo().getId() == null && getRota().getId() == null) {
 				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal);
+				System.out.println("analisar 1");
 			} else if (getVeiculo().getId() != null && getRota().getId() == null) {
 				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, veiculo);
+				System.out.println("analisar 2");
 			} else if (getVeiculo().getId() == null && getRota().getId() != null) {
 				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, rota);
+				System.out.println("analisar 3");
 			} else {
 				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, rota, veiculo);
+				System.out.println("analisar 4");
 			}
-			/*
-			if (dataInicial == null || dataFinal == null) {
-				throw new Exception("Data inicial e final são obrigatórios para esta consulta.");
-			}
-			if (getVeiculo().getId() == null && rota == null) {
-				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal);
-			} else if (getVeiculo().getId() != null && rota == null) {
-				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, veiculo);
-			} else if (getVeiculo().getId() == null && rota != null) {
-				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, rota);
-			} else {
-				this.analises = analiseViagemFacade.recuperarAnalisesViagem(dataInicial,  dataFinal, rota, veiculo);
-			}*/
-			
 
+			//this.analises = analisadorFacade.analisarViagens(dataInicial);
 			totalizar();
 			exibirTabela();
 		} catch (Exception e) {
@@ -298,18 +280,14 @@ public class AnaliseViagemMb {
 	}
 
 	private void totalizar() {
-		total = new double[8];
+		total = new double[6];
 		for (AnaliseViagem analise: analises) {
 			total[0] += analise.getKmPrevisto();
-			total[1] += analise.getKmRealizado();
-			total[2] += analise.getKmNoTrajeto();
-			total[3] += analise.getKmNoTrajeto() - analise.getKmPrevisto();
-			total[4] += analise.getKmForaTrajeto();
-			total[5] += analise.getParadasPrevistas();
-			total[6] += analise.getParadasCumpridas();
-			if (analise.getKmPago() != null) {
-				total[7] += analise.getKmPago();
-			}
+			total[1] += analise.getKmNoTrajeto();
+			total[2] += analise.getKmNoTrajeto() - analise.getKmPrevisto();
+			total[3] += analise.getKmForaTrajeto();
+			total[4] += analise.getParadasPrevistas();
+			total[5] += analise.getParadasCumpridas();
 		}
 	}
 
@@ -336,11 +314,6 @@ public class AnaliseViagemMb {
 		}
 		return rota;
 	}
-	/*
-	public void setRota(Rota rota) {
-		System.out.println("setRota()");
-		this.rota = rota;
-	}*/
 
 	public Date getDataViagem() {
 		return dataViagem;
@@ -350,70 +323,5 @@ public class AnaliseViagemMb {
 		this.dataViagem = dataViagem;
 	}
 
-	public void salvar() {
-		try {
-			this.analiseViagemFacade.salvar(this.analises);
-			JsfUtil.addMsgSucesso("Informações salvas com sucesso.");
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao salvar: " + e.getMessage());
-		}
-	}
-	
-	public void pagarKmPrevisto() {
-		for (AnaliseViagem analise: analises) {
-			pagarKmPrevisto(analise);
-		}
-		totalizar();
-	}
-	
-	public void pagarKmPrevisto(AnaliseViagem analise) {
-		analise.setKmPago(analise.getKmPrevisto());
-		totalizar();
-	}
 
-	public void pagarKmRealizado() {
-		for (AnaliseViagem analise: analises) {
-			pagarKmRealizado(analise);
-		}
-		totalizar();
-	}
-	
-	public void pagarKmRealizado(AnaliseViagem analise) {
-		analise.setKmPago(analise.getKmRealizado());
-		totalizar();
-	}
-	
-	public void pagarKmNoTrajeto() {
-		for (AnaliseViagem analise: analises) {
-			pagarKmNoTrajeto(analise);
-		}
-		totalizar();
-	}
-	
-	public void pagarKmNoTrajeto(AnaliseViagem analise) {
-		analise.setKmPago(analise.getKmNoTrajeto());
-		totalizar();
-	}
-
-	public void definirValorPago(AnaliseViagem analise) {
-		analise.setValorPago(analise.getValorKm() * analise.getKmPago());
-		totalizar();
-	}
-	
-	public void alterouValor(ValueChangeEvent event) {
-		//TODO Como atualizar o modelo para refletir o total quando o usuário digita no campo "km pago". 
-		System.out.println("Alterou de " + event.getOldValue() + " para " + event.getNewValue());
-				/*
-		System.out.println("alterouValor(): " + analises.indexOf(analise) + analise.getKmPago());
-		AnaliseViagem item = analises.get(analises.indexOf(analise));
-		System.out.println(item.getId() + "- " + item.getKmPago());
-		item.setKmPago(analise.getKmPago());
-		analises.get(
-				analises.indexOf(analise))
-				.setKmPago(analise.getKmPago());
-//		for (AnaliseViagem a: analises) {
-//			System.out.println(a.getKmPago() + "-" + ax.getKmPago());
-//		}*/
-		totalizar();
-	}
 }

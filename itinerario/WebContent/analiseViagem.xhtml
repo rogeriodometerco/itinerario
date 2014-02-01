@@ -30,19 +30,25 @@
 				enableManualInput="true" datePattern="dd/MM/yyyy">
 			</rich:calendar>
 			<h:outputLabel value="Veículo " />
-			<h:inputText value="#{analiseViagemMb.veiculo.identificacao}">
+			<h:inputText value="#{analiseViagemMb.veiculo.identificacao}" size="10">
 				<f:ajax listener="#{analiseViagemMb.identificacaoVeiculoChange}"
 					render="mensagens" />
 			</h:inputText>
-			<h:commandButton action="#{analiseViagemMb.analisar()}" value="Consultar" />
+			<h:outputLabel value="Código da rota " />
+			<h:inputText value="#{analiseViagemMb.rota.codigo}" size="10">
+				<f:ajax listener="#{analiseViagemMb.codigoRotaChange}"
+					render="mensagens nomeRota" />
+			</h:inputText>
+			<h:inputText id="nomeRota" value="#{analiseViagemMb.rota.nome}" size="30" disabled="true"/>
+			<h:commandButton action="#{analiseViagemMb.consultar()}"
+				value="Consultar" />
 			<br />
 			<br />
-			<rich:dataTable value="#{analiseViagemMb.analises}" var="analise"
-				rendered="#{analiseViagemMb.exibicaoTabela}">
-				<rich:column>
+			<rich:dataTable id="tabela" value="#{analiseViagemMb.analises}"
+				var="analise" rendered="#{analiseViagemMb.exibicaoTabela}">
+				<rich:column style="text-align: center; width: 40px">
 					<f:facet name="header">Veículo</f:facet>
-					<h:outputText
-						value="#{analise.programacao.veiculo.identificacao}" />
+					<h:outputText value="#{analise.programacao.veiculo.identificacao}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Rota</f:facet>
@@ -67,11 +73,18 @@
 					</h:outputText>
 				</rich:column>
 				<rich:column style="text-align: center">
-					<f:facet name="header">Km prevista</f:facet>
+					<f:facet name="header">Km previsto
+					</f:facet>
 					<h:outputText value="#{analise.programacao.rota.quilometragem}" />
 				</rich:column>
 				<rich:column style="text-align: center">
-					<f:facet name="header">Km no trajeto</f:facet>
+					<f:facet name="header">Km realizado
+					</f:facet>
+					<h:outputText value="#{analise.kmRealizado}" />
+				</rich:column>
+				<rich:column style="text-align: center">
+					<f:facet name="header">Km no trajeto
+					</f:facet>
 					<h:outputText value="#{analise.kmNoTrajeto}" />
 				</rich:column>
 				<rich:column style="text-align: center">
@@ -90,7 +103,52 @@
 					<f:facet name="header">Paradas cumpridas</f:facet>
 					<h:outputText value="#{analise.paradasCumpridas}" />
 				</rich:column>
-				
+				<rich:column style="text-align: center; width: 80px">
+					<f:facet name="header">Km pagto
+						<br />
+						<h:panelGroup>
+							<h:commandButton value="$"
+								title="Pagar quilometragem prevista para todas as viagens"
+								actionListener="#{analiseViagemMb.pagarKmPrevisto()}">
+								<f:ajax render="tabela" />
+							</h:commandButton>
+							<h:commandButton value="$"
+								title="Pagar quilometragem realizada para todas as viagens"
+								actionListener="#{analiseViagemMb.pagarKmRealizado()}">
+								<f:ajax render="tabela" />
+							</h:commandButton>
+							<h:commandButton value="$"
+								title="Pagar quilometragem no trajeto para todas as viagens"
+								actionListener="#{analiseViagemMb.pagarKmNoTrajeto()}">
+								<f:ajax render="tabela" />
+							</h:commandButton>
+						</h:panelGroup>
+					</f:facet>
+					<h:panelGroup>
+						<h:commandButton value="$" title="Pagar quilometragem prevista"
+							actionListener="#{analiseViagemMb.pagarKmPrevisto(analise)}">
+							<f:ajax render="tabela" />
+						</h:commandButton>
+						<h:commandButton value="$" title="Pagar quilometragem realizada"
+							actionListener="#{analiseViagemMb.pagarKmRealizado(analise)}">
+							<f:ajax render="tabela" />
+						</h:commandButton>
+						<h:commandButton value="$" title="Pagar quilometragem no trajeto"
+							actionListener="#{analiseViagemMb.pagarKmNoTrajeto(analise)}">
+							<f:ajax render="tabela" />
+						</h:commandButton>
+					</h:panelGroup>
+					<br />
+					<h:inputText value="#{analise.kmPago}" size="5"
+						valueChangeListener="#{analiseViagemMb.alterouValor}">
+						<f:ajax execute="tabela" render="tabela" />
+					</h:inputText>
+				</rich:column>
+				<rich:column style="text-align: center;">
+					<f:facet name="header">Observação</f:facet>
+					<h:inputTextarea value="#{analise.observacao}" rows="2" cols="40" />
+				</rich:column>
+
 				<rich:column>
 					<f:facet name="header">Mapa</f:facet>
 					<h:commandLink value="Exibir"
@@ -125,13 +183,22 @@
 							</h:outputText>
 						</rich:column>
 						<rich:column>
+							<h:outputText value="#{analiseViagemMb.total[6]}">
+							</h:outputText>
+						</rich:column>
+						<rich:column>
+							<h:outputText value="#{analiseViagemMb.total[7]}">
+							</h:outputText>
 						</rich:column>
 					</rich:columnGroup>
 				</f:facet>
 			</rich:dataTable>
 			<br />
+			<h:commandButton action="#{analiseViagemMb.salvar}" value="Salvar"
+				rendered="#{analiseViagemMb.exibicaoTabela}" />
 
-			<h:commandLink value="Voltar" action="#{analiseViagemMb.exibirTabela()}"
+			<h:commandLink value="Voltar"
+				action="#{analiseViagemMb.exibirTabela()}"
 				rendered="#{analiseViagemMb.exibicaoMapa}" />
 			<h:panelGrid columns="2" rendered="#{analiseViagemMb.exibicaoMapa}">
 				<h:outputLabel value="Veículo" />
@@ -143,7 +210,8 @@
 				style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
 				model="#{analiseViagemMb.mapModel}" widgetVar="mapa"
 				rendered="#{analiseViagemMb.exibicaoMapa}">
-				<p:ajax event="stateChange" listener="#{analiseViagemMb.onStateChange}" />
+				<p:ajax event="stateChange"
+					listener="#{analiseViagemMb.onStateChange}" />
 			</p:gmap>
 
 		</h:form>

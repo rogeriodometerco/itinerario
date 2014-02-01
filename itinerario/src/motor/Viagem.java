@@ -34,7 +34,10 @@ public class Viagem {
 		return parou;
 	}
 		
-	
+	/**
+	 * Calcula distância percorrida em km.
+	 * @return
+	 */
 	public double getDistanciaPercorrida() {
 		double distancia = 0;
 		PosicaoVeiculo p1 = null;
@@ -56,6 +59,7 @@ public class Viagem {
 	}
 	
 	public Date getDataReferencia() {
+		//TODO verificar se <posicoes> sempre terá elementos.
 		Calendar c = Calendar.getInstance();
 		c.setTime(this.posicoes.get(0).getDataHora());
 		c.set(Calendar.HOUR_OF_DAY, 0);

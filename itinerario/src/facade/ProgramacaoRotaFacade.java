@@ -41,13 +41,17 @@ public class ProgramacaoRotaFacade
 				.getResultList();
 		// Se a programação é baseada no calendário letivo, verifica se no calendário a data é dia útil.
 		// Caso negativo, a programação é retirada da lista.
+
+		//TODO descomentar trecho abaixo quando o calendário estiver sendo informado na programação da rota.
+		// Em lista.remove(prog) está também dando erro - Concurrency...Modifycation
+		/*
 		for (ProgramacaoRota prog: lista) {
 			if (prog.getTipoCalendario().equals(CalendarioEnum.LETIVO) && prog.getCalendarioLetivo() != null) {
 				if (!calendarioFacade.isDiaLetivo(prog.getCalendarioLetivo(), data)) {
 					lista.remove(prog);
 				}
 			}
-		}
+		}*/
 		return lista;
 	}
 	

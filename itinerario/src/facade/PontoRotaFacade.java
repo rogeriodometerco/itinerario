@@ -16,7 +16,7 @@ public class PontoRotaFacade extends GenericCrudFacade<PontoRota> {
         private PontoRotaDao dao;
 
         @SuppressWarnings("unchecked")
-        public List<PontoRota> recuperarPontos(Rota rota) {
+        public List<PontoRota> recuperarPontos(Rota rota) throws Exception {
                 String sql = "select p"
                                 + " from PontoRota as p" 
                                 + " where p.rota = :rota"

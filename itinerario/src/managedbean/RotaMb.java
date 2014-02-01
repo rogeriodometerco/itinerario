@@ -58,6 +58,7 @@ public class RotaMb implements Serializable {
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
 		sincronizarMapModel();
+		System.out.println("RotaMb.inicializar()");
 	}
 
 	public void onMapStateChange(StateChangeEvent event) {
@@ -329,6 +330,15 @@ public class RotaMb implements Serializable {
 		opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
 		opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
 		return opcoes;
+	}
+
+	public List<Rota> autocomplete(String chave) {
+		try {
+			return facade.pesquisar(chave);
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para rota: " + e.getMessage());
+		}
+		return null;
 	}
 
 }

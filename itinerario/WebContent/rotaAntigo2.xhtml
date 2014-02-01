@@ -45,23 +45,38 @@
 		<h:form enctype="multipart/form-data" rendered="#{rotaMb.isCriacao()}">
 			<h3>Criar rota</h3>
 
-			<div style="float: left; width: 40%">
-				<h:panelGrid columns="2">
-					<h:outputLabel value="Código" />
-					<h:inputText value="#{rotaMb.rota.codigo}" />
-					<h:outputLabel value="Nome da rota" />
-					<h:inputText value="#{rotaMb.rota.nome}" />
-					<h:outputLabel value="Origem" />
-					<h:inputText value="#{rotaMb.rota.origem}" />
-					<h:outputLabel value="Destino" />
-					<h:inputText value="#{rotaMb.rota.destino}" />
-					<h:outputLabel value="Quilometragem" />
-					<h:inputText value="#{rotaMb.rota.quilometragem}" />
-					<h:outputLabel value="Observacao" />
-					<h:inputText value="#{rotaMb.rota.observacao}" />
-				</h:panelGrid>
-				<rich:panel>
-					<f:facet name="header">Programação da rota</f:facet>
+			<rich:tabPanel>
+				<rich:tab header="Dados gerais">
+					<h:panelGrid columns="2">
+						<h:outputLabel value="Código" />
+						<h:inputText value="#{rotaMb.rota.codigo}" />
+						<h:outputLabel value="Nome da rota" />
+						<h:inputText value="#{rotaMb.rota.nome}" />
+						<h:outputLabel value="Origem" />
+						<h:inputText value="#{rotaMb.rota.origem}" />
+						<h:outputLabel value="Destino" />
+						<h:inputText value="#{rotaMb.rota.destino}" />
+						<h:outputLabel value="Quilometragem" />
+						<h:inputText value="#{rotaMb.rota.quilometragem}" />
+						<h:outputLabel value="Observacao" />
+						<h:inputText value="#{rotaMb.rota.observacao}" />
+					</h:panelGrid>
+
+				</rich:tab>
+
+				<rich:tab header="Trajeto">
+					<p:fileUpload fileUploadListener="#{rotaMb.arquivoImportado}"
+						mode="advanced" label="Arquivo com os pontos" process="@form"
+						update=":mensagens, @form" auto="true">
+					</p:fileUpload>
+					<p:gmap center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
+						type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
+						style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
+						<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
+					</p:gmap>
+				</rich:tab>
+
+				<rich:tab header="Programação">
 					<h:commandButton value="Nova"
 						actionListener="#{rotaMb.novaProgramacao()}">
 						<f:ajax execute="@form" render="tabProgramacoes" />
@@ -96,6 +111,7 @@
 								<f:convertDateTime pattern="dd/MM/yyyy" />
 							</h:inputText>
 						</rich:column>
+<!-- 
 						<rich:column>
 							<f:facet name="header">Calendário</f:facet>
 							<h:selectOneMenu value="#{programacao.calendario}"
@@ -103,7 +119,8 @@
 								<f:selectItems value="#{rotaMb.opcoesTipoPeriodo}" />
 							</h:selectOneMenu>
 						</rich:column>
-						<rich:column>
+ -->
+ 						<rich:column>
 							<f:facet name="header">Veiculo</f:facet>
 							<h:inputText value="#{programacao.veiculo.identificacao}"
 								style="width: 100%">
@@ -120,26 +137,17 @@
 							</h:commandButton>
 						</rich:column>
 					</rich:dataTable>
-				</rich:panel>
-			</div>
+				</rich:tab>
 
-			<div style="float: left; margin-left: 20px">
-				<p:fileUpload fileUploadListener="#{rotaMb.arquivoImportado}"
-					mode="advanced" label="Arquivo com os pontos" process="@form"
-					update=":mensagens, @form" auto="true">
-				</p:fileUpload>
-				<p:gmap center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
-					type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
-					style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
-					<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
-				</p:gmap>
-			</div>
+				<rich:tab header="Atendidos">
+					<h:panelGrid columns="2">
+					</h:panelGrid>
+				</rich:tab>
 
-			<div style="clear: both; margin-top: 20px">
+			</rich:tabPanel>
 				<h:commandButton value="Salvar"
 					action="#{rotaMb.terminarCriacaoOuAlteracao()}" />
 				<h:commandButton value="Cancelar" action="#{rotaMb.cancelar}" />
-			</div>
 		</h:form>
 
 		<h:form enctype="multipart/form-data"
@@ -191,8 +199,7 @@
 							<rich:autocomplete value="#{programacao.veiculo}"
 								autocompleteMethod="#{veiculoMb.autocomplete}" var="veiculo"
 								converter="#{veiculoConverter}"
-								fetchValue="#{veiculo.identificacao}"
-								forceSelection="true"
+								fetchValue="#{veiculo.identificacao}" forceSelection="true"
 								style="width: 100%">
 								<rich:column>
 									#{veiculo.identificacao}

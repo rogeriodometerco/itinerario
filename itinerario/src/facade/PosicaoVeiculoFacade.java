@@ -1,6 +1,5 @@
 package facade;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -10,11 +9,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
 import modelo.PosicaoVeiculo;
-import modelo.ProgramacaoLinha;
-import modelo.ProgramacaoRota;
 import modelo.Veiculo;
-import motor.AnalisadorDeViagemAntigo;
-import motor.ViagemAntigo;
 import dao.PosicaoVeiculoDao;
 
 @Stateless
@@ -23,71 +18,10 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 
 	@EJB
 	private PosicaoVeiculoDao dao;
-	@EJB
-	private ProgramacaoLinhaFacade programacaoFacade;
-	@EJB
-	private PontoLinhaFacade pontoLinhaFacade;
 
 	@Override
 	protected PosicaoVeiculoDao getDao() {
 		return dao;
-	}
-
-	/**
-	 * Recupera os registros de posição de um veículo que devem ser analisados em relação
-	 * a sua escala num determinado dia.
-	 * @param programacao
-	 * @return
-	 */
-	// TODO eliminar este método assim que não estiver mais sendo utilizado.
-	@Deprecated
-	private List<PosicaoVeiculo> recuperarPosicoesParaAnalise(
-			ProgramacaoLinha programacao, Date dataInicial, Date dataFinal) {
-
-		// TODO Refactoring. Não está legal.
-		// O parâmetro data está atrelada a programação, e a origem tem que se preocupar com isso. 
-
-		// Objeto auxiliar.
-		Calendar paramData = Calendar.getInstance();
-		paramData.setTime(dataInicial);
-
-		// Data e hora inicial.
-		Calendar c1 = Calendar.getInstance();
-		c1.setTime(programacao.getHoraInicial());
-		c1.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
-
-		// Data e hora final.
-		Calendar c2 = Calendar.getInstance();
-		c2.setTime(programacao.getHoraFinal());
-		c2.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
-
-		return getDao().recuperar(programacao.getVeiculo(), c1.getTime(), c2.getTime());
-
-		/*
-		
-		List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();
-
-		while (!paramData.after(dataFinal)) {
-
-			if (paramData.get(Calendar.DAY_OF_WEEK) == programacao.getDiaSemana()) {
-				System.out.println("paramData.get(Calendar.DAY_OF_WEEK) == programacao.getDiaSemana() " 
-						+ programacao.getDiaSemana() + " - id da programacao: " + programacao.getId());
-				// Data e hora inicial.
-				Calendar c1 = Calendar.getInstance();
-				c1.setTime(programacao.getHoraInicial());
-				c1.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
-
-				// Data e hora final.
-				Calendar c2 = Calendar.getInstance();
-				c2.setTime(programacao.getHoraFinal());
-				c2.set(paramData.get(Calendar.YEAR), paramData.get(Calendar.MONTH), paramData.get(Calendar.DATE));
-
-				posicoes.addAll(getDao().recuperar(programacao.getVeiculo(), c1.getTime(), c2.getTime()));
-			}
-			paramData.add(Calendar.DAY_OF_MONTH, 1);
-		}
-		return posicoes;
-		*/
 	}
 
 
@@ -96,37 +30,6 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 
 		return getDao().recuperar(veiculo, dataHoraInicial, dataHoraFinal);
 
-	}
-
-	/**
-	 * 
-	 * @param dataInicial
-	 * @return
-	 */
-	// TODO Eliminar este método assim que não estiver mais sendo utilizado.
-	@Deprecated
-	public List<AnalisadorDeViagemAntigo> analisarPosicoesDeCadaProgramacao(Date dataInicial, Date dataFinal,
-			Veiculo veiculo) throws Exception {
-
-		List<AnalisadorDeViagemAntigo> listaRetorno = new ArrayList<AnalisadorDeViagemAntigo>();
-		List<PosicaoVeiculo> posicoes = null;
-		for (ProgramacaoLinha programacao: programacaoFacade.recuperarProgramacoes(dataInicial, dataFinal)) {
-			posicoes = this.recuperarPosicoesParaAnalise(programacao, dataInicial, dataFinal);
-			System.out.println(posicoes.size() + "posições recuperadas");
-			// TODO Recuperar entidades relacionadas já na leitura do banco.
-			programacao.getLinha().getPontos().size();
-			AnalisadorDeViagemAntigo analisador = new AnalisadorDeViagemAntigo(programacao, new ViagemAntigo(posicoes));
-			listaRetorno.add(analisador);
-		}
-		return listaRetorno;
-	}
-
-	public void salvar(List<PosicaoVeiculo> posicoes) throws Exception {
-		for (PosicaoVeiculo posicao: posicoes) {
-			if (recuperarPosicao(posicao.getVeiculo(), posicao.getDataHora()) == null) {
-				salvar(posicao);
-			}
-		}
 	}
 
 	public PosicaoVeiculo recuperarPosicao(Veiculo veiculo, Date dataHora) 
