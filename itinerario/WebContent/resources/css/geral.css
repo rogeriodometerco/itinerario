@@ -12,6 +12,8 @@
 
 .titulo {color: black; font-size: 1.1em; padding-bottom: 10px;}
 
+.ui-widget,.ui-widget.ui-widget {font-size: 11px ;}
+
 body {font-family: Univers, "Univers 55", "Lucida Grande CE", lucida, Helvetica, san-serif;
 	font-size:small;
 	background-color: #8FB200;

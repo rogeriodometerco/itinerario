@@ -6,19 +6,59 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui"
-	xmlns:sce="http://java.sun.com/jsf/composite/componente"
-	template="/WEB-INF/template/crud.xhtml">
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
 
-	<ui:define name="listagem">
-			teste escola.xhtml
-			<p:dataTable value="#{escolaMb.lista}" var="entidade">
+	<ui:define name="titulo">Cadastro de escola</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form rendered="#{escolaMb.isListagem()}">
+
+			<h:outputLabel value="Nome " />
+			<p:inputText id="nome" value="#{escolaMb.nomePesquisa}" />
+			<p:commandButton value="Pesquisar" actionListener="#{escolaMb.listar}" update="listagem" />
+			<p:commandButton value="Nova" action="#{escolaMb.iniciarCriacao}" ajax="false" />
+			<p:dataTable id="listagem" value="#{escolaMb.lista}" var="escola" style="width: 500px">
 				<p:column>
 					<f:facet name="header">Nome</f:facet>
-					<h:outputText value="#{entidade.nome}" />
+					#{escola.nome}
+				</p:column>
+				<p:column>
+					<h:panelGroup>
+						<p:commandButton value="Editar"
+							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false"/>
+						<p:commandButton value="Excluir"
+							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false"/>
+					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
+		</h:form>
+
+		<h:form
+			rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao() || escolaMb.isExclusao()}">
+			<h3>
+				<h:outputLabel value="Criar escola"
+					rendered="#{escolaMb.isCriacao()}" />
+				<h:outputLabel value="Alterar escola"
+					rendered="#{escolaMb.isAlteracao()}" />
+				<h:outputLabel value="Excluir escola"
+					rendered="#{escolaMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Nome da escola" />
+				<p:inputText value="#{escolaMb.escola.nome}" />
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{escolaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{escolaMb.terminarExclusao()}" ajax="false"
+				rendered="#{escolaMb.isExclusao()}" />
+			<p:commandButton value="Cancelar" action="#{escolaMb.cancelar()}" ajax="false"/>
+		</h:form>
+
 	</ui:define>
-
 </ui:composition>
-

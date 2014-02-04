@@ -7,9 +7,7 @@ import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 
 import modelo.Escola;
-import modelo.Rota;
 import dao.EscolaDao;
-import dao.GenericDao;
 
 @Stateless
 public class EscolaFacade extends GenericCrudFacade<Escola> {
@@ -18,7 +16,7 @@ public class EscolaFacade extends GenericCrudFacade<Escola> {
 	private EscolaDao escolaDao;
 	
 	@Override
-	protected GenericDao<Escola> getDao() {
+	protected EscolaDao getDao() {
 		return escolaDao;
 	}
 

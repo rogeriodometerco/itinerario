@@ -13,16 +13,19 @@
 
 	<ui:define name="corpo">
 
+		<!-- Título do formulário -->
+		<f:facet name="header">#{titulo}</f:facet>
 
 		<!-- Área de edição dos dados -->
-
-		<!-- Área de listagem -->
-		<div id="divAreaListagem">
 			<h:form>
-				<ui:insert name="areaListagem" />
+				<ui:insert name="areaEdicao" />
+				<p:commandButton value="Salvar" action="#{bean.salvar}" />
+				<p:commandButton value="Excluir" action="#{bean.excluir}" />
+				<p:commandButton value="Cancelar" action="#{bean.cancelar}" />
+				
 			</h:form>
-		</div>
-		teste crud.xhtml
+
 	</ui:define>
+
 </ui:composition>
 </html>

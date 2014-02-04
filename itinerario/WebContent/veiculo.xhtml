@@ -18,7 +18,7 @@
 			<h:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}" />
 			<rich:dataTable value="#{veiculoMb.lista}" var="veiculo">
 				<rich:column>
-					<f:facet name="header">Nome</f:facet>
+					<f:facet name="header">Identificação</f:facet>
 					#{veiculo.identificacao}
 				</rich:column>
 				<rich:column>

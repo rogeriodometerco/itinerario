@@ -15,19 +15,14 @@ import facade.GenericCrudFacade;
 import facade.VeiculoFacade;
 
 public abstract class GenericCrudMb<T>  {
-	private static final String LISTAGEM = "listagem";
+	protected static final String LISTAGEM = "listagem";
 	private static final String CRIACAO = "criacao";
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
 	private T entidade;
 	private List<T> lista;
-	private String estadoView;
+	protected String estadoView;
 
-	@PostConstruct
-	private void inicializar() {
-		this.estadoView = LISTAGEM;
-		System.out.println("GenericCrudMb.inicializar()");
-	}
 
 	public T getEntidade() {
 		return entidade;
@@ -91,7 +86,7 @@ public abstract class GenericCrudMb<T>  {
 		this.estadoView = EXCLUSAO;
 	}
 
-	public void confirmarExclusao() {
+	public void excluir() {
 		try {
 			getServico().excluir(entidade);
 			JsfUtil.addMsgSucesso("Registro excluído com sucesso.");
@@ -107,12 +102,11 @@ public abstract class GenericCrudMb<T>  {
 		this.estadoView = LISTAGEM;
 	}
 
-	public Boolean getExibirListagem() {
-		return true;
-		//return isListagem();
+	public Boolean exibirListagem() {
+		return isListagem();
 	}
 	
-	public Boolean getExibirEdicao() {
+	public Boolean exibirEdicao() {
 		return isCriacao() || isAlteracao() || isExclusao();
 	}
 	

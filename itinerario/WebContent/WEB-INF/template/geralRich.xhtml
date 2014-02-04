@@ -4,6 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
@@ -37,9 +38,9 @@
  		  	<f:ajax execute="@all" render="@all"/>
 		</h:selectOneMenu> -->
 		</div>
-
-		<div style="clear: both; background-color: #222; height: 3px">
+		<div style="clear: both; background-color: #222; height: 2px">
 		</div>
+		<!-- 
 		<rich:toolbar height="25px" style="border-radius: 5">
 			<h:commandLink action="ultimaPosicaoDaFrota"
 				value=" Última posição da frota " class="item-menu" />
@@ -53,19 +54,46 @@
 				class="item-menu" />
 			<h:commandLink action="veiculo" value="Cadastrar veículo"
 				class="item-menu" />
+			<h:commandLink action="escola" value="Cadastrar escola"
+				class="item-menu" />
+			<h:commandLink action="pessoa" value="Cadastrar pessoa"
+				class="item-menu" />
 			<h:commandLink action="cargaDados"
 				value="Carregar dados do rastreador" class="item-menu" />
 			<h:commandLink action="processarAnalises"
 				value="Processar análises" class="item-menu" />
 		</rich:toolbar>
+		 -->
+		
+	<p:spacer height="3px"/>
+		<p:menubar>
+			<p:submenu label="| Cadastro">
+				<p:menuitem action="veiculo" value="Veículo" />
+				<p:menuitem action="escola" value="Escola" />
+				<p:menuitem action="pessoa" value="Pessoa" />
+				<p:menuitem action="rota" value="Rota" />
+			</p:submenu>
+			<p:menuitem action="ultimaPosicaoDaFrota"
+				value="| Última posição da frota"/>
+			<p:menuitem action="analiseViagem" value="| Analisar viagens" />
+			<p:menuitem action="consultaAnaliseViagem" value="| Consultar análises de viagens" />
+			<p:menuitem action="posicoesDoVeiculo"
+				value="| Consultar posições do veículo" />
+			<p:menuitem action="cargaDados"
+				value="| Carregar dados do rastreador" />
+			<p:menuitem action="processarAnalises"
+				value="| Processar análises" />
+		</p:menubar>
 	</h:form>
 
-	<rich:panel style="border-radius: 5; margin-top: 5px">
+	<p:spacer height="3px"/>
+
+	<p:panel >
 		<f:facet name="header">
 			<ui:insert name="titulo" />
 		</f:facet>
 		<ui:insert name="conteudo" />
-	</rich:panel>
+	</p:panel>
 
 </h:body>
 

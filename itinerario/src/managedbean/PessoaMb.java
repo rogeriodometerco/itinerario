@@ -8,36 +8,37 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import modelo.Escola;
+import modelo.Pessoa;
 import util.JsfUtil;
-import facade.EscolaFacade;
+import facade.PessoaFacade;
 
 @ManagedBean
 @ViewScoped
-public class EscolaMb implements Serializable {
+public class PessoaMb implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String LISTAGEM = "listagem";
 	private static final String CRIACAO = "criacao";
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
-	private Escola escola;
-	private List<Escola> lista;
+	private Pessoa pessoa;
+	private List<Pessoa> lista;
 	private String estadoView;
 	private String nomePesquisa;
+	
 	@EJB
-	private EscolaFacade facade;
+	private PessoaFacade facade;
 	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
 	}
 	
-	public Escola getescola() {
-		return escola;
+	public Pessoa getpessoa() {
+		return pessoa;
 	}
 
-	public void setEscola(Escola escola) {
-		this.escola = escola;
+	public void setPessoa(Pessoa pessoa) {
+		this.pessoa = pessoa;
 	}
 
 	public void listar() { 
@@ -52,16 +53,16 @@ public class EscolaMb implements Serializable {
 		}
 	}
 
-	public List<Escola> autocomplete(String chave) {
+	public List<Pessoa> autocomplete(String chave) {
 		try {
 			return facade.listarPorNomeContendo(chave);
 		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para escola: " + e.getMessage());
+			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para pessoa: " + e.getMessage());
 		}
 		return null;
 	}
 	
-	public List<Escola> getLista() {
+	public List<Pessoa> getLista() {
 		if (lista == null) {
 			listar();
 		}
@@ -70,17 +71,17 @@ public class EscolaMb implements Serializable {
 
 	public void iniciarCriacao() {
 		this.estadoView = CRIACAO;
-		this.escola = new Escola();
+		this.pessoa = new Pessoa();
 	}
 
-	public void iniciarAlteracao(Escola escola) {
-		this.escola = escola;
+	public void iniciarAlteracao(Pessoa pessoa) {
+		this.pessoa = pessoa;
 		this.estadoView = ALTERACAO;
 	}
 
 	public void terminarCriacaoOuAlteracao() {
 		try {
-			facade.salvar(escola);
+			facade.salvar(pessoa);
 			JsfUtil.addMsgSucesso("Informações salvas com sucesso.");
 			listar();
 			this.estadoView = LISTAGEM;
@@ -90,14 +91,14 @@ public class EscolaMb implements Serializable {
 
 	}
 
-	public void iniciarExclusao(Escola escola) {
-		this.escola = escola;
+	public void iniciarExclusao(Pessoa pessoa) {
+		this.pessoa = pessoa;
 		this.estadoView = EXCLUSAO;
 	}
 
 	public void terminarExclusao() {
 		try {
-			facade.excluir(escola);
+			facade.excluir(pessoa);
 			JsfUtil.addMsgSucesso("Informações excluídas com sucesso.");
 			listar();
 			this.estadoView = LISTAGEM;
