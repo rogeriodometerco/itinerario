@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de calendário</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{calendarioMb.isListagem()}">
+			<h:outputLabel value="Nome " />
+			<p:inputText value="#{calendarioMb.nomePesquisa}" />
+
+			<p:commandButton value="Pesquisar"
+				actionListener="#{calendarioMb.listar}" update="listagem" />
+			<p:commandButton value="Novo"
+				actionListener="#{calendarioMb.iniciarCriacao}" ajax="false" />
+			<p:dataTable id="listagem" value="#{calendarioMb.lista}" var="c"
+				style="width: 500px">
+				<p:column>
+					<f:facet name="header">Calendario</f:facet>
+					#{c.nome}
+				</p:column>
+				<p:column>
+					<h:panelGroup>
+						<p:commandButton value="Editar"
+							action="#{calendarioMb.iniciarAlteracao(c)}" ajax="false" />
+						<p:commandButton value="Excluir"
+							action="#{calendarioMb.iniciarExclusao(c)}" ajax="false" />
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao() || calendarioMb.isExclusao()}">
+			<h3>
+				<h:outputLabel value="Criar calend�rio"
+					rendered="#{calendarioMb.isCriacao()}" />
+				<h:outputLabel value="Alterar calend�rio"
+					rendered="#{calendarioMb.isAlteracao()}" />
+				<h:outputLabel value="Excluir calend�rio"
+					rendered="#{calendarioMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<h:outputLabel value="Nome " />
+				<p:inputText value="#{calendarioMb.calendario.nome}" />
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{calendarioMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{calendarioMb.terminarExclusao()}" ajax="false"
+				rendered="#{calendarioMb.isExclusao()}" />
+			<p:commandButton value="Cancelar" action="#{calendarioMb.cancelar()}"
+				ajax="false" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

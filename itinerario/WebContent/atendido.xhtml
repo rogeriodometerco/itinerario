@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de atendido pela rota</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{atendidoMb.isListagem()}">
+			<h:outputLabel value="Programação de rota " />
+			<p:autoComplete value="#{atendidoMb.programacaoRotaPesquisa}"
+				completeMethod="#{programacaoRotaMb.autocomplete}" var="p"
+				itemLabel="#{p.rota.nome.concat(' - ')
+	                        	.concat(p.horaInicial).concat(' às ').concat(p.horaFinal)}"
+				temValue="#{p}" converter="#{programacaoRotaConverter}"
+				forceSelection="true">
+				<p:column>  
+					#{p.rota.nome}
+		                </p:column>
+				<p:column>  
+					#{p.rota.origem}
+		                </p:column>
+				<p:column>  
+					#{p.rota.destino}
+	        	       </p:column>
+				<p:column>  
+					#{p.horaInicial}
+	        	       </p:column>
+				<p:column>  
+					#{p.horaFinal}
+	        	       </p:column>
+			</p:autoComplete>
+			<h:outputLabel value="Pessoa " />
+			<p:autoComplete value="#{atendidoMb.pessoaPesquisa}"
+				completeMethod="#{pessoaMb.autocomplete}" var="v"
+				itemLabel="#{v.nome}" temValue="#{v}" converter="#{pessoaConverter}"
+				forceSelection="true">
+			</p:autoComplete>
+
+			<p:commandButton value="Pesquisar"
+				actionListener="#{atendidoMb.listar}" update="listagem" />
+			<p:commandButton value="Nova"
+				actionListener="#{atendidoMb.iniciarCriacao}" ajax="false" />
+			<p:dataTable id="listagem" value="#{atendidoMb.lista}" var="a"
+				style="width: 500px">
+				<p:column>
+					<f:facet name="header">Rota</f:facet>
+					#{a.pontoParada.rota.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome rota</f:facet>
+					#{a.pontoParada.rota.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ve�culo</f:facet>
+					#{a.programacaoRota.veiculo.identificacao}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Hr inicial</f:facet>
+					#{a.programacaoRota.horaInicial}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Hr final</f:facet>
+					#{a.programacaoRota.horaFinal}
+				</p:column>
+				<p:column>
+					<h:panelGroup>
+						<p:commandButton value="Editar"
+							action="#{atendidoMb.iniciarAlteracao(a)}" ajax="false" />
+						<p:commandButton value="Excluir"
+							action="#{atendidoMb.iniciarExclusao(a)}" ajax="false" />
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{atendidoMb.isCriacao() || atendidoMb.isAlteracao() || atendidoMb.isExclusao()}">
+			<h3>
+				<h:outputLabel value="Criar atendido"
+					rendered="#{atendidoMb.isCriacao()}" />
+				<h:outputLabel value="Alterar atendido"
+					rendered="#{atendidoMb.isAlteracao()}" />
+				<h:outputLabel value="Excluir atendido"
+					rendered="#{atendidoMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+
+				<p:autoComplete value="#{atendidoMb.atendido.programacaoRota}"
+					completeMethod="#{programacaoRotaMb.autocomplete}" var="p"
+					itemLabel="#{p.rota.nome.concat(' - ').concat(p.horaInicial)
+						.concat(' - ').concat(' às ').concat(p.horaFinal)}" temValue="#{p}"
+					converter="#{programacaoRotaConverter}" forceSelection="true">
+					<p:column>  
+					#{p.rota.nome}
+		                </p:column>
+					<p:column>  
+					#{p.rota.origem}
+		                </p:column>
+					<p:column>  
+					#{p.rota.destino}
+	        	       </p:column>
+					<p:column>  
+					#{p.horaInicial}
+	        	       </p:column>
+					<p:column>  
+					#{p.horaFinal}
+	        	       </p:column>
+
+				</p:autoComplete>
+				<h:outputLabel value="Pessoa " />
+				<p:autoComplete value="#{atendidoMb.atendido.pessoa}"
+					completeMethod="#{pessoaMb.autocomplete}" var="v"
+					itemLabel="#{v.nome}" temValue="#{v}" converter="#{pessoaConverter}"
+					forceSelection="true">
+				</p:autoComplete>
+
+				<h:outputText value="Parada: " />
+				<p:selectOneMenu id="parada"
+					value="#{atendidoMb.atendido.pontoParada}" effect="fade"
+					converter="#{pontoRotaConverter}">
+					<f:selectItem itemLabel="Selecione" itemValue="" />
+					<!--  
+					<f:selectItems value="#{atendidoMb.paradas"}" var="parada"
+						itemLabel="#{atendidoMb.paradas.indexOf(parada).concat(' - ')
+						.concat(parada.descricao)}" itemValue="#{parada}" />
+					-->
+				</p:selectOneMenu>
+
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{atendidoMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				rendered="#{atendidoMb.isCriacao() || atendidoMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{atendidoMb.terminarExclusao()}" ajax="false"
+				rendered="#{atendidoMb.isExclusao()}" />
+			<p:commandButton value="Cancelar" action="#{atendidoMb.cancelar()}"
+				ajax="false" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

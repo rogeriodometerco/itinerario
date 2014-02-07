@@ -7,16 +7,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import modelo.Rota;
+import modelo.Calendario;
 import util.JsfUtil;
-import facade.RotaFacade;
+import facade.CalendarioFacade;
 
 @ManagedBean
 @RequestScoped
-public class RotaConverter implements Converter {
+public class CalendarioConverter implements Converter {
 
 	@EJB
-	private RotaFacade facade;
+	private CalendarioFacade facade;
 
 
 	@Override
@@ -26,7 +26,7 @@ public class RotaConverter implements Converter {
 				return facade.recuperar(Long.parseLong(submittedValue));
 			}
 			catch (Exception e) {
-				JsfUtil.addMsgErro("Erro ao recuperar rota: " + e.getCause());
+				JsfUtil.addMsgErro("Erro ao recuperar calendario: " + e.getCause());
 			}
 		}
 		return null;
@@ -38,7 +38,7 @@ public class RotaConverter implements Converter {
 			return null;
 		}
 		else {
-			return String.valueOf(((Rota)value).getId());
+			return String.valueOf(((Calendario)value).getId());
 		}
 	}
 }

@@ -20,14 +20,13 @@ public class ProgramacaoRota {
 	private Date horaInicial;
 	@Temporal(value=TemporalType.TIME)
 	private Date horaFinal;
-	private Date inicioPeriodo;
-	private Date terminoPeriodo;
-	//@Enumerated(EnumType.ORDINAL)
-	private CalendarioEnum tipoCalendario;
+	private Date inicioVigencia;
+	private Date terminoVigencia;
 	@ManyToOne
-	private CalendarioLetivo calendarioLetivo;
+	private Calendario calendario;
 	@ManyToOne
 	private Veiculo veiculo;
+
 	public Long getId() {
 		return id;
 	}
@@ -52,29 +51,23 @@ public class ProgramacaoRota {
 	public void setHoraFinal(Date horaFinal) {
 		this.horaFinal = horaFinal;
 	}
-	public Date getInicioPeriodo() {
-		return inicioPeriodo;
+	public Date getInicioVigencia() {
+		return inicioVigencia;
 	}
-	public void setInicioPeriodo(Date inicioPeriodo) {
-		this.inicioPeriodo = inicioPeriodo;
+	public void setInicioVigencia(Date inicioVigencia) {
+		this.inicioVigencia = inicioVigencia;
 	}
-	public Date getTerminoPeriodo() {
-		return terminoPeriodo;
+	public Date getTerminoVigencia() {
+		return terminoVigencia;
 	}
-	public void setTerminoPeriodo(Date terminoPeriodo) {
-		this.terminoPeriodo = terminoPeriodo;
+	public void setTerminoVigencia(Date terminoVigencia) {
+		this.terminoVigencia = terminoVigencia;
 	}
-	public CalendarioEnum getTipoCalendario() {
-		return tipoCalendario;
+	public Calendario getCalendario() {
+		return calendario;
 	}
-	public void setTipoCalendario(CalendarioEnum tipoCalendario) {
-		this.tipoCalendario = tipoCalendario;
-	}
-	public CalendarioLetivo getCalendarioLetivo() {
-		return calendarioLetivo;
-	}
-	public void setCalendarioLetivo(CalendarioLetivo calendarioLetivo) {
-		this.calendarioLetivo = calendarioLetivo;
+	public void setCalendario(Calendario calendario) {
+		this.calendario = calendario;
 	}
 	public Veiculo getVeiculo() {
 		return veiculo;

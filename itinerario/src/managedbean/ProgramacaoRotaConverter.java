@@ -7,16 +7,16 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 
-import modelo.Rota;
+import modelo.ProgramacaoRota;
 import util.JsfUtil;
-import facade.RotaFacade;
+import facade.ProgramacaoRotaFacade;
 
 @ManagedBean
 @RequestScoped
-public class RotaConverter implements Converter {
+public class ProgramacaoRotaConverter implements Converter {
 
 	@EJB
-	private RotaFacade facade;
+	private ProgramacaoRotaFacade facade;
 
 
 	@Override
@@ -26,7 +26,7 @@ public class RotaConverter implements Converter {
 				return facade.recuperar(Long.parseLong(submittedValue));
 			}
 			catch (Exception e) {
-				JsfUtil.addMsgErro("Erro ao recuperar rota: " + e.getCause());
+				JsfUtil.addMsgErro("Erro ao recuperar programação da rota: " + e.getCause());
 			}
 		}
 		return null;
@@ -38,7 +38,7 @@ public class RotaConverter implements Converter {
 			return null;
 		}
 		else {
-			return String.valueOf(((Rota)value).getId());
+			return String.valueOf(((ProgramacaoRota)value).getId());
 		}
 	}
 }

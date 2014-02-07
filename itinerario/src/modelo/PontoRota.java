@@ -14,9 +14,10 @@ public class PontoRota {
 	private Double lat;
 	private Double lng;
 	private Boolean parada;
+	private String descricao;
 	@ManyToOne
 	private Rota rota;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -46,6 +47,12 @@ public class PontoRota {
 	}
 	public void setParada(Boolean parada) {
 		this.parada = parada;
+	}
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
 	}
 	public Rota getRota() {
 		return rota;
