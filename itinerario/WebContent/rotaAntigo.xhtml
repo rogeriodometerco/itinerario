@@ -105,7 +105,7 @@
 						</rich:column>
 						<rich:column>
 							<f:facet name="header">Veiculo</f:facet>
-							<h:inputText value="#{programacao.veiculo.identificacao}"
+							<h:inputText value="#{programacao.veiculo.placa}"
 								style="width: 100%">
 								<f:ajax execute="@this" event="change"
 									listener="#{rotaMb.inicializarVeiculo(programacao)}"
@@ -178,7 +178,7 @@
 						</rich:column>
 						<rich:column>
 							<f:facet name="header">Veiculo</f:facet>
-							<h:inputText value="#{programacao.veiculo.identificacao}"
+							<h:inputText value="#{programacao.veiculo.placa}"
 								style="width: 100%">
 								<f:ajax execute="@this" event="change"
 									listener="#{rotaMb.inicializarVeiculo(programacao)}"
@@ -191,11 +191,11 @@
 							<rich:autocomplete value="#{programacao.veiculo}"
 								autocompleteMethod="#{veiculoMb.autocomplete}" var="veiculo"
 								converter="#{veiculoConverter}"
-								fetchValue="#{veiculo.identificacao}"
+								fetchValue="#{veiculo.placa}"
 								forceSelection="true"
 								style="width: 100%">
 								<rich:column>
-									#{veiculo.identificacao}
+									#{veiculo.placa}
 								</rich:column>
 							</rich:autocomplete>
 						</rich:column>

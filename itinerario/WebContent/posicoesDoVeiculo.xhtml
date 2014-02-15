@@ -22,7 +22,7 @@
 
 			<h:messages id="mensagens" errorStyle="errorMsg" infoStyle="infoMsg" />
 			<h:outputLabel value="Veículo " />
-			<h:inputText value="#{posicaoVeiculoMb.veiculo.identificacao}">
+			<h:inputText value="#{posicaoVeiculoMb.veiculo.placa}">
 				<f:ajax execute="@this"
 					listener="#{posicaoVeiculoMb.inicializarVeiculo()}"
 					render="mensagens" />

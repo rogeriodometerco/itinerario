@@ -54,6 +54,7 @@ public class ProgramacaoRotaMb implements Serializable {
 			} else if (rotaPesquisa != null && veiculoPesquisa != null) {
 				this.lista = facade.listar(rotaPesquisa, veiculoPesquisa);
 			}
+			System.out.println(lista.size() + " programações listadas");
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
 		}

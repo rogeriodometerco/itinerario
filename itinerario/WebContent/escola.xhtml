@@ -13,42 +13,72 @@
 	<ui:define name="titulo">Cadastro de escola</ui:define>
 	<ui:define name="conteudo">
 		<p:messages id="mensagens" />
-		<h:form rendered="#{escolaMb.isListagem()}">
+		<h:form id="form1" rendered="#{escolaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Nova" action="#{escolaMb.iniciarCriacao}"
+				ajax="false" />
+			<p:spacer width="8px" />
+			<p:inputText value="#{escolaMb.chavePesquisa}" 
+				title="Pesquisar por código, nome ou localidade"/>
+			<p:commandButton value="Pesquisar"
+				actionListener="#{escolaMb.listar}" update="listagem :mensagens" />
+			<p />
 
-			<h:outputLabel value="Nome " />
-			<p:inputText id="nome" value="#{escolaMb.nomePesquisa}" />
-			<p:commandButton value="Pesquisar" actionListener="#{escolaMb.listar}" update="listagem" />
-			<p:commandButton value="Nova" action="#{escolaMb.iniciarCriacao}" ajax="false" />
-			<p:dataTable id="listagem" value="#{escolaMb.lista}" var="escola" style="width: 500px">
+			<p:dataTable id="listagem" value="#{escolaMb.lista}" var="escola"
+				emptyMessage="Nenhum registro encontrado" style="width: 800px">
+				<p:column>
+					<f:facet name="header">Código</f:facet>
+					#{escola.codigo}
+				</p:column>
 				<p:column>
 					<f:facet name="header">Nome</f:facet>
 					#{escola.nome}
 				</p:column>
 				<p:column>
+					<f:facet name="header">Localidade</f:facet>
+					#{escola.localidade}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Distância da sede (km)</f:facet>
+					#{escola.distanciaSede}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Alunos</f:facet>
+					#{escola.quantidadeAlunos}
+				</p:column>
+				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false"/>
+							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false" />
 						<p:commandButton value="Excluir"
-							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false"/>
+							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
 		</h:form>
 
-		<h:form
+		<h:form id="form2"
 			rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao() || escolaMb.isExclusao()}">
 			<h3>
-				<h:outputLabel value="Criar escola"
+				<p:outputLabel value="Criar escola"
 					rendered="#{escolaMb.isCriacao()}" />
-				<h:outputLabel value="Alterar escola"
+				<p:outputLabel value="Alterar escola"
 					rendered="#{escolaMb.isAlteracao()}" />
-				<h:outputLabel value="Excluir escola"
+				<p:outputLabel value="Confirmar exclusão da escola"
 					rendered="#{escolaMb.isExclusao()}" />
 			</h3>
 
 			<h:panelGrid columns="2">
-				<h:outputLabel value="Nome da escola" />
+				<p:outputLabel value="Código" />
+				<p:inputText value="#{escolaMb.escola.codigo}" />
+				<p:outputLabel value="Nome" />
 				<p:inputText value="#{escolaMb.escola.nome}" />
+				<p:outputLabel value="Localidade" />
+				<p:inputText value="#{escolaMb.escola.localidade}" />
+				<p:outputLabel value="Distância da sede (em km)" />
+				<p:inputText value="#{escolaMb.escola.distanciaSede}" />
+				<p:outputLabel value="Quantidade de alunos" />
+				<p:inputText value="#{escolaMb.escola.quantidadeAlunos}" />
 			</h:panelGrid>
 			<br />
 			<p:commandButton value="Salvar"
@@ -56,9 +86,9 @@
 				rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
 				action="#{escolaMb.terminarExclusao()}" ajax="false"
-				rendered="#{escolaMb.isExclusao()}" />
-			<p:commandButton value="Cancelar" action="#{escolaMb.cancelar()}" ajax="false"/>
+				rendered="#{escolaMb.isExclusao()}" immediate="true" />
+			<p:commandButton value="Cancelar" action="#{escolaMb.cancelar()}"
+				ajax="false" immediate="true" />
 		</h:form>
-
 	</ui:define>
 </ui:composition>

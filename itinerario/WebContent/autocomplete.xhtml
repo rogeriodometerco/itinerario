@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de escola</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form rendered="#{escolaMb.isListagem()}">
+
+			<p:autoComplete value="#{autocompleteMb.veiculoTeste}"
+				completeMethod="#{veiculoMb.autocomplete}" var="v"
+				itemLabel="#{v.placa}" itemValue="#{v}"
+				converter="#{veiculoConverter}" forceSelection="true">
+			</p:autoComplete>
+
+			<p:autoComplete value="#{autocompleteMb.opcao}"
+				completeMethod="#{autocompleteMb.getListax}" var="b"
+				itemLabel="#{b}" itemValue="#{b}" forceSelection="true">
+			</p:autoComplete>
+
+			<p:commandButton value="Testar" actionListener="#{autocompleteMb.testar}" update=":mensagens" ajax="false"/>
+			
+		</h:form>
+
+	</ui:define>
+</ui:composition>

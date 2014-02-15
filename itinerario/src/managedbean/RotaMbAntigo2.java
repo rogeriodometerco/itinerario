@@ -34,7 +34,7 @@ import facade.VeiculoFacade;
 
 @ManagedBean
 @ViewScoped
-public class RotaMbAntigo implements Serializable {
+public class RotaMbAntigo2 implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private static final String LISTAGEM = "listagem";
 	private static final String CRIACAO = "criacao";
@@ -58,6 +58,7 @@ public class RotaMbAntigo implements Serializable {
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
 		sincronizarMapModel();
+		System.out.println("RotaMb.inicializar()");
 	}
 
 	public void onMapStateChange(StateChangeEvent event) {
@@ -178,7 +179,6 @@ public class RotaMbAntigo implements Serializable {
 		this.estadoView = CRIACAO;
 		this.rota = new Rota();
 		this.rota.setPontos(new ArrayList<PontoRota>());
-		this.rota.setProgramacoes(new ArrayList<ProgramacaoRota>());
 		this.rota.setAtiva(true);
 		sincronizarMapModel();
 	}
@@ -207,14 +207,14 @@ public class RotaMbAntigo implements Serializable {
 
 	public void inicializarVeiculo(ProgramacaoRota programacao) {
 		try {
-			String identificacao = programacao.getVeiculo().getIdentificacao();
-			programacao.setVeiculo(veiculoFacade.recuperarPorIdentificacao(programacao.getVeiculo().getIdentificacao()));
+			String identificacao = programacao.getVeiculo().getPlaca();
+			programacao.setVeiculo(veiculoFacade.recuperarPorPlaca(programacao.getVeiculo().getPlaca()));
 			if (programacao.getVeiculo() == null) {
 				// Volta o estado do veículo.
 				programacao.setVeiculo(new Veiculo());
-				programacao.getVeiculo().setIdentificacao(identificacao);
+				programacao.getVeiculo().setPlaca(identificacao);
 				
-				JsfUtil.addMsgErro("Veiculo " + programacao.getVeiculo().getIdentificacao() 
+				JsfUtil.addMsgErro("Veiculo " + programacao.getVeiculo().getPlaca() 
 						+ " não cadastrado.");
 			}
 		} catch (Exception e) {
@@ -249,6 +249,7 @@ public class RotaMbAntigo implements Serializable {
 	}
 
 	public void novaProgramacao() {
+		/*
 		System.out.println("novaProgramacao()");
 		ProgramacaoRota programacao = new ProgramacaoRota();
 		// Inicializa alguns atributos.
@@ -259,7 +260,7 @@ public class RotaMbAntigo implements Serializable {
 			programacao.setVeiculo(new Veiculo());
 			programacao.setRota(rota);
 		}
-		rota.getProgramacoes().add(programacao);
+		rota.getProgramacoes().add(programacao);*/
 	}
 
 	private void copiarAtributos(ProgramacaoRota de, ProgramacaoRota para) {
@@ -270,7 +271,7 @@ public class RotaMbAntigo implements Serializable {
 	}
 	
 	public void removerProgramacao(ProgramacaoRota programacao) {
-		this.rota.getProgramacoes().remove(programacao);
+		//this.rota.getProgramacoes().remove(programacao);
 	}
 
 
@@ -329,6 +330,15 @@ public class RotaMbAntigo implements Serializable {
 		opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
 		opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
 		return opcoes;
+	}
+
+	public List<Rota> autocomplete(String chave) {
+		try {
+			return facade.autocomplete(chave);
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para rota: " + e.getMessage());
+		}
+		return null;
 	}
 
 }

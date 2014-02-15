@@ -14,37 +14,47 @@
 	<ui:define name="conteudo">
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{programacaoRotaMb.isListagem()}">
-			<h:outputLabel value="Rota " />
+			<p />
+			<p:commandButton value="Nova"
+				actionListener="#{programacaoRotaMb.iniciarCriacao}" ajax="false" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Rota " />
 			<p:autoComplete value="#{programacaoRotaMb.rotaPesquisa}"
 				completeMethod="#{rotaMb.autocomplete}" var="r"
-				itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}" temValue="#{r}"
-				converter="#{rotaConverter}" forceSelection="true">
-				<p:column>  
+				itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+				itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+				<p:column>
+					<f:facet name="header">Código</f:facet>  
 					#{r.codigo}
-		                </p:column>
-				<p:column>  
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
 					#{r.nome}
-		                </p:column>
-				<p:column>  
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Origem</f:facet>  
 					#{r.origem}
-		                </p:column>
-				<p:column>  
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>  
 					#{r.destino}
-	        	       </p:column>
+		        </p:column>
 			</p:autoComplete>
-			<h:outputLabel value="Ve�culo " />
+			<p:outputLabel value="Veículo " />
 			<p:autoComplete value="#{programacaoRotaMb.veiculoPesquisa}"
 				completeMethod="#{veiculoMb.autocomplete}" var="v"
-				itemLabel="#{v.identificacao}" temValue="#{v}"
+				itemLabel="#{v.placa}" itemValue="#{v}"
 				converter="#{veiculoConverter}" forceSelection="true">
 			</p:autoComplete>
 
 			<p:commandButton value="Pesquisar"
-				actionListener="#{programacaoRotaMb.listar}" update="listagem" />
-			<p:commandButton value="Nova"
-				actionListener="#{programacaoRotaMb.iniciarCriacao}" ajax="false" />
+				actionListener="#{programacaoRotaMb.listar}"
+				update="listagem :mensagens" />
+
+			<p />
 			<p:dataTable id="listagem" value="#{programacaoRotaMb.lista}"
-				var="prog" style="width: 500px">
+				var="prog" rendered="#{programacaoRotaMb.lista != null}"
+				emptyMessage="Nenhum registro encontrado">
 				<p:column>
 					<f:facet name="header">Rota</f:facet>
 					#{prog.rota.codigo}
@@ -54,18 +64,38 @@
 					#{prog.rota.nome}
 				</p:column>
 				<p:column>
-					<f:facet name="header">Ve�culo</f:facet>
-					#{prog.veiculo.identificacao}
+					<f:facet name="header">Veículo</f:facet>
+					#{prog.veiculo.placa}
 				</p:column>
 				<p:column>
 					<f:facet name="header">Hr inicial</f:facet>
-					#{prog.horaInicial}
+					<h:outputText value="#{prog.horaInicial}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
 				</p:column>
 				<p:column>
 					<f:facet name="header">Hr final</f:facet>
-					#{prog.horaFinal}
+					<h:outputText value="#{prog.horaFinal}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
 				</p:column>
 				<p:column>
+					<f:facet name="header">Início vigência</f:facet>
+					<h:outputText value="#{prog.inicioVigencia}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Término vigência</f:facet>
+					<h:outputText value="#{prog.terminoVigencia}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Calendário</f:facet>
+					<h:outputText value="#{prog.calendario.nome}" />
+				</p:column>
+				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
 							action="#{programacaoRotaMb.iniciarAlteracao(prog)}" ajax="false" />
@@ -79,59 +109,69 @@
 		<h:form id="form2"
 			rendered="#{programacaoRotaMb.isCriacao() || programacaoRotaMb.isAlteracao() || programacaoRotaMb.isExclusao()}">
 			<h3>
-				<h:outputLabel value="Criar programa��o"
+				<p:outputLabel value="Criar programação"
 					rendered="#{programacaoRotaMb.isCriacao()}" />
-				<h:outputLabel value="Alterar programa��o"
+				<p:outputLabel value="Alterar programação"
 					rendered="#{programacaoRotaMb.isAlteracao()}" />
-				<h:outputLabel value="Excluir programa��o"
+				<p:outputLabel value="Confirmar exclusão da programação"
 					rendered="#{programacaoRotaMb.isExclusao()}" />
 			</h3>
 
 			<h:panelGrid columns="2">
 
-				<h:outputLabel value="Rota " />
+				<p:outputLabel value="Rota " />
 				<p:autoComplete value="#{programacaoRotaMb.programacaoRota.rota}"
 					completeMethod="#{rotaMb.autocomplete}" var="r"
 					itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
-					temValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
-					<p:column>  
-					#{r.codigo}
-		                </p:column>
-					<p:column>  
-					#{r.nome}
-		                </p:column>
-					<p:column>  
-					#{r.origem}
-		                </p:column>
-					<p:column>  
-					#{r.destino}
-	        	       </p:column>
+					itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+						#{r.codigo}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{r.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>  
+						#{r.origem}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>  
+						#{r.destino}
+			        </p:column>
 				</p:autoComplete>
-				<h:outputLabel value="Ve�culo " />
+				<p:outputLabel value="Veículo " />
 				<p:autoComplete value="#{programacaoRotaMb.programacaoRota.veiculo}"
 					completeMethod="#{veiculoMb.autocomplete}" var="v"
-					itemLabel="#{v.identificacao}" temValue="#{v}"
+					itemLabel="#{v.placa}" itemValue="#{v}"
 					converter="#{veiculoConverter}" forceSelection="true">
 				</p:autoComplete>
-				<h:outputLabel value="Hora inicial " />
-				<p:inputText
-					value="#{programacaoRotaMb.programacaoRota.horaInicial}" />
-				<h:outputLabel value="Hora final " />
-				<p:inputText value="#{programacaoRotaMb.programacaoRota.horaFinal}" />
+				<p:outputLabel value="Hora inicial " />
+				<p:inputMask
+					value="#{programacaoRotaMb.programacaoRota.horaInicial}"
+					mask="99:99">
+					<f:convertDateTime pattern="HH:mm" />
+				</p:inputMask>
+				<p:outputLabel value="Hora final " />
+				<p:inputMask value="#{programacaoRotaMb.programacaoRota.horaFinal}"
+					mask="99:99">
+					<f:convertDateTime pattern="HH:mm" />
+				</p:inputMask>
 
-				<h:outputLabel value="Calendário " />
+				<p:outputLabel value="Calendário " />
 				<p:autoComplete
 					value="#{programacaoRotaMb.programacaoRota.calendario}"
 					completeMethod="#{calendarioMb.autocomplete}" var="c"
-					itemLabel="#{c.nome}" temValue="#{c}"
+					itemLabel="#{c.nome}" itemValue="#{c}"
 					converter="#{calendarioConverter}" forceSelection="true">
 				</p:autoComplete>
 
-				<h:outputLabel value="In�cio vig�ncia " />
+				<p:outputLabel value="Início vigência " />
 				<p:calendar
 					value="#{programacaoRotaMb.programacaoRota.inicioVigencia}"
 					pattern="dd/MM/yyyy" />
-				<h:outputLabel value="T�rmino vig�ncia " />
+				<p:outputLabel value="Término vigência " />
 				<p:calendar
 					value="#{programacaoRotaMb.programacaoRota.terminoVigencia}"
 					pattern="dd/MM/yyyy" />
@@ -144,9 +184,9 @@
 				rendered="#{programacaoRotaMb.isCriacao() || programacaoRotaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
 				action="#{programacaoRotaMb.terminarExclusao()}" ajax="false"
-				rendered="#{programacaoRotaMb.isExclusao()}" />
+				rendered="#{programacaoRotaMb.isExclusao()}" immediate="true"/>
 			<p:commandButton value="Cancelar"
-				action="#{programacaoRotaMb.cancelar()}" ajax="false" />
+				action="#{programacaoRotaMb.cancelar()}" ajax="false" immediate="true"/>
 		</h:form>
 
 	</ui:define>

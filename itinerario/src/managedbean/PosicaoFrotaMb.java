@@ -65,7 +65,7 @@ public class PosicaoFrotaMb {
 		marker.setIcon(icone);
 		String titulo = marker.getLatlng().toString()
 				+ "\nVeículo: "
-				+ posicao.getVeiculo().getIdentificacao()
+				+ posicao.getVeiculo().getPlaca()
 				+ "\nData e hora: " 
 				+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 		.format(posicao.getDataHora())

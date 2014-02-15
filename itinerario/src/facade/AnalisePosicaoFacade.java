@@ -59,4 +59,5 @@ extends GenericCrudFacade<AnalisePosicao> {
 					.setParameter("analiseViagem", analiseViagem)
 					.getResultList();
 	}
+
 }

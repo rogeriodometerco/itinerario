@@ -42,4 +42,5 @@ extends GenericCrudFacade<AnaliseParada> {
 			return null;
 		}
 	}
+
 }

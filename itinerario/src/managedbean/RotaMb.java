@@ -2,7 +2,6 @@ package managedbean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,13 +9,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.SelectItem;
 
-import modelo.CalendarioEnum;
 import modelo.PontoRota;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
-import modelo.Veiculo;
 import motor.MensagemRMC;
 
 import org.primefaces.event.FileUploadEvent;
@@ -30,7 +26,6 @@ import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
 import facade.RotaFacade;
-import facade.VeiculoFacade;
 
 @ManagedBean
 @ViewScoped
@@ -43,12 +38,9 @@ public class RotaMb implements Serializable {
 	private Rota rota;
 	private List<Rota> lista;
 	private String estadoView;
-
+	private String chavePesquisa;
 	@EJB
 	private RotaFacade facade;
-
-	@EJB
-	private VeiculoFacade veiculoFacade;
 
 	private MapModel mapModel;
 	private String centroMapa;
@@ -61,11 +53,159 @@ public class RotaMb implements Serializable {
 		System.out.println("RotaMb.inicializar()");
 	}
 
+	public Rota getrota() {
+		return rota;
+	}
+
+	public void setRota(Rota rota) {
+		this.rota = rota;
+	}
+
+	public void listar() { 
+		try {
+			if (chavePesquisa == null || chavePesquisa.trim().length() == 0) {
+				this.lista = facade.listar();
+			} else {
+				this.lista = facade.autocomplete(chavePesquisa);
+			}
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
+		}
+	}
+
+	public List<Rota> getLista() {
+		if (lista == null) {
+			listar();
+		}
+		return this.lista;
+	}
+
+	public void iniciarCriacao() {
+		this.estadoView = CRIACAO;
+		this.rota = new Rota();
+		this.rota.setPontos(new ArrayList<PontoRota>());
+		this.rota.setAtiva(true);
+		sincronizarMapModel();
+	}
+
+	public void iniciarAlteracao(Rota rota) {
+		try {
+			this.rota = facade.recuperarParaEdicao(rota.getId());
+			sincronizarMapModel();
+			this.estadoView = ALTERACAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar rota para edição: " + e.getMessage());
+		}
+	}
+
+	public void terminarCriacaoOuAlteracao() {
+		try {
+			facade.salvar(rota);
+			JsfUtil.addMsgSucesso("Informações salvas com sucesso.");
+			listar();
+			this.estadoView = LISTAGEM;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao salvar: " + e.getMessage());
+		}
+
+	}
+
+	public void iniciarExclusao(Rota rota) {
+		try {
+			this.rota = facade.recuperarParaExclusao(rota.getId());
+			sincronizarMapModel();
+			this.estadoView = EXCLUSAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar rota para exclusão: " + e.getMessage());
+		}
+	}
+
+	public void terminarExclusao() {
+		try {
+			facade.excluir(rota);
+			JsfUtil.addMsgSucesso("Informações excluídas com sucesso.");
+			listar();
+			this.estadoView = LISTAGEM;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao excluir: " + e.getMessage());
+		}
+	}
+
+	public void cancelar() {
+		listar();
+		this.estadoView = LISTAGEM;
+	}
+
+	public Boolean isListagem() {
+		return this.estadoView != null && this.estadoView.equals(LISTAGEM);
+	}
+
+	public Boolean isCriacao() {
+		return this.estadoView != null && this.estadoView.equals(CRIACAO);
+	}
+
+	public Boolean isAlteracao() {
+		return this.estadoView != null && this.estadoView.equals(ALTERACAO);
+	}
+
+	public Boolean isExclusao() {
+		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
+	}
+
+	public String getChavePesquisa() {
+		return chavePesquisa;
+	}
+
+	public void setChavePesquisa(String chavePesquisa) {
+		this.chavePesquisa = chavePesquisa;
+	}
+
+	public void arquivoCarregado(FileUploadEvent event) {
+		UploadedFile arquivo = event.getFile(); 
+		mapModel = new DefaultMapModel();
+		int linha = 1;
+		try {
+			Scanner s = new Scanner(arquivo.getInputstream());
+			PontoRota pontoRota = null;
+			MensagemRMC mensagem = null;
+			// TODO Excluir os pontos atuais para receber os novos pontos.
+			// O código abaixo não está removendo os pontos após salvar o objeto.
+			while (rota.getPontos().size() > 0) {
+				rota.getPontos().remove(0);
+			}
+			Double latAnterior = 0d, lngAnterior = 0d;
+			while (s.hasNext()) {
+				mensagem = new MensagemRMC(s.next());
+				// Teste para evitar inserir pontos repetidos.
+				if (!latAnterior.equals(mensagem.getLat()) || !lngAnterior.equals(mensagem.getLng())) {
+					pontoRota = new PontoRota();
+					pontoRota.setLat(mensagem.getLat());
+					pontoRota.setLng(mensagem.getLng());
+					pontoRota.setSequencia(rota.getPontos().size()+1);
+					pontoRota.setRota(rota);
+					pontoRota.setParada(mensagem.getVelocidade() == 0);
+					rota.getPontos().add(pontoRota);
+					System.out.println(mensagem.toString());
+				}
+				latAnterior = mensagem.getLat();
+				lngAnterior = mensagem.getLng();
+				//System.out.println(mensagem.toString());
+				linha++;
+			}
+			sincronizarMapModel();
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao importar arquivo. Linha " + linha + ". " + e.getMessage());
+			e.printStackTrace();
+		}
+		JsfUtil.addMsgSucesso(arquivo.getFileName() 
+				+ " carregado. " + linha + " linhas processadas, " + rota.getPontos().size() + " pontos criados.");
+	}
+
 	public void onMapStateChange(StateChangeEvent event) {
 		zoomMapa = event.getZoomLevel();
 		centroMapa = event.getCenter().getLat() + ", " + event.getCenter().getLng();
 	}
-	
+
 	public MapModel getMapModel() {
 		return mapModel;
 	}
@@ -106,7 +246,7 @@ public class RotaMb implements Serializable {
 		} else {
 			this.centroMapa = "-24.750573, -51.781526";
 		}
-		this.zoomMapa = 10;
+		this.zoomMapa = 15;
 	}
 
 	private void criarMarcadorDeParada(int numeroParada, PontoRota pontoRota) {
@@ -138,7 +278,7 @@ public class RotaMb implements Serializable {
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}
-	
+
 	private void criarMarcadorDeTermino(PontoRota pontoRota) {
 		String icone = "finish.png";
 		System.out.println(icone);
@@ -149,192 +289,11 @@ public class RotaMb implements Serializable {
 		String titulo = "Ponto de término";
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
-	}
-
-	public Rota getRota() {
-		return rota;
-	}
-
-	public void setRota(Rota rota) {
-		System.out.println("setRota() ");
-		this.rota = rota;
-	}
-
-	public void listar() { 
-		try {
-			this.lista = facade.listar();
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
-		}
-	}
-
-	public List<Rota> getLista() {
-		if (lista == null) {
-			listar();
-		}
-		return this.lista;
-	}
-
-	public void iniciarCriacao() {
-		this.estadoView = CRIACAO;
-		this.rota = new Rota();
-		this.rota.setPontos(new ArrayList<PontoRota>());
-		this.rota.setProgramacoes(new ArrayList<ProgramacaoRota>());
-		this.rota.setAtiva(true);
-		sincronizarMapModel();
-	}
-
-	public void iniciarAlteracao(Rota rota) {
-		try {
-			this.rota = facade.recuperarParaEdicao(rota.getId());
-			sincronizarMapModel();
-			this.estadoView = ALTERACAO;
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao recuperar rota para edição: " + e.getMessage());
-		}
-	}
-
-	public void terminarCriacaoOuAlteracao() {
-		try {
-			facade.salvar(rota);
-			JsfUtil.addMsgSucesso("Rota salva com sucesso.");
-			listar();
-			this.estadoView = LISTAGEM;
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao salvar: " + e.getMessage());
-		}
-
-	}
-
-	public void inicializarVeiculo(ProgramacaoRota programacao) {
-		try {
-			String identificacao = programacao.getVeiculo().getIdentificacao();
-			programacao.setVeiculo(veiculoFacade.recuperarPorIdentificacao(programacao.getVeiculo().getIdentificacao()));
-			if (programacao.getVeiculo() == null) {
-				// Volta o estado do veículo.
-				programacao.setVeiculo(new Veiculo());
-				programacao.getVeiculo().setIdentificacao(identificacao);
-				
-				JsfUtil.addMsgErro("Veiculo " + programacao.getVeiculo().getIdentificacao() 
-						+ " não cadastrado.");
-			}
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao consultar veículo: " + e.getMessage());
-		}
-	}
-
-	public void iniciarExclusao(Rota rota) {
-		try {
-			this.rota = facade.recuperarParaExclusao(rota.getId());
-			sincronizarMapModel();
-			this.estadoView = EXCLUSAO;
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao recuperar rota para exclusão: " + e.getMessage());
-		}
-	}
-
-	public void terminarExclusao() {
-		try {
-			facade.excluir(rota);
-			JsfUtil.addMsgSucesso("Rota excluída com sucesso.");
-			listar();
-			this.estadoView = LISTAGEM;
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao excluir: " + e.getMessage());
-		}
-	}
-
-	public void cancelar() {
-		listar();
-		this.estadoView = LISTAGEM;
-	}
-
-	public void novaProgramacao() {
-		System.out.println("novaProgramacao()");
-		ProgramacaoRota programacao = new ProgramacaoRota();
-		// Inicializa alguns atributos.
-		if (!rota.getProgramacoes().isEmpty()) {
-				copiarAtributos(rota.getProgramacoes().get(
-							rota.getProgramacoes().size()-1), programacao);
-		} else {
-			programacao.setVeiculo(new Veiculo());
-			programacao.setRota(rota);
-		}
-		rota.getProgramacoes().add(programacao);
-	}
-
-	private void copiarAtributos(ProgramacaoRota de, ProgramacaoRota para) {
-		para.setHoraInicial(de.getHoraInicial());
-		para.setHoraFinal(de.getHoraFinal());
-		para.setRota(de.getRota());
-		para.setVeiculo(de.getVeiculo());
-	}
-	
-	public void removerProgramacao(ProgramacaoRota programacao) {
-		this.rota.getProgramacoes().remove(programacao);
-	}
-
-
-	public Boolean isListagem() {
-		return this.estadoView != null && this.estadoView.equals(LISTAGEM);
-	}
-
-	public Boolean isCriacao() {
-		return this.estadoView != null && this.estadoView.equals(CRIACAO);
-	}
-
-	public Boolean isAlteracao() {
-		return this.estadoView != null && this.estadoView.equals(ALTERACAO);
-	}
-
-	public Boolean isExclusao() {
-		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
-	}
-
-	public void arquivoImportado(FileUploadEvent event) {
-		UploadedFile arquivo = event.getFile(); 
-		mapModel = new DefaultMapModel();
-		int cont = 1;
-		try {
-			Scanner s = new Scanner(arquivo.getInputstream());
-			PontoRota pontoRota = null;
-			MensagemRMC mensagem = null;
-			// TODO Excluir os pontos atuais para receber os novos pontos.
-			// O código abaixo não está removendo os pontos após salvar o objeto.
-			while (rota.getPontos().size() > 0) {
-				rota.getPontos().remove(0);
-			}
-			while (s.hasNext()) {
-				mensagem = new MensagemRMC(s.next());
-				pontoRota = new PontoRota();
-				pontoRota.setLat(mensagem.getLat());
-				pontoRota.setLng(mensagem.getLng());
-				pontoRota.setSequencia(cont);
-				pontoRota.setRota(this.rota);
-				pontoRota.setParada(mensagem.getVelocidade() == 0);
-				this.rota.getPontos().add(pontoRota);
-				//System.out.println(mensagem.toString());
-				cont ++;
-			}
-			sincronizarMapModel();
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao importar arquivo. Rota " + cont + ". " + e.getMessage());
-			e.printStackTrace();
-		}
-		JsfUtil.addMsgSucesso(arquivo.getFileName() 
-				+ " carregado. " + rota.getPontos().size() + " pontos importados.");
-	}
-
-	public List<SelectItem> getOpcoesTipoPeriodo() {
-		List<SelectItem> opcoes = new ArrayList<SelectItem>();
-		opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
-		opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
-		return opcoes;
-	}
+	}	
 
 	public List<Rota> autocomplete(String chave) {
 		try {
-			return facade.pesquisar(chave);
+			return facade.autocomplete(chave);
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para rota: " + e.getMessage());
 		}

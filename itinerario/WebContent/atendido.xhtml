@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+﻿<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -30,12 +30,12 @@
 				<p:column>  
 					#{p.rota.destino}
 	        	       </p:column>
-				<p:column>  
-					#{p.horaInicial}
-	        	       </p:column>
-				<p:column>  
-					#{p.horaFinal}
-	        	       </p:column>
+				<h:outputText value="#{p.horaInicial}">
+					<f:convertDateTime pattern="HH:mm" />
+				</h:outputText>
+				<h:outputText value="#{p.horaFinal}">
+					<f:convertDateTime pattern="HH:mm" />
+				</h:outputText>
 			</p:autoComplete>
 			<h:outputLabel value="Pessoa " />
 			<p:autoComplete value="#{atendidoMb.pessoaPesquisa}"
@@ -60,15 +60,20 @@
 				</p:column>
 				<p:column>
 					<f:facet name="header">Ve�culo</f:facet>
-					#{a.programacaoRota.veiculo.identificacao}
+					#{a.programacaoRota.veiculo.placa}
 				</p:column>
 				<p:column>
 					<f:facet name="header">Hr inicial</f:facet>
-					#{a.programacaoRota.horaInicial}
+					<h:outputText value="#{a.programacaoRota.horaInicial}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+
 				</p:column>
 				<p:column>
 					<f:facet name="header">Hr final</f:facet>
-					#{a.programacaoRota.horaFinal}
+					<h:outputText value="#{a.programacaoRota.horaFinal}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
 				</p:column>
 				<p:column>
 					<h:panelGroup>
@@ -99,28 +104,39 @@
 					itemLabel="#{p.rota.nome.concat(' - ').concat(p.horaInicial)
 						.concat(' - ').concat(' às ').concat(p.horaFinal)}" temValue="#{p}"
 					converter="#{programacaoRotaConverter}" forceSelection="true">
-					<p:column>  
-					#{p.rota.nome}
-		                </p:column>
-					<p:column>  
-					#{p.rota.origem}
-		                </p:column>
-					<p:column>  
-					#{p.rota.destino}
-	        	       </p:column>
-					<p:column>  
-					#{p.horaInicial}
-	        	       </p:column>
-					<p:column>  
-					#{p.horaFinal}
-	        	       </p:column>
 
+					<p:ajax listener="#{atendidoMb.programacaoRotaChange}"
+						update="parada mapa" />
+
+					<p:column>  
+						#{p.rota.nome}
+			                </p:column>
+					<p:column>  
+						#{p.rota.origem}
+			                </p:column>
+					<p:column>  
+						#{p.rota.destino}
+		        	       </p:column>
+					<p:column>  
+						<h:outputText value="#{p.horaInicial}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+		        	       </p:column>
+					<p:column>  
+						<h:outputText value="#{p.horaFinal}">
+							<f:convertDateTime pattern="HH:mm" />
+						</h:outputText>
+		        	       </p:column>
 				</p:autoComplete>
+
 				<h:outputLabel value="Pessoa " />
 				<p:autoComplete value="#{atendidoMb.atendido.pessoa}"
 					completeMethod="#{pessoaMb.autocomplete}" var="v"
 					itemLabel="#{v.nome}" temValue="#{v}" converter="#{pessoaConverter}"
 					forceSelection="true">
+
+					<p:ajax listener="#{atendidoMb.pessoaChange}"
+						update="mapa" />
 				</p:autoComplete>
 
 				<h:outputText value="Parada: " />
@@ -128,15 +144,21 @@
 					value="#{atendidoMb.atendido.pontoParada}" effect="fade"
 					converter="#{pontoRotaConverter}">
 					<f:selectItem itemLabel="Selecione" itemValue="" />
-					<!--  
-					<f:selectItems value="#{atendidoMb.paradas"}" var="parada"
-						itemLabel="#{atendidoMb.paradas.indexOf(parada).concat(' - ')
-						.concat(parada.descricao)}" itemValue="#{parada}" />
-					-->
+					<f:selectItems value="#{atendidoMb.paradas}" />
 				</p:selectOneMenu>
 
 			</h:panelGrid>
 			<br />
+
+			<p:gmap id="mapa" center="#{atendidoMb.centroMapa}"
+				zoom="#{atendidoMb.zoomMapa}" type="ROADMAP"
+				style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
+				model="#{atendidoMb.mapModel}" widgetVar="mapa">
+				<p:ajax event="stateChange"
+					listener="#{atendidoMb.mapOnStateChange}" />
+			</p:gmap>
+			<br />
+
 			<p:commandButton value="Salvar"
 				action="#{atendidoMb.terminarCriacaoOuAlteracao()}" ajax="false"
 				rendered="#{atendidoMb.isCriacao() || atendidoMb.isAlteracao()}" />

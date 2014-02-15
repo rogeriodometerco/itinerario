@@ -12,67 +12,76 @@
 
 	<ui:define name="titulo">Cadastro de veículo</ui:define>
 	<ui:define name="conteudo">
-		<rich:messages id="mensagens" />
-		<h:form rendered="#{veiculoMb.isListagem()}">
-
-			<h:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}" />
-			<rich:dataTable value="#{veiculoMb.lista}" var="veiculo">
-				<rich:column>
-					<f:facet name="header">Identificação</f:facet>
-					#{veiculo.identificacao}
-				</rich:column>
-				<rich:column>
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{veiculoMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}" ajax="false"/>
+			<p />
+			
+			<p:dataTable value="#{veiculoMb.lista}" var="veiculo"
+				emptyMessage="Nenhum registro encontrado" style="width: 600px">
+				<p:column>
+					<f:facet name="header">Placa</f:facet>
+					#{veiculo.placa}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ano fabricação</f:facet>
+					#{veiculo.anoFabricacao}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Cor</f:facet>
+					#{veiculo.cor}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ocupantes</f:facet>
+					#{veiculo.ocupantes}
+				</p:column>
+				<p:column style="width: 120px">
 					<h:panelGroup>
-						<h:commandButton value="Editar"
-							action="#{veiculoMb.iniciarAlteracao(veiculo)}" />
-						<h:commandButton value="Excluir"
-							action="#{veiculoMb.iniciarExclusao(veiculo)}" />
+						<p:commandButton value="Editar"
+							action="#{veiculoMb.iniciarAlteracao(veiculo)}" ajax="false" />
+						<p:commandButton value="Excluir"
+							action="#{veiculoMb.iniciarExclusao(veiculo)}" ajax="false" />
 					</h:panelGroup>
-				</rich:column>
-			</rich:dataTable>
+				</p:column>
+			</p:dataTable>
 		</h:form>
 
-		<h:form rendered="#{veiculoMb.isCriacao()}">
-			<h3>Criar veículo</h3>
+		<h:form id="form2"
+			rendered="#{veiculoMb.isCriacao() || veiculoMb.isAlteracao() || veiculoMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar veículo"
+					rendered="#{veiculoMb.isCriacao()}" />
+				<p:outputLabel value="Alterar veículo"
+					rendered="#{veiculoMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do veículo"
+					rendered="#{veiculoMb.isExclusao()}" />
+			</h3>
 
-			<h:panelGrid columns="1">
-				<h:outputLabel value="Identificação do veículo" />
-				<h:inputText value="#{veiculoMb.veiculo.identificacao}" />
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Placa" />
+				<p:inputText value="#{veiculoMb.veiculo.placa}" />
+				<p:outputLabel value="Ano fabricação" />
+				<p:inputText value="#{veiculoMb.veiculo.anoFabricacao}" />
+				<p:outputLabel value="Cor" />
+				<p:inputText value="#{veiculoMb.veiculo.cor}" />
+				<p:outputLabel value="Qtde ocupantes" />
+				<p:inputText value="#{veiculoMb.veiculo.ocupantes}" />
+				<p:outputLabel value="Chassi" />
+				<p:inputText value="#{veiculoMb.veiculo.chassi}" />
+				<p:outputLabel value="Estado de conservação" />
+				<p:inputTextarea cols="50" rows="2" value="#{veiculoMb.veiculo.conservacao}" />
 			</h:panelGrid>
 			<br />
-			<h:commandButton value="Salvar"
-				action="#{veiculoMb.terminarCriacaoOuAlteracao()}" />
-			<h:commandButton value="Cancelar" action="#{veiculoMb.cancelar}" />
+			<p:commandButton value="Salvar"
+				action="#{veiculoMb.terminarCriacaoOuAlteracao()}"
+				ajax="false"
+				rendered="#{veiculoMb.isCriacao() || veiculoMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{veiculoMb.terminarExclusao()}" ajax="false"
+				rendered="#{veiculoMb.isExclusao()}" immediate="true"/>
+			<p:commandButton value="Cancelar"
+				action="#{veiculoMb.cancelar()}" ajax="false" immediate="true"/>
 		</h:form>
-
-		<h:form rendered="#{veiculoMb.isAlteracao()}">
-			<h3>Editar veículo</h3>
-
-			<h:panelGrid columns="1">
-				<h:outputLabel value="Identificação do veículo" />
-				<h:inputText value="#{veiculoMb.veiculo.identificacao}" />
-			</h:panelGrid>
-			<br />
-			<h:commandButton value="Salvar"
-				action="#{veiculoMb.terminarCriacaoOuAlteracao()}" />
-			<h:commandButton value="Cancelar" action="#{veiculoMb.cancelar}" />
-		</h:form>
-
-		<h:form rendered="#{veiculoMb.isExclusao()}">
-			<h3>Excluir veículo</h3>
-
-			<h:panelGrid columns="1">
-				<h:outputLabel value="Identificação do veículo" />
-				<h:inputText value="#{veiculoMb.veiculo.identificacao}" />
-			</h:panelGrid>
-			<br />
-			<h:commandButton value="Excluir"
-				action="#{veiculoMb.terminarExclusao()}" />
-			<h:commandButton value="Cancelar" action="#{veiculoMb.cancelar}" />
-		</h:form>
-		<br />
-
-		<h:form>
-		</h:form>		
 	</ui:define>
 </ui:composition>

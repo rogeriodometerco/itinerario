@@ -22,8 +22,6 @@ public class Rota {
 	private Boolean ativa;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="rota", orphanRemoval=true)
 	private List<PontoRota> pontos;
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="rota", orphanRemoval=true)
-	private List<ProgramacaoRota> programacoes;
 	public Long getId() {
 		return id;
 	}
@@ -77,12 +75,6 @@ public class Rota {
 	}
 	public void setPontos(List<PontoRota> pontos) {
 		this.pontos = pontos;
-	}
-	public List<ProgramacaoRota> getProgramacoes() {
-		return programacoes;
-	}
-	public void setProgramacoes(List<ProgramacaoRota> programacoes) {
-		this.programacoes = programacoes;
 	}
 	
 }

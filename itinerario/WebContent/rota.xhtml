@@ -17,234 +17,95 @@
 
 	<ui:define name="titulo">Cadastro de rota</ui:define>
 	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{rotaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Nova" action="#{rotaMb.iniciarCriacao}"
+				ajax="false" />
+			<p:spacer width="8px" />
+			<p:inputText value="#{rotaMb.chavePesquisa}" title="Pesquisar por código, nome, origem ou destino"/>
+			<p:commandButton value="Pesquisar" actionListener="#{rotaMb.listar}"
+				update="listagem :mensagens" />
+			<p />
 
-		<rich:messages id="mensagens" />
-		<h:form rendered="#{rotaMb.isListagem()}">
 
-			<h:commandButton value="Nova" action="#{rotaMb.iniciarCriacao}" />
-			<rich:dataTable value="#{rotaMb.lista}" var="rota">
-				<rich:column>
+			<p:dataTable id="listagem" value="#{rotaMb.lista}" var="rota"
+				emptyMessage="Nenhum registro encontrado" style="width: 800px">
+				<p:column>
+					<f:facet name="header">Código</f:facet>
+					#{rota.codigo}
+				</p:column>
+				<p:column>
 					<f:facet name="header">Nome</f:facet>
 					#{rota.nome}
-				</rich:column>
-				<rich:column>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Origem</f:facet>
+					#{rota.origem}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>
+					#{rota.destino}
+				</p:column>
+				<p:column>
 					<f:facet name="header">Km</f:facet>
 					#{rota.quilometragem}
-				</rich:column>
-				<rich:column>
+				</p:column>
+				<p:column style="width: 120px">
 					<h:panelGroup>
-						<h:commandButton value="Editar"
-							action="#{rotaMb.iniciarAlteracao(rota)}" />
-						<h:commandButton value="Excluir"
-							action="#{rotaMb.iniciarExclusao(rota)}" />
+						<p:commandButton value="Editar"
+							action="#{rotaMb.iniciarAlteracao(rota)}" ajax="false" />
+						<p:commandButton value="Excluir"
+							action="#{rotaMb.iniciarExclusao(rota)}" ajax="false" />
 					</h:panelGroup>
-				</rich:column>
-			</rich:dataTable>
+				</p:column>
+			</p:dataTable>
 		</h:form>
 
-		<h:form enctype="multipart/form-data" rendered="#{rotaMb.isCriacao()}">
-			<h3>Criar rota</h3>
-
-				<rich:panel header="Dados gerais">
-					<h:panelGrid columns="2">
-						<h:outputLabel value="Código" />
-						<h:inputText value="#{rotaMb.rota.codigo}" />
-						<h:outputLabel value="Nome da rota" />
-						<h:inputText value="#{rotaMb.rota.nome}" />
-						<h:outputLabel value="Origem" />
-						<h:inputText value="#{rotaMb.rota.origem}" />
-						<h:outputLabel value="Destino" />
-						<h:inputText value="#{rotaMb.rota.destino}" />
-						<h:outputLabel value="Quilometragem" />
-						<h:inputText value="#{rotaMb.rota.quilometragem}" />
-						<h:outputLabel value="Observacao" />
-						<h:inputText value="#{rotaMb.rota.observacao}" />
-					</h:panelGrid>
-				</rich:panel>
-
-				<rich:panel header="Trajeto">
-					<p:fileUpload fileUploadListener="#{rotaMb.arquivoImportado}"
-						mode="advanced" label="Arquivo com os pontos" process="@form"
-						update=":mensagens, @form" auto="true">
-					</p:fileUpload>
-					<p:gmap center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
-						type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
-						style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
-						<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
-					</p:gmap>
-				</rich:panel>
-
-				<rich:panel header="Programação">
-					<h:commandButton value="Nova"
-						actionListener="#{rotaMb.novaProgramacao()}">
-						<f:ajax execute="@form" render="tabProgramacoes" />
-					</h:commandButton>
-
-					<rich:dataTable id="tabProgramacoes"
-						value="#{rotaMb.rota.programacoes}" var="programacao">
-						<rich:column>
-							<f:facet name="header">Hr inicial</f:facet>
-							<h:inputText value="#{programacao.horaInicial}"
-								style="width: 100%">
-								<f:convertDateTime pattern="HH:mm" />
-							</h:inputText>
-						</rich:column>
-						<rich:column>
-							<f:facet name="header">Hr final</f:facet>
-							<h:inputText value="#{programacao.horaFinal}" style="width: 100%">
-								<f:convertDateTime pattern="HH:mm" />
-							</h:inputText>
-						</rich:column>
-						<rich:column>
-							<f:facet name="header">Dt inicial</f:facet>
-							<h:inputText value="#{programacao.inicioPeriodo}"
-								style="width: 100%">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:inputText>
-						</rich:column>
-						<rich:column>
-							<f:facet name="header">Dt final</f:facet>
-							<h:inputText value="#{programacao.terminoPeriodo}"
-								style="width: 100%">
-								<f:convertDateTime pattern="dd/MM/yyyy" />
-							</h:inputText>
-						</rich:column>
-<!-- 
-						<rich:column>
-							<f:facet name="header">Calendário</f:facet>
-							<h:selectOneMenu value="#{programacao.calendario}"
-								style="width: 60px">
-								<f:selectItems value="#{rotaMb.opcoesTipoPeriodo}" />
-							</h:selectOneMenu>
-						</rich:column>
- -->
- 						<rich:column>
-							<f:facet name="header">Veiculo</f:facet>
-							<h:inputText value="#{programacao.veiculo.identificacao}"
-								style="width: 100%">
-								<f:ajax execute="@this" event="change"
-									listener="#{rotaMb.inicializarVeiculo(programacao)}"
-									render=":mensagens" />
-							</h:inputText>
-						</rich:column>
-
-						<rich:column>
-							<h:commandButton value="Excluir"
-								actionListener="#{rotaMb.removerProgramacao(programacao)}">
-								<f:ajax execute="@this" render="tabProgramacoes" />
-							</h:commandButton>
-						</rich:column>
-					</rich:dataTable>
-				</rich:panel>
-
-				<rich:panel header="Atendidos">
-					<h:panelGrid columns="2">
-					</h:panelGrid>
-				</rich:panel>
-
-				<h:commandButton value="Salvar"
-					action="#{rotaMb.terminarCriacaoOuAlteracao()}" />
-				<h:commandButton value="Cancelar" action="#{rotaMb.cancelar}" />
-		</h:form>
-
-		<h:form enctype="multipart/form-data"
-			rendered="#{rotaMb.isAlteracao()}">
-			<h3>Editar rota</h3>
-
-			<div style="float: left; width: 30%">
-				<h:panelGrid columns="2">
-					<h:outputLabel value="Nome da rota" />
-					<h:outputLabel value="Quilometragem" />
-					<h:inputText value="#{rotaMb.rota.nome}" />
-					<h:inputText value="#{rotaMb.rota.quilometragem}">
-					</h:inputText>
-				</h:panelGrid>
-				<rich:panel>
-					<f:facet name="header">Programação da rota</f:facet>
-					<h:commandButton value="Nova"
-						actionListener="#{rotaMb.novaProgramacao()}">
-						<f:ajax execute="@form" render="tabProgramacoes" />
-					</h:commandButton>
-
-					<rich:dataTable id="tabProgramacoes"
-						value="#{rotaMb.rota.programacoes}" var="programacao">
-						<rich:column>
-							<f:facet name="header">Hr inicial</f:facet>
-							<h:inputText value="#{programacao.horaInicial}"
-								style="width: 100%">
-								<f:convertDateTime pattern="HH:mm" />
-							</h:inputText>
-						</rich:column>
-						<rich:column>
-							<f:facet name="header">Hr final</f:facet>
-							<h:inputText value="#{programacao.horaFinal}" style="width: 100%">
-								<f:convertDateTime pattern="HH:mm" />
-							</h:inputText>
-						</rich:column>
-						<rich:column>
-							<f:facet name="header">Veiculo</f:facet>
-							<h:inputText value="#{programacao.veiculo.identificacao}"
-								style="width: 100%">
-								<f:ajax execute="@this" event="change"
-									listener="#{rotaMb.inicializarVeiculo(programacao)}"
-									render=":mensagens" />
-							</h:inputText>
-						</rich:column>
-
-						<rich:column>
-							<f:facet name="header">Veiculo</f:facet>
-							<rich:autocomplete value="#{programacao.veiculo}"
-								autocompleteMethod="#{veiculoMb.autocomplete}" var="veiculo"
-								converter="#{veiculoConverter}"
-								fetchValue="#{veiculo.identificacao}" forceSelection="true"
-								style="width: 100%">
-								<rich:column>
-									#{veiculo.identificacao}
-								</rich:column>
-							</rich:autocomplete>
-						</rich:column>
-
-						<rich:column>
-							<h:commandButton value="Excluir"
-								actionListener="#{rotaMb.removerProgramacao(programacao)}">
-								<f:ajax execute="@this" render="tabProgramacoes" />
-							</h:commandButton>
-						</rich:column>
-					</rich:dataTable>
-				</rich:panel>
-			</div>
-			<div style="float: left; margin-left: 20px">
-				<p:fileUpload fileUploadListener="#{rotaMb.arquivoImportado}"
-					mode="advanced" label="Arquivo com os pontos" process="@form"
-					update=":mensagens, @form" auto="true">
-				</p:fileUpload>
-				<p:gmap center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
-					type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
-					style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
-					<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
-				</p:gmap>
-			</div>
-
-			<div style="clear: both; margin-top: 20px">
-				<h:commandButton value="Salvar"
-					action="#{rotaMb.terminarCriacaoOuAlteracao()}" />
-				<h:commandButton value="Cancelar" action="#{rotaMb.cancelar}" />
-			</div>
-		</h:form>
-
-		<h:form rendered="#{rotaMb.isExclusao()}">
-			<h3>Excluir rota</h3>
+		<h:form id="form2"
+			rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao() || rotaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar rota" rendered="#{rotaMb.isCriacao()}" />
+				<p:outputLabel value="Alterar rota"
+					rendered="#{rotaMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão da rota"
+					rendered="#{rotaMb.isExclusao()}" />
+			</h3>
 
 			<h:panelGrid columns="2">
-				<h:outputLabel value="Nome da rota" />
-				<h:outputLabel value="Quilometragem" />
-				<h:outputText value="#{rotaMb.rota.nome}" />
-				<h:outputText value="#{rotaMb.rota.quilometragem}" />
+				<p:outputLabel value="Código" />
+				<p:inputText value="#{rotaMb.rota.codigo}" />
+				<p:outputLabel value="Nome da rota" />
+				<p:inputText value="#{rotaMb.rota.nome}" />
+				<p:outputLabel value="Origem" />
+				<p:inputText value="#{rotaMb.rota.origem}" />
+				<p:outputLabel value="Destino" />
+				<p:inputText value="#{rotaMb.rota.destino}" />
+				<p:outputLabel value="Quilometragem" />
+				<p:inputText value="#{rotaMb.rota.quilometragem}" />
+				<p:outputLabel value="Observacao" />
+				<p:inputText value="#{rotaMb.rota.observacao}" />
 			</h:panelGrid>
-			<h:commandButton value="Excluir" action="#{rotaMb.terminarExclusao}" />
-			<h:commandButton value="Cancelar" action="#{rotaMb.cancelar}" />
+			<p/>
+			<p:fileUpload fileUploadListener="#{rotaMb.arquivoCarregado}"
+				mode="advanced" label="Arquivo com os pontos" process="@form"
+				update=":mensagens, mapa" auto="true"
+				rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}">
+			</p:fileUpload>
+			<p:gmap id="mapa" center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
+				type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
+				style="height: 500px; width: 800px; border: 1px solid #c0c0d1;">
+				<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
+			</p:gmap>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{rotaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{rotaMb.terminarExclusao()}" ajax="false"
+				rendered="#{rotaMb.isExclusao()}" immediate="true" />
+			<p:commandButton value="Cancelar" action="#{rotaMb.cancelar()}"
+				ajax="false" immediate="true" />
 		</h:form>
-		<br />
-
 	</ui:define>
 </ui:composition>

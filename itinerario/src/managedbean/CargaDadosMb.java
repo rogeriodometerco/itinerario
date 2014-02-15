@@ -46,7 +46,7 @@ public class CargaDadosMb implements Serializable {
 		int numLinha = 0;
 		try {
 			Veiculo veiculo = veiculoFacade
-					.recuperarPorIdentificacao(identificacaoVeiculo);
+					.recuperarPorPlaca(identificacaoVeiculo);
 			numLinha++;
 			List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();
 			Scanner s = new Scanner(arquivo.getInputstream());

@@ -1,0 +1,167 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Escolas atendidas por rota</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{escolaRotaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Nova"
+				actionListener="#{escolaRotaMb.iniciarCriacao}" ajax="false" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Rota " />
+			<p:autoComplete value="#{escolaRotaMb.rotaPesquisa}"
+				completeMethod="#{rotaMb.autocomplete}" var="r"
+				itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+				itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+				<p:column>
+					<f:facet name="header">Código</f:facet>  
+					#{r.codigo}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+					#{r.nome}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Origem</f:facet>  
+					#{r.origem}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>  
+					#{r.destino}
+		        </p:column>
+			</p:autoComplete>
+			<p:outputLabel value="Escola " />
+			<p:autoComplete value="#{escolaRotaMb.escolaPesquisa}"
+				completeMethod="#{escolaMb.autocomplete}" var="e"
+				itemLabel="#{e.codigo.concat(' - ').concat(e.nome)}"
+				itemValue="#{e}" converter="#{escolaConverter}"
+				forceSelection="true">
+				<p:column>
+					<f:facet name="header">Código</f:facet>  
+					#{e.codigo}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+					#{e.nome}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Localidade</f:facet>  
+					#{e.localidade}
+		        </p:column>
+			</p:autoComplete>
+
+			<p:commandButton value="Pesquisar"
+				actionListener="#{escolaRotaMb.listar}" update="listagem, :mensagens" />
+
+			<p />
+			<p:dataTable id="listagem" value="#{escolaRotaMb.lista}"
+				var="escolaRota" rendered="#{escolaRotaMb.lista != null}"
+				emptyMessage="Nenhum registro encontrado">
+				<p:column>
+					<f:facet name="header">Rota</f:facet>
+					#{escolaRota.rota.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{escolaRota.rota.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Escola</f:facet>
+					#{escolaRota.escola.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{escolaRota.escola.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Localidade</f:facet>
+					#{escolaRota.escola.localidade}
+				</p:column>
+				<p:column style="width: 120px">
+					<h:panelGroup>
+						<p:commandButton value="Excluir"
+							action="#{escolaRotaMb.iniciarExclusao(escolaRota)}" ajax="false" />
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{escolaRotaMb.isCriacao() || escolaRotaMb.isAlteracao() || escolaRotaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar escola atendida"
+					rendered="#{escolaRotaMb.isCriacao()}" />
+				<p:outputLabel value="Alterar escola atendida"
+					rendered="#{escolaRotaMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão da escola atendida"
+					rendered="#{escolaRotaMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+
+				<p:outputLabel value="Rota " />
+				<p:autoComplete value="#{escolaRotaMb.escolaRota.rota}"
+					completeMethod="#{rotaMb.autocomplete}" var="r"
+					itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+					itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+						#{r.codigo}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{r.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>  
+						#{r.origem}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>  
+						#{r.destino}
+			        </p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Escola " />
+				<p:autoComplete value="#{escolaRotaMb.escolaRota.escola}"
+					completeMethod="#{escolaMb.autocomplete}" var="e"
+					itemLabel="#{e.codigo.concat(' - ').concat(e.nome)}"
+					itemValue="#{e}" converter="#{escolaConverter}"
+					forceSelection="true">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+					#{e.codigo}
+		        </p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+					#{e.nome}
+		        </p:column>
+					<p:column>
+						<f:facet name="header">Localidade</f:facet>  
+					#{e.localidade}
+		        </p:column>
+				</p:autoComplete>
+
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{escolaRotaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				rendered="#{escolaRotaMb.isCriacao() || escolaRotaMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{escolaRotaMb.terminarExclusao()}" ajax="false"
+				rendered="#{escolaRotaMb.isExclusao()}" immediate="true" />
+			<p:commandButton value="Cancelar" action="#{escolaRotaMb.cancelar()}"
+				ajax="false" immediate="true" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

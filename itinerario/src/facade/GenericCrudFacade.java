@@ -12,7 +12,7 @@ import dao.GenericDao;
 @Stateless
 public abstract class GenericCrudFacade<T> {
 
-    private final static String UNIT_NAME = "itinerarioPU";
+    private static final String UNIT_NAME = "itinerarioPU";
 
     @PersistenceContext(unitName = UNIT_NAME)
     private EntityManager em;
@@ -24,11 +24,15 @@ public abstract class GenericCrudFacade<T> {
 		return getDao().recuperar(id);
 	}
 	
+	//TODO remover este método.
 	public T salvar(T entidade) throws Exception {
+		completarEdicao(entidade);
+		validar(entidade);
 		return getDao().salvar(entidade);
 	}
 
 	public void excluir(T entidade) throws Exception {
+		validarExclusao(entidade);
 		getDao().excluir(entidade);
 	}
 	
@@ -39,9 +43,28 @@ public abstract class GenericCrudFacade<T> {
 	public List<T> salvar(List<T> lista) throws Exception {
 		List<T> retorno = new ArrayList<T>();
 		for (T entidade: lista) {
+			completarEdicao(entidade);
+			validar(entidade);
+		}
+		for (T entidade: lista) {
 			retorno.add(getDao().salvar(entidade));
 		}
 		return retorno;
+	}
+
+	protected void validar(T entidade) throws Exception {
+		//implementar na classe especialista
+		//TODO pensar numa solução melhor
+	}
+	
+	protected void validarExclusao(T entidade) throws Exception {
+		//implementar na classe especialista
+		//TODO pensar numa solução melhor
+	}
+	
+	protected void completarEdicao(T entidade) throws Exception {
+		//implementar na classe especialista
+		//TODO pensar numa solução melhor
 	}
 
 	protected abstract GenericDao<T> getDao();

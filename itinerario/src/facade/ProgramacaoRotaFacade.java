@@ -1,5 +1,6 @@
 package facade;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,6 +8,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.TemporalType;
 
+import managedbean.AppException;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
 import modelo.Veiculo;
@@ -111,4 +113,30 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				.getResultList();
 	}
 
+	@Override
+	protected void validar(ProgramacaoRota p) throws Exception {
+		List<String> erros = new ArrayList<String>();
+		if (p.getRota() == null) {
+			erros.add("Informe a rota");
+		}
+		if (p.getVeiculo() == null) {
+			erros.add("Informe o veículo");
+		}
+		if (p.getHoraInicial() == null) {
+			erros.add("Informe a hora inicial");
+		}
+		if (p.getHoraFinal() == null) {
+			erros.add("Informe a hora final");
+		}
+		if (p.getCalendario() == null) {
+			erros.add("Informe o calendário");
+		}
+		if (p.getInicioVigencia() == null) {
+			erros.add("Informe a data de início da vigência");
+		}
+		System.out.println("validar()");
+		if (erros.size() > 0) {
+			throw new Exception(erros.toString());
+		}
+	}
 }

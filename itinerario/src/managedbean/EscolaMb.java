@@ -23,7 +23,7 @@ public class EscolaMb implements Serializable {
 	private Escola escola;
 	private List<Escola> lista;
 	private String estadoView;
-	private String nomePesquisa;
+	private String chavePesquisa;
 	@EJB
 	private EscolaFacade facade;
 	
@@ -42,10 +42,10 @@ public class EscolaMb implements Serializable {
 
 	public void listar() { 
 		try {
-			if (nomePesquisa == null || nomePesquisa.trim().isEmpty()) {
+			if (chavePesquisa == null || chavePesquisa.trim().isEmpty()) {
 				this.lista = facade.listar();
 			} else {
-				this.lista = facade.listarPorNomeContendo(nomePesquisa);
+				this.lista = facade.autocomplete(chavePesquisa);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -54,7 +54,7 @@ public class EscolaMb implements Serializable {
 
 	public List<Escola> autocomplete(String chave) {
 		try {
-			return facade.listarPorNomeContendo(chave);
+			return facade.autocomplete(chave);
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para escola: " + e.getMessage());
 		}
@@ -127,12 +127,11 @@ public class EscolaMb implements Serializable {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
 	}
 
-	public String getNomePesquisa() {
-		return nomePesquisa;
+	public String getChavePesquisa() {
+		return chavePesquisa;
 	}
 
-	public void setNomePesquisa(String nomePesquisa) {
-		this.nomePesquisa = nomePesquisa;
+	public void setChavePesquisa(String chavePesquisa) {
+		this.chavePesquisa = chavePesquisa;
 	}
-
 }

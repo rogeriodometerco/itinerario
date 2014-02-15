@@ -45,8 +45,7 @@
 		<h:form enctype="multipart/form-data" rendered="#{rotaMb.isCriacao()}">
 			<h3>Criar rota</h3>
 
-			<rich:tabPanel>
-				<rich:tab header="Dados gerais">
+				<rich:panel header="Dados gerais">
 					<h:panelGrid columns="2">
 						<h:outputLabel value="Código" />
 						<h:inputText value="#{rotaMb.rota.codigo}" />
@@ -61,10 +60,9 @@
 						<h:outputLabel value="Observacao" />
 						<h:inputText value="#{rotaMb.rota.observacao}" />
 					</h:panelGrid>
+				</rich:panel>
 
-				</rich:tab>
-
-				<rich:tab header="Trajeto">
+				<rich:panel header="Trajeto">
 					<p:fileUpload fileUploadListener="#{rotaMb.arquivoImportado}"
 						mode="advanced" label="Arquivo com os pontos" process="@form"
 						update=":mensagens, @form" auto="true">
@@ -74,9 +72,9 @@
 						style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
 						<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
 					</p:gmap>
-				</rich:tab>
+				</rich:panel>
 
-				<rich:tab header="Programação">
+				<rich:panel header="Programação">
 					<h:commandButton value="Nova"
 						actionListener="#{rotaMb.novaProgramacao()}">
 						<f:ajax execute="@form" render="tabProgramacoes" />
@@ -137,14 +135,13 @@
 							</h:commandButton>
 						</rich:column>
 					</rich:dataTable>
-				</rich:tab>
+				</rich:panel>
 
-				<rich:tab header="Atendidos">
+				<rich:panel header="Atendidos">
 					<h:panelGrid columns="2">
 					</h:panelGrid>
-				</rich:tab>
+				</rich:panel>
 
-			</rich:tabPanel>
 				<h:commandButton value="Salvar"
 					action="#{rotaMb.terminarCriacaoOuAlteracao()}" />
 				<h:commandButton value="Cancelar" action="#{rotaMb.cancelar}" />

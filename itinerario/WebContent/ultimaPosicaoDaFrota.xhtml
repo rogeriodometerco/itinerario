@@ -27,7 +27,7 @@
 				<rich:dataTable value="#{posicaoFrotaMb.posicoes}" var="posicao">
 					<f:facet name="header">Para focar em um veículo, clique sobre o mesmo</f:facet>
 					<rich:column>
-						<h:commandLink value="#{posicao.veiculo.identificacao}" 
+						<h:commandLink value="#{posicao.veiculo.placa}" 
 							actionListener="#{posicaoFrotaMb.focar(posicao)}" title="Clique para focar no mapa">
 							<f:ajax render=":form:mapa" />
 						</h:commandLink>

@@ -95,8 +95,8 @@ public class ConsultaAnaliseViagemMb {
 
 	public void identificacaoVeiculoChange() {
 		try {
-			if (getVeiculo().getIdentificacao().length() > 0) {
-				this.veiculo = veiculoFacade.recuperarPorIdentificacao(veiculo.getIdentificacao());
+			if (getVeiculo().getPlaca().length() > 0) {
+				this.veiculo = veiculoFacade.recuperarPorPlaca(veiculo.getPlaca());
 				if (veiculo == null) {
 					JsfUtil.addMsgErro("Veículo não cadastrado.");
 				}
@@ -228,7 +228,7 @@ public class ConsultaAnaliseViagemMb {
 		String titulo = marker.getLatlng().toString()
 				+ "\n" + legenda
 				+ "\nVeículo: "
-				+ analise.getPosicaoVeiculo().getVeiculo().getIdentificacao()
+				+ analise.getPosicaoVeiculo().getVeiculo().getPlaca()
 				+ "\nData e hora: " 
 				+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
 		.format(analise.getPosicaoVeiculo().getDataHora())

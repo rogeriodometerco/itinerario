@@ -9,27 +9,53 @@ public class Veiculo {
 	@Id
 	@GeneratedValue
 	private Long id;
+	private String placa;
+	private Integer anoFabricacao;
+	private Integer ocupantes;
+	private String cor;
+	private String chassi;
+	private String conservacao;
 
-	private String identificacao;
-	private String descricao;
-	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getIdentificacao() {
-		return identificacao;
+	public String getPlaca() {
+		return placa;
 	}
-	public void setIdentificacao(String identificacao) {
-		this.identificacao = identificacao;
+	public void setPlaca(String placa) {
+		this.placa = placa;
 	}
-	public String getDescricao() {
-		return descricao;
+	public Integer getAnoFabricacao() {
+		return anoFabricacao;
 	}
-	public void setDescricao(String descricao) {
-		this.descricao = descricao;
+	public void setAnoFabricacao(Integer anoFabricacao) {
+		this.anoFabricacao = anoFabricacao;
 	}
-	
+	public Integer getOcupantes() {
+		return ocupantes;
+	}
+	public void setOcupantes(Integer ocupantes) {
+		this.ocupantes = ocupantes;
+	}
+	public String getCor() {
+		return cor;
+	}
+	public void setCor(String cor) {
+		this.cor = cor;
+	}
+	public String getChassi() {
+		return chassi;
+	}
+	public void setChassi(String chassi) {
+		this.chassi = chassi;
+	}
+	public String getConservacao() {
+		return conservacao;
+	}
+	public void setConservacao(String conservacao) {
+		this.conservacao = conservacao;
+	}
 }

@@ -12,35 +12,48 @@ import dao.PontoRotaDao;
 @Stateless
 public class PontoRotaFacade extends GenericCrudFacade<PontoRota> {
 
-        @EJB
-        private PontoRotaDao dao;
+	@EJB
+	private PontoRotaDao dao;
 
-        public List<PontoRota> recuperarPontos(Rota rota) throws Exception {
-                String sql = "select p"
-                                + " from PontoRota as p" 
-                                + " where p.rota = :rota"
-                                + " order by sequencia";
+	public List<PontoRota> recuperarPontos(Rota rota) throws Exception {
+		String sql = "select p"
+				+ " from PontoRota as p" 
+				+ " where p.rota = :rota"
+				+ " order by sequencia";
 
-                return getEntityManager().createQuery(sql, PontoRota.class)
-                                .setParameter("rota", rota)
-                                .getResultList();
-        }
+		return getEntityManager().createQuery(sql, PontoRota.class)
+				.setParameter("rota", rota)
+				.getResultList();
+	}
 
-        public PontoRota recuperarParadas(Rota rota) throws Exception {
-                String sql = "select p"
-                                + " from PontoRota as p" 
-                                + " where p.rota = :rota"
-                                + " and p.parada = true"
-                                + " order by sequencia";
+	public List<PontoRota> recuperarParadas(Rota rota) throws Exception {
+		String sql = "select p"
+				+ " from PontoRota as p" 
+				+ " where p.rota = :rota"
+				+ " and p.parada = true"
+				+ " order by sequencia";
 
-                return getEntityManager().createQuery(sql, PontoRota.class)
-                                .setParameter("rota", rota)
-                                .getSingleResult();
-        }
+		return getEntityManager().createQuery(sql, PontoRota.class)
+				.setParameter("rota", rota)
+				.getResultList();
+	}
 
-        @Override
-        protected PontoRotaDao getDao() {
-                return dao;
-        }
+	public PontoRota recuperarParadas(Rota rota, int parada) throws Exception {
+		String sql = "select p"
+				+ " from PontoRota as p" 
+				+ " where p.rota = :rota"
+				+ " and p.parada = true"
+				+ " order by sequencia";
+
+		return getEntityManager().createQuery(sql, PontoRota.class)
+				.setParameter("rota", rota)
+				.setParameter("parada", parada)
+				.getSingleResult();
+	}
+
+	@Override
+	protected PontoRotaDao getDao() {
+		return dao;
+	}
 
 }

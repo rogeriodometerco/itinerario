@@ -30,7 +30,7 @@
 				enableManualInput="true" datePattern="dd/MM/yyyy">
 			</rich:calendar>
 			<h:outputLabel value="Veículo " />
-			<h:inputText value="#{consultaAnaliseViagemMb.veiculo.identificacao}">
+			<h:inputText value="#{consultaAnaliseViagemMb.veiculo.placa}">
 				<f:ajax listener="#{consultaAnaliseViagemMb.identificacaoVeiculoChange}"
 					render="mensagens" />
 			</h:inputText>
@@ -48,7 +48,7 @@
 				<rich:column>
 					<f:facet name="header">Veículo</f:facet>
 					<h:outputText
-						value="#{analise.programacao.veiculo.identificacao}" />
+						value="#{analise.programacao.veiculo.placa}" />
 				</rich:column>
 				<rich:column>
 					<f:facet name="header">Rota</f:facet>
@@ -142,7 +142,7 @@
 			<h:panelGrid columns="2" rendered="#{consultaAnaliseViagemMb.exibicaoMapa}">
 				<h:outputLabel value="Veículo" />
 				<h:outputLabel
-					value="#{consultaAnaliseViagemMb.analiseNoMapa.programacao.veiculo.identificacao}" />
+					value="#{consultaAnaliseViagemMb.analiseNoMapa.programacao.veiculo.placa}" />
 			</h:panelGrid>
 			<p:gmap id="mapa" center="#{consultaAnaliseViagemMb.centroMapa}"
 				zoom="#{consultaAnaliseViagemMb.zoomMapa}" type="ROADMAP"

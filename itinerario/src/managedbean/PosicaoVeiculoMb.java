@@ -33,7 +33,7 @@ public class PosicaoVeiculoMb {
 		Calendar c = Calendar.getInstance();
 		c.set(2013, 10, 6);
 		data = new Date(c.getTimeInMillis());
-		getVeiculo().setIdentificacao("ZZZ9999");
+		getVeiculo().setPlaca("ZZZ9999");
 		this.inicializarVeiculo();
 		listar();
 	}
@@ -60,7 +60,7 @@ public class PosicaoVeiculoMb {
 	
 	public void inicializarVeiculo() {
 		try {
-			this.veiculo = veiculoFacade.recuperarPorIdentificacao(veiculo.getIdentificacao());
+			this.veiculo = veiculoFacade.recuperarPorPlaca(veiculo.getPlaca());
 			if (veiculo == null) {
 				JsfUtil.addMsgErro("Veiculo não cadastrado.");
 			}
