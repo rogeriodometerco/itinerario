@@ -1,14 +1,12 @@
 ﻿package managedbean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.model.SelectItem;
 
 import modelo.Atendido;
 import modelo.Pessoa;
@@ -20,6 +18,7 @@ import org.primefaces.model.map.DefaultMapModel;
 import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
+import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
 import facade.AtendidoFacade;
@@ -35,7 +34,7 @@ public class AtendidoMb implements Serializable {
 	private static final String EXCLUSAO = "exclusao";
 	private Atendido atendido;
 	private List<Atendido> lista;
-	private List<SelectItem> paradas;
+	private List<PontoRota> paradas;
 	private String estadoView;
 	private ProgramacaoRota programacaoRotaPesquisa;
 	private Pessoa pessoaPesquisa;
@@ -87,11 +86,15 @@ public class AtendidoMb implements Serializable {
 	public void iniciarCriacao() {
 		this.estadoView = CRIACAO;
 		this.atendido = new Atendido();
+		sincronizarMarcadores();
+		sincronizarOpcoesDeParada();
 	}
 
 	public void iniciarAlteracao(Atendido atendido) {
 		this.atendido = atendido;
 		this.estadoView = ALTERACAO;
+		sincronizarMarcadores();
+		sincronizarOpcoesDeParada();
 	}
 
 	public void terminarCriacaoOuAlteracao() {
@@ -109,6 +112,8 @@ public class AtendidoMb implements Serializable {
 	public void iniciarExclusao(Atendido atendido) {
 		this.atendido = atendido;
 		this.estadoView = EXCLUSAO;
+		sincronizarMarcadores();
+		sincronizarOpcoesDeParada();
 	}
 
 	public void terminarExclusao() {
@@ -159,18 +164,17 @@ public class AtendidoMb implements Serializable {
 		this.pessoaPesquisa = pessoa;
 	}
 
-	public List<SelectItem> getParadas() {
+	public List<PontoRota> getParadas() {
+		System.out.println("getParadas() " + paradas);
 		return paradas;
 	}
 
-	private void carregarParadas() {
+	private void sincronizarOpcoesDeParada() {
 		try {
-			paradas = new ArrayList<SelectItem>();
-			if (atendido.getProgramacaoRota() != null) {
-				int cont = 1;
-				for (PontoRota p: pontoRotaFacade.recuperarParadas(atendido.getProgramacaoRota().getRota())) {
-					paradas.add(new SelectItem(p, String.valueOf(cont++).concat(" - " ).concat(p.getDescricao())));
-				}
+			if (atendido != null && atendido.getProgramacaoRota() != null) {
+				paradas = pontoRotaFacade.recuperarParadas(atendido.getProgramacaoRota().getRota());
+			} else {
+				paradas = null;
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao carregar paradas da rota: " + e.getMessage());
@@ -195,62 +199,93 @@ public class AtendidoMb implements Serializable {
 	}
 
 	public void programacaoRotaChange() {
-		carregarParadas();
+		sincronizarOpcoesDeParada();
 		sincronizarMarcadores();
 	}
 
 	public void pessoaChange() {
-		carregarParadas();
 		sincronizarMarcadores();
 	}
 
 
 	private void resetarMapa() {
 		this.centroMapa = "-24.753573,-51.762526";
-		this.zoomMapa = 13;
+		this.zoomMapa = 15;
 		this.mapModel = new DefaultMapModel();
 	}
 
 	private void sincronizarMarcadores() {
-		mapModel = new DefaultMapModel();
-		int parada = 1;
-		for (SelectItem i: paradas) {
-			criarMarcadorParada((PontoRota)i.getValue(), parada++);
-		}
+		try {
+			mapModel = new DefaultMapModel();
 
-		if (atendido != null && atendido.getPessoa() != null) {
-			criarMarcadorPessoa(atendido.getPessoa());
-			if (atendido.getPessoa().getLat() != null && atendido.getPessoa().getLng() != null) {
-				this.centroMapa = atendido.getPessoa().getLat() + (", ") + (atendido.getPessoa().getLng());
+			if (atendido != null && atendido.getPessoa() != null) {
+				criarMarcadorPessoa(atendido.getPessoa());
+				if (atendido.getPessoa().getLat() != null && atendido.getPessoa().getLng() != null) {
+					this.centroMapa = atendido.getPessoa().getLat() + (", ") + (atendido.getPessoa().getLng());
+				}
 			}
-		}
 
+			if (atendido != null && atendido.getProgramacaoRota() != null) {
+				//int cont = 1;
+				Polyline polyline = new Polyline();
+				List<PontoRota> pontos = pontoRotaFacade.recuperarPontos(atendido.getProgramacaoRota().getRota());
+				for (PontoRota ponto: pontos) {
+					LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
+					polyline.getPaths().add(latLng);
+					/*
+					if (cont == 1) {
+						criarMarcadorDeInicio(ponto);
+					} else if (cont == pontos.size()) {
+						criarMarcadorDeTermino(ponto);
+					} else if (ponto.getParada()) {
+						criarMarcadorDeParada(ponto);
+					}
+					cont++;
+					 */
+					if (ponto.getParada()) {
+						criarMarcadorDeParada(ponto);
+					}				
+				}
+				polyline.setStrokeWeight(7);  
+				polyline.setStrokeColor("#0000FF");  
+				polyline.setStrokeOpacity(0.3);  
+				mapModel.addOverlay(polyline);  
+			}
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao exibir marcadores no mapa: " + e.getMessage());
+		}
 	}
 
 
-	private void criarMarcadorParada(PontoRota ponto, int numeroParada) {
-		String icone;
-		icone = "mm_20_red.png";
-
-		LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
-		Marker marker = new Marker(latLng, "", ponto);
+	private void criarMarcadorDeParada(PontoRota pontoRota) {
+		String numero = null;
+		if (pontoRota.getNumeroParada() < 10) {
+			numero = "0" + pontoRota.getNumeroParada();
+		} else {
+			numero = String.valueOf(pontoRota.getNumeroParada());
+		}
+		String icone = "black" + numero+".png";
+		LatLng latLng = new LatLng(pontoRota.getLat(), 
+				pontoRota.getLng());
+		Marker marker = new Marker(latLng, "", pontoRota);
 		marker.setIcon("resources/icones/" + icone);
-		String titulo = "Parada: " + numeroParada
-				+ "\n" + ponto.getDescricao()
-				+ "\n" + marker.getLatlng().toString();
+		String titulo = "Parada " + pontoRota.getNumeroParada();
+		if (pontoRota.getDescricao() != null) {
+			titulo = titulo.concat("\n")
+					.concat(pontoRota.getDescricao());
+		}
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}
 
 	private void criarMarcadorPessoa(Pessoa pessoa) {
 		String icone;
-		icone = "mm_20_white.png";
+		icone = "male-2.png";
 
 		LatLng latLng = new LatLng(pessoa.getLat(), pessoa.getLng());
 		Marker marker = new Marker(latLng, "", pessoa);
 		marker.setIcon("resources/icones/" + icone);
-		String titulo = "pessoa.getNome"
-				+ "\n" + marker.getLatlng().toString();
+		String titulo = pessoa.getNome();
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}

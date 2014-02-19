@@ -21,7 +21,7 @@ public class PontoRotaConverter implements Converter {
 
 	@Override
 	public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {
-		if (!submittedValue.trim().equals("")  && submittedValue != null) {
+		if (submittedValue != null && !submittedValue.trim().equals("")) {
 			try {
 				return facade.recuperar(Long.parseLong(submittedValue));
 			}

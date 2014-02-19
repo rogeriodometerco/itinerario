@@ -1,11 +1,13 @@
 package facade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import modelo.Atendido;
+import modelo.EscolaRota;
 import modelo.Pessoa;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -88,4 +90,22 @@ extends GenericCrudFacade<Atendido> {
 				.setParameter("pessoa", pessoa)
 				.getResultList();
 	}
+
+	@Override
+	protected void validar(Atendido entidade) throws Exception {
+		List<String> erros = new ArrayList<String>();
+		if (entidade.getProgramacaoRota() == null) {
+			erros.add("Informe a programação da rota");
+		}
+		if (entidade.getPessoa() == null) {
+			erros.add("Informe a pessoa");
+		}
+		if (entidade.getPontoParada() == null) {
+			erros.add("Informe o ponto de parada");
+		}
+		if (erros.size() > 0) {
+			throw new Exception(erros.toString());
+		}
+	}
+
 }

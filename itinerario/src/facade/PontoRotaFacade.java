@@ -32,22 +32,25 @@ public class PontoRotaFacade extends GenericCrudFacade<PontoRota> {
 				+ " where p.rota = :rota"
 				+ " and p.parada = true"
 				+ " order by sequencia";
-
+		/*System.out.println("recuperarParadas() rota " + rota.getId() + " " + getEntityManager().createQuery(sql, PontoRota.class)
+		.setParameter("rota", rota)
+		.getResultList().size());*/
+		
 		return getEntityManager().createQuery(sql, PontoRota.class)
 				.setParameter("rota", rota)
 				.getResultList();
 	}
 
-	public PontoRota recuperarParadas(Rota rota, int parada) throws Exception {
+	public PontoRota recuperarParada(Rota rota, int numeroParada) throws Exception {
 		String sql = "select p"
 				+ " from PontoRota as p" 
 				+ " where p.rota = :rota"
-				+ " and p.parada = true"
+				+ " and p.numeroParada = :numeroParada"
 				+ " order by sequencia";
 
 		return getEntityManager().createQuery(sql, PontoRota.class)
 				.setParameter("rota", rota)
-				.setParameter("parada", parada)
+				.setParameter("numeroParada", numeroParada)
 				.getSingleResult();
 	}
 

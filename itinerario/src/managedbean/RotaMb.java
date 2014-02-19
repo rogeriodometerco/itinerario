@@ -174,6 +174,7 @@ public class RotaMb implements Serializable {
 				rota.getPontos().remove(0);
 			}
 			Double latAnterior = 0d, lngAnterior = 0d;
+			int numeroParada = 1;
 			while (s.hasNext()) {
 				mensagem = new MensagemRMC(s.next());
 				// Teste para evitar inserir pontos repetidos.
@@ -184,6 +185,9 @@ public class RotaMb implements Serializable {
 					pontoRota.setSequencia(rota.getPontos().size()+1);
 					pontoRota.setRota(rota);
 					pontoRota.setParada(mensagem.getVelocidade() == 0);
+					if (pontoRota.getParada()) {
+						pontoRota.setNumeroParada(numeroParada++);
+					}
 					rota.getPontos().add(pontoRota);
 					System.out.println(mensagem.toString());
 				}
@@ -219,7 +223,6 @@ public class RotaMb implements Serializable {
 	}
 
 	private void sincronizarMapModel() {
-		int numeroParada = 1;
 		int cont = 1;
 		mapModel = new DefaultMapModel();
 		if (rota != null && rota.getPontos().size() > 0) {
@@ -232,7 +235,7 @@ public class RotaMb implements Serializable {
 				} else if (cont == rota.getPontos().size()) {
 					criarMarcadorDeTermino(ponto);
 				} else if (ponto.getParada()) {
-					criarMarcadorDeParada(numeroParada++, ponto);
+					criarMarcadorDeParada(ponto);
 				}
 				cont++;
 			}
@@ -249,12 +252,12 @@ public class RotaMb implements Serializable {
 		this.zoomMapa = 15;
 	}
 
-	private void criarMarcadorDeParada(int numeroParada, PontoRota pontoRota) {
+	private void criarMarcadorDeParada(PontoRota pontoRota) {
 		String numero = null;
-		if (numeroParada < 10) {
-			numero = "0" + numeroParada;
+		if (pontoRota.getNumeroParada() < 10) {
+			numero = "0" + pontoRota.getNumeroParada();
 		} else {
-			numero = String.valueOf(numeroParada);
+			numero = String.valueOf(pontoRota.getNumeroParada());
 		}
 		String icone = "black" + numero+".png";
 		System.out.println(icone);

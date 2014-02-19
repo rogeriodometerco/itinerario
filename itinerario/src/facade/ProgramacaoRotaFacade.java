@@ -96,20 +96,21 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				.getResultList();
 	}
 
-	public List<ProgramacaoRota> listarAutocomplete(String chave) 
+	public List<ProgramacaoRota> autocomplete(String chave) 
 			throws Exception {
-		// TODO Filtrar por horário também.
-		String sql = "select x"
+		String sql = "select p"
 				+ " from ProgramacaoRota as p, Rota as r" 
 				+ " where p.rota = r"
 				+ " and ("
 				+ "	upper(r.codigo) like :chave"
 				+ "	or upper(r.nome) like :chave"
+				+ "	or upper(r.origem) like :chave"
+				+ "	or upper(r.destino) like :chave"
 				+ " )";
 
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
-				.setParameter("chave", chave)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
 				.getResultList();
 	}
 
@@ -134,7 +135,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		if (p.getInicioVigencia() == null) {
 			erros.add("Informe a data de início da vigência");
 		}
-		System.out.println("validar()");
 		if (erros.size() > 0) {
 			throw new Exception(erros.toString());
 		}

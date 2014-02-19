@@ -144,7 +144,7 @@ public class ProgramacaoRotaMb implements Serializable {
 
 	public List<ProgramacaoRota> autocomplete(String chave) {
 		try {
-			return facade.listarAutocomplete(chave);
+			return facade.autocomplete(chave);
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar lista de sugestões para programação de veículo para rota: " + e.getMessage());
 		}
