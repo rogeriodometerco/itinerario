@@ -19,6 +19,9 @@ public class Pessoa {
 	private Double lng;
 	private Date dataNascimento;
 	private String cnh;
+	private String nomePai;
+	private String nomeMae;
+	
 	public Long getId() {
 		return id;
 	}
@@ -72,6 +75,18 @@ public class Pessoa {
 	}
 	public void setCnh(String cnh) {
 		this.cnh = cnh;
+	}
+	public String getNomePai() {
+		return nomePai;
+	}
+	public void setNomePai(String nomePai) {
+		this.nomePai = nomePai;
+	}
+	public String getNomeMae() {
+		return nomeMae;
+	}
+	public void setNomeMae(String nomeMae) {
+		this.nomeMae = nomeMae;
 	}
 	
 }

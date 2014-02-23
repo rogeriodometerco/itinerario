@@ -1,5 +1,7 @@
 http://community.jaspersoft.com/wiki/designing-report
 http://davidbuzatto.com.br/2010/10/09/jasperreports-trabalhando-com-relatorios-em-java-parte-1/
+http://javasemcafe.blogspot.com.br/2011/06/jasperreports-401-utilizando-subreports.html
+http://javasemcafe.blogspot.com.br/2011/06/jasperreports-401-agrupando-dados.html
 
 pdf-renderer-1.0.5
 poi-bin-3.10-FINAL-20140208

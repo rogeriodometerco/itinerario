@@ -17,7 +17,7 @@ public class AlunoFacade extends GenericCrudFacade<Aluno> {
 
 	@EJB
 	private AlunoDao alunoDao;
-	
+
 	@Override
 	protected AlunoDao getDao() {
 		return alunoDao;
@@ -69,6 +69,9 @@ public class AlunoFacade extends GenericCrudFacade<Aluno> {
 		}
 		if (entidade.getEscola() == null) {
 			erros.add("Informe a escola");
+		}
+		if (listar(entidade.getEscola(), entidade.getPessoa()) != null) {
+			erros.add("Esta pessoa já está cadastrada como aluno desta escola");
 		}
 		if (erros.size() > 0) {
 			throw new Exception(erros.toString());

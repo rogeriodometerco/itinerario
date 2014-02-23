@@ -37,7 +37,7 @@ extends GenericCrudFacade<ProgramacaoRota> {
 	@SuppressWarnings("unchecked")
 	public List<ProgramacaoRota> recuperarProgramacoes(Date data) throws Exception {
 		String sql = "select p from ProgramacaoRota as p"
-				+ " where p.inicioPeriodo <= :data and p.terminoPeriodo >= :data";
+				+ " where p.inicioVigencia <= :data and p.terminoVigencia >= :data";
 		List<ProgramacaoRota> lista = (List<ProgramacaoRota>)getEntityManager()
 				.createQuery(sql)
 				.setParameter("data", data, TemporalType.TIMESTAMP)

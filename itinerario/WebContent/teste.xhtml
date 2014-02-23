@@ -16,6 +16,9 @@
 		<h:form>
 			<p:commandButton value="Testar" actionListener="#{testeMb.testar}" update=":mensagens" />
 			<p:commandButton value="Testar arquivo" actionListener="#{testeMb.testarArquivo()}" update=":mensagens" />
+			<p:commandButton value="PDF" action="#{testeMb.PDF}" ajax="false" update=":mensagens" />
+			<h:commandLink value="PDF" action="#{testeMb.PDF}" target="_blank"/>
+			<p:commandButton value="Download" actionListener="#{testeMb.downloadFile}" update=":mensagens" />
 		</h:form>
 
 	</ui:define>

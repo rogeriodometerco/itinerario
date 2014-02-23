@@ -29,31 +29,32 @@ public class CargaDadosMb implements Serializable {
 	private VeiculoFacade veiculoFacade;
 	@EJB
 	private PosicaoVeiculoFacade posicaoFacade;
+
+	private Veiculo veiculo;
+
+	public Veiculo getVeiculo() {
+		return veiculo;
+	}
 	
-	private String identificacaoVeiculo;
-
-	public String getIdentificacaoVeiculo() {
-		return identificacaoVeiculo;
+	public void setVeiculo(Veiculo veiculo) {
+		this.veiculo = veiculo;
 	}
-
-	public void setIdentificacaoVeiculo(String identificacaoVeiculo) {
-		System.out.println("setIdentificacaoVeiculo() "+ identificacaoVeiculo);
-		this.identificacaoVeiculo = identificacaoVeiculo;
-	}
-
-	public void arquivoImportado(FileUploadEvent event) {
+	
+	public void arquivoCarregado(FileUploadEvent event) {
+		if (veiculo == null) {
+			JsfUtil.addMsgErro("Informe o veículo para carregar o arquivo");
+			return;
+		}
 		UploadedFile arquivo = event.getFile(); 
 		int numLinha = 0;
 		try {
-			Veiculo veiculo = veiculoFacade
-					.recuperarPorPlaca(identificacaoVeiculo);
-			numLinha++;
 			List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();
 			Scanner s = new Scanner(arquivo.getInputstream());
 			PosicaoVeiculo posicao = null;
 			MensagemRMC mensagem = null;
 			String linhaArquivo = null;
 			while (s.hasNext()) {
+				numLinha++;
 				linhaArquivo = s.next();
 				mensagem = new MensagemRMC(linhaArquivo);
 				posicao = new PosicaoVeiculo();

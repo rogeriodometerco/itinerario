@@ -82,6 +82,10 @@
 				<p:inputText value="#{pessoaMb.pessoa.dataNascimento}">
 					<f:convertDateTime pattern="dd/MM/yyyy"/>
 				</p:inputText>
+				<p:outputLabel value="Nome do pai" />
+				<p:inputText value="#{pessoaMb.pessoa.nomePai}" />
+				<p:outputLabel value="Nome da mãe" />
+				<p:inputText value="#{pessoaMb.pessoa.nomeMae}" />
 				<p:outputLabel value="Endereço" />
 				<p:inputText value="#{pessoaMb.pessoa.endereco}" />
 				<p:outputLabel value="Latitude" />

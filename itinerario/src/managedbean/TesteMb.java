@@ -1,5 +1,9 @@
 package managedbean;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,9 +13,19 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.EJB;
+import javax.el.ELContext;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
+import modelo.Calendario;
+import modelo.Escola;
+import modelo.PontoRota;
+import modelo.Rota;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -20,9 +34,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
-
-import modelo.Calendario;
-import modelo.Escola;
+import teste.FichaKmRodado;
 import util.JsfUtil;
 import facade.TesteFacade;
 
@@ -51,7 +63,115 @@ public class TesteMb implements Serializable {
 		}
 
 	}
-	
+
+
+    public void downloadFile() {
+        FileInputStream in = null;
+        String filename = "FichaKmRodado.pdf";
+        File file = new File("c:/ambdev/teste/FichaKmRodado.pdf");
+        try {
+            ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+            HttpServletResponse response = (HttpServletResponse) context.getResponse();
+            response.setHeader("Content-Disposition", "attachment;filename=\"" + filename + "\""); 
+            response.setContentLength((int) file.length()); 
+            response.setContentType("application/pdf");
+            in = new FileInputStream(file);
+            OutputStream out = response.getOutputStream();
+            byte[] buf = new byte[(int) file.length()];
+            int count;
+            while ((count = in.read(buf)) >= 0) {
+                out.write(buf, 0, count);
+            }
+            JsfUtil.addMsgSucesso(file.length() + " bytes do arquivo " + file.getName() + " " + file.getAbsolutePath());
+            FacesContext.getCurrentInstance().responseComplete();
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+            }
+        }
+ 
+    }
+    
+	public void PDF() throws JRException, IOException{
+		try {
+			Rota r = new Rota();
+			r.setNome("Rota 000001");
+			r.setPontos(new ArrayList<PontoRota>());
+			PontoRota pr = new PontoRota();
+			pr.setId(999l);
+			pr.setDescricao("Descrição do ponto da rota");
+			r.getPontos().add(pr);
+
+			pr = new PontoRota();
+			pr.setId(1000l);
+			pr.setDescricao("Descrição do ponto 1000 da rota");
+			r.getPontos().add(pr);
+
+			FichaKmRodado ficha = new FichaKmRodado();
+			ficha.setRota(r);
+
+			List<FichaKmRodado> l = new ArrayList<FichaKmRodado>();
+			l.add(ficha);
+
+
+			JasperReport report = JasperCompileManager.compileReport("c:/ambdev/teste/FichaKmRodado.jrxml");
+			System.out.println("Compilou");
+			JasperPrint print = JasperFillManager
+					.fillReport(report, null, new JRBeanCollectionDataSource(l));
+
+			//JasperExportManager.exportReportToPdfFile(print, "c:/ambdev/teste/FichaKmRodado.pdf");  
+
+			HttpServletResponse response = (HttpServletResponse)FacesContext
+					.getCurrentInstance().getExternalContext().getResponse();
+			
+			response.setContentType("application/pdf"); 
+			//response.setHeader("Content-disposition", "attachment;filename=\"FichaKmRodado.pdf\"");  
+			response.setHeader("Content-disposition", "inline");  
+			ServletOutputStream responseStream = response.getOutputStream();  
+			JasperExportManager.exportReportToPdfStream(print, responseStream);
+			//JasperRunManager.runReportToPdf(getClass().getResourceAsStream("c:/ambdev/teste/FichaKmRodado.pdf"), );
+			System.out.println("Exportou");
+			responseStream.flush();
+			responseStream.close();
+			//FacesContext.getCurrentInstance().renderResponse();
+			FacesContext.getCurrentInstance().responseComplete();
+			
+/*			
+			FacesContext context = FacesContext.getCurrentInstance();
+			HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+			JasperReport pathReport = JasperCompileManager.compileReport("c:/ambdev/teste/FichaKmRodado.jrxml");
+			System.out.println("Compilou");
+			JasperPrint print = JasperFillManager.fillReport(pathReport, null, new JRBeanCollectionDataSource(l));
+			baos.write(JasperExportManager.exportReportToPdf(print));
+
+			response.reset();
+			response.setContentType("application/pdf");
+			response.setContentLength(baos.size());
+
+			OutputStream out = response.getOutputStream();
+			context.responseComplete();
+			baos.writeTo(out);
+			out.flush();
+			out.close();
+			baos.close();
+			System.out.println("Exportou");
+	*/		
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+
+	}  
+
 	public void testarArquivo() {
 		try {
 			List<Calendario> lista = new ArrayList<Calendario>();

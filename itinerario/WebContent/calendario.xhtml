@@ -21,7 +21,7 @@
 			<p:commandButton value="Novo" actionListener="#{calendarioMb.iniciarCriacao}" ajax="false" />
 			<p:dataTable id="listagem" value="#{calendarioMb.lista}" var="c" style="width: 500px">
 				<p:column>
-					<f:facet name="header">Calendario</f:facet>
+					<f:facet name="header">Calendário</f:facet>
 					#{c.nome}
 				</p:column>
 				<p:column>
@@ -38,11 +38,11 @@
 		<h:form id="form2"
 			rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao() || calendarioMb.isExclusao()}">
 			<h3>
-				<h:outputLabel value="Criar calend�rio"
+				<h:outputLabel value="Criar calendário"
 					rendered="#{calendarioMb.isCriacao()}" />
-				<h:outputLabel value="Alterar calend�rio"
+				<h:outputLabel value="Alterar calendário"
 					rendered="#{calendarioMb.isAlteracao()}" />
-				<h:outputLabel value="Excluir calend�rio"
+				<h:outputLabel value="Excluir calendário"
 					rendered="#{calendarioMb.isExclusao()}" />
 			</h3>
 

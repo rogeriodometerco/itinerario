@@ -84,7 +84,7 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 				+ " where (veiculo, dataHora) in ("
 				+ "select p.veiculo, max(p.dataHora) from PosicaoVeiculo p"
 				+ " group by p.veiculo)"
-				+ " order by ultima.veiculo.identificacao";
+				+ " order by ultima.veiculo.placa";
 		return (List<PosicaoVeiculo>)getEntityManager().createQuery(sql).getResultList();
 		/*
 
