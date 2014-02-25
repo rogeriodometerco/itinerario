@@ -33,8 +33,7 @@ extends GenericCrudFacade<AnaliseViagem> {
 					+ " from AnaliseViagem as x" 
 					+ " where x.programacao = :programacao"
 					+ " and x.dataViagem = :dataViagem";
-
-			return (AnaliseViagem) getEntityManager().createQuery(sql)
+			return (AnaliseViagem) getEntityManager().createQuery(sql, AnaliseViagem.class)
 					.setParameter("programacao", programacao)
 					.setParameter("dataViagem", dataViagem, TemporalType.DATE)
 					.getSingleResult();
@@ -44,35 +43,30 @@ extends GenericCrudFacade<AnaliseViagem> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AnaliseViagem> recuperarAnalisesViagem(Date dataInicialViagem, Date dataFinalViagem) 
 			throws Exception {
 		String sql = "select x"
 				+ " from AnaliseViagem as x" 
 				+ " where x.dataViagem between :dataInicial and :dataFinal";
-
-		return (List<AnaliseViagem>) getEntityManager().createQuery(sql)
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
 				.setParameter("dataInicial", dataInicialViagem, TemporalType.DATE)
 				.setParameter("dataFinal", dataFinalViagem, TemporalType.DATE)
 				.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AnaliseViagem> recuperarAnalisesViagem(Date dataInicialViagem, Date dataFinalViagem, 
 			Veiculo veiculo) throws Exception {
 		String sql = "select x"
 				+ " from AnaliseViagem as x" 
 				+ " where x.dataViagem between :dataInicial and :dataFinal"
 				+ " and x.veiculo = :veiculo";
-
-		return (List<AnaliseViagem>) getEntityManager().createQuery(sql)
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
 				.setParameter("dataInicial", dataInicialViagem, TemporalType.DATE)
 				.setParameter("dataFinal", dataFinalViagem, TemporalType.DATE)
 				.setParameter("veiculo", veiculo)
 				.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AnaliseViagem> recuperarAnalisesViagem(Date dataInicialViagem, Date dataFinalViagem, Rota rota) 
 			throws Exception {
 
@@ -80,15 +74,13 @@ extends GenericCrudFacade<AnaliseViagem> {
 				+ " from AnaliseViagem as x" 
 				+ " where x.dataViagem between :dataInicial and :dataFinal"
 				+ " and x.rota = :rota";
-
-		return (List<AnaliseViagem>) getEntityManager().createQuery(sql)
-				.setParameter("dataInicial", dataInicialViagem, TemporalType.DATE)
-				.setParameter("dataFinal", dataFinalViagem, TemporalType.DATE)
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
+				.setParameter("dataInicial", dataInicialViagem)
+				.setParameter("dataFinal", dataFinalViagem)
 				.setParameter("rota", rota)
 				.getResultList();
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<AnaliseViagem> recuperarAnalisesViagem(Date dataInicialViagem, 
 			Date dataFinalViagem, Rota rota, Veiculo veiculo) throws Exception {
 		String sql = "select x"
@@ -96,8 +88,7 @@ extends GenericCrudFacade<AnaliseViagem> {
 				+ " where x.dataViagem between :dataInicial and :dataFinal"
 				+ " and x.rota = :rota"
 				+ " and x.veiculo = :veiculo";
-
-		return (List<AnaliseViagem>) getEntityManager().createQuery(sql)
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
 				.setParameter("dataInicial", dataInicialViagem, TemporalType.DATE)
 				.setParameter("dataFinal", dataFinalViagem, TemporalType.DATE)
 				.setParameter("rota", rota)

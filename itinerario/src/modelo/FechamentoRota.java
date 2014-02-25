@@ -20,6 +20,7 @@ public class FechamentoRota {
 	private Rota rota;
 	private Date dataInicial;
 	private Date dataFinal;
+	private Boolean concluido;
 
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="fechamentoRota", orphanRemoval=false)
 	private List<AnaliseViagem> analisesViagem;
@@ -62,6 +63,77 @@ public class FechamentoRota {
 
 	public void setAnalisesViagem(List<AnaliseViagem> analisesViagem) {
 		this.analisesViagem = analisesViagem;
+	}
+
+	public Boolean getConcluido() {
+		return concluido;
+	}
+
+	public void setConcluido(Boolean concluido) {
+		this.concluido = concluido;
+	}
+	
+	public Double getKmPrevisto() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getKmPrevisto();
+		}
+		return km;
+	}
+	public Double getKmRealizado() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getKmRealizado();
+		}
+		return km;
+	}
+
+	public Double getKmNoTrajeto() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getKmNoTrajeto();
+		}
+		return km;
+	}
+	
+	public Double getKmForaTrajeto() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getKmForaTrajeto();
+		}
+		return km;
+	}
+
+	public Double getKmPago() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getKmPago();
+		}
+		return km;
+	}
+
+	public Double getValorPago() {
+		Double km = 0d;
+		for (AnaliseViagem a: analisesViagem) {
+			km += a.getValorPago();
+		}
+		return km;
+	}
+	
+	public Integer getParadasPrevistas() {
+		Integer paradas = 0;
+		for (AnaliseViagem a: analisesViagem) {
+			paradas += a.getParadasPrevistas();
+		}
+		return paradas;
+	}
+
+	public Integer getParadasCumpridas() {
+		Integer paradas = 0;
+		for (AnaliseViagem a: analisesViagem) {
+			paradas += a.getParadasCumpridas();
+		}
+		return paradas;
 	}
 
 }

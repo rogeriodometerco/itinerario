@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
+import javax.persistence.TemporalType;
 
 import modelo.PosicaoVeiculo;
 import modelo.Veiculo;
