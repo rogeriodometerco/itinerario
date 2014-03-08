@@ -20,10 +20,11 @@
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{rotaMb.isListagem()}">
 			<p />
-			<p:commandButton value="Nova" action="#{rotaMb.iniciarCriacao}"
-				ajax="false" />
+			<p:commandButton value="Nova" action="#{rotaMb.iniciarCriacao}" ajax="false" 
+				update="@all" />
 			<p:spacer width="8px" />
-			<p:inputText value="#{rotaMb.chavePesquisa}" title="Pesquisar por código, nome, origem ou destino"/>
+			<p:inputText value="#{rotaMb.chavePesquisa}"
+				title="Pesquisar por código, nome, origem ou destino" />
 			<p:commandButton value="Pesquisar" actionListener="#{rotaMb.listar}"
 				update="listagem :mensagens" />
 			<p />
@@ -54,9 +55,9 @@
 				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{rotaMb.iniciarAlteracao(rota)}" ajax="false" />
+							action="#{rotaMb.iniciarAlteracao(rota)}" ajax="false" update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{rotaMb.iniciarExclusao(rota)}" ajax="false" />
+							action="#{rotaMb.iniciarExclusao(rota)}" ajax="false" update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -72,40 +73,57 @@
 					rendered="#{rotaMb.isExclusao()}" />
 			</h3>
 
-			<h:panelGrid columns="2">
-				<p:outputLabel value="Código" />
-				<p:inputText value="#{rotaMb.rota.codigo}" />
-				<p:outputLabel value="Nome da rota" />
-				<p:inputText value="#{rotaMb.rota.nome}" />
-				<p:outputLabel value="Origem" />
-				<p:inputText value="#{rotaMb.rota.origem}" />
-				<p:outputLabel value="Destino" />
-				<p:inputText value="#{rotaMb.rota.destino}" />
-				<p:outputLabel value="Quilometragem" />
-				<p:inputText value="#{rotaMb.rota.quilometragem}" />
-				<p:outputLabel value="Observacao" />
-				<p:inputText value="#{rotaMb.rota.observacao}" />
+			<h:panelGrid columns="3">
+				<h:panelGrid columns="1">
+					<p:outputLabel value="Código" />
+					<p:inputText value="#{rotaMb.rota.codigo}" />
+					<p:outputLabel value="Nome da rota" />
+					<p:inputText value="#{rotaMb.rota.nome}" />
+					<p:outputLabel value="Origem" />
+					<p:inputText value="#{rotaMb.rota.origem}" />
+					<p:outputLabel value="Destino" />
+					<p:inputText value="#{rotaMb.rota.destino}" />
+					<p:outputLabel value="Quilometragem" />
+					<p:inputText value="#{rotaMb.rota.quilometragem}" />
+					<p:outputLabel value="Observacao" />
+					<p:inputText value="#{rotaMb.rota.observacao}" />
+					<p:outputLabel value="Trajeto"
+						rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}" />
+					<p:fileUpload fileUploadListener="#{rotaMb.arquivoCarregado}"
+						mode="advanced" label="Escolha o arquivo" process="@this"
+						update=":mensagens, mapa, paradas" auto="true"
+						rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}">
+					</p:fileUpload>
+				</h:panelGrid>
+				<p:gmap id="mapa" center="#{rotaMb.centroMapa}"
+					zoom="#{rotaMb.zoomMapa}" type="ROADMAP" model="#{rotaMb.mapModel}"
+					widgetVar="mapa" fitBounds="false"
+					style="height: 450px; width: 600px; border: 1px solid #c0c0d1;">
+					<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
+				</p:gmap>
+					<p:dataTable id="paradas" value="#{rotaMb.rota.paradas}"
+						var="parada" emptyMessage="" scrollable="true" scrollHeight="400">
+						<f:facet name="header">Paradas</f:facet>
+						<p:column width="15">
+							<f:facet name="header">Nr</f:facet>
+							#{parada.numeroParada}
+						</p:column>
+						<p:column>
+							<f:facet name="header">Descrição</f:facet>
+							<p:inputText value="#{parada.descricao}" />
+						</p:column>
+					</p:dataTable>
 			</h:panelGrid>
-			<p/>
-			<p:fileUpload fileUploadListener="#{rotaMb.arquivoCarregado}"
-				mode="advanced" label="Arquivo com os pontos" process="@form"
-				update=":mensagens, mapa" auto="true"
-				rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}">
-			</p:fileUpload>
-			<p:gmap id="mapa" center="#{rotaMb.centroMapa}" zoom="#{rotaMb.zoomMapa}"
-				type="ROADMAP" model="#{rotaMb.mapModel}" widgetVar="mapa"
-				style="height: 500px; width: 800px; border: 1px solid #c0c0d1;">
-				<p:ajax event="stateChange" listener="#{rotaMb.onMapStateChange}" />
-			</p:gmap>
-			<br />
+
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{rotaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{rotaMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{rotaMb.isCriacao() || rotaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{rotaMb.terminarExclusao()}" ajax="false"
-				rendered="#{rotaMb.isExclusao()}" immediate="true" />
+				action="#{rotaMb.terminarExclusao()}" update="@all" immediate="false"
+				rendered="#{rotaMb.isExclusao()}" />
 			<p:commandButton value="Cancelar" action="#{rotaMb.cancelar()}"
-				ajax="false" immediate="true" />
+				update="@all" immediate="false"/>
 		</h:form>
 	</ui:define>
 </ui:composition>

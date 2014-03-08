@@ -36,6 +36,7 @@ public class RotaMb implements Serializable {
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
 	private Rota rota;
+	private List<PontoRota> paradas;
 	private List<Rota> lista;
 	private String estadoView;
 	private String chavePesquisa;
@@ -59,6 +60,25 @@ public class RotaMb implements Serializable {
 
 	public void setRota(Rota rota) {
 		this.rota = rota;
+	}
+	
+	public List<PontoRota> getParadas() {
+		if (paradas == null) {
+			this.paradas = rota.getParadas();
+		}
+		return paradas;
+	}
+	
+	public void setParadas(List<PontoRota> paradas) {
+		for (PontoRota p: paradas) {
+			for (PontoRota p2: rota.getPontos()) {
+				if (p.getNumeroParada().equals(p2.getNumeroParada())) {
+					rota.getPontos().set(rota.getPontos().indexOf(p2), p);
+				}
+			}
+		}
+		this.paradas = paradas;
+		
 	}
 
 	public void listar() { 
@@ -85,12 +105,14 @@ public class RotaMb implements Serializable {
 		this.rota = new Rota();
 		this.rota.setPontos(new ArrayList<PontoRota>());
 		this.rota.setAtiva(true);
+		this.paradas = null;
 		sincronizarMapModel();
 	}
 
 	public void iniciarAlteracao(Rota rota) {
 		try {
 			this.rota = facade.recuperarParaEdicao(rota.getId());
+			//this.paradas = rota.getParadas();
 			sincronizarMapModel();
 			this.estadoView = ALTERACAO;
 		} catch (Exception e) {
@@ -168,11 +190,8 @@ public class RotaMb implements Serializable {
 			Scanner s = new Scanner(arquivo.getInputstream());
 			PontoRota pontoRota = null;
 			MensagemRMC mensagem = null;
-			// TODO Excluir os pontos atuais para receber os novos pontos.
-			// O código abaixo não está removendo os pontos após salvar o objeto.
-			while (rota.getPontos().size() > 0) {
-				rota.getPontos().remove(0);
-			}
+			// Remove os pontos atuais.
+			rota.setPontos(new ArrayList<PontoRota>());
 			Double latAnterior = 0d, lngAnterior = 0d;
 			int numeroParada = 1;
 			while (s.hasNext()) {
@@ -197,6 +216,9 @@ public class RotaMb implements Serializable {
 				linha++;
 			}
 			sincronizarMapModel();
+			//for (PontoRota p: rota.getPontos()) {
+			//	System.out.println("arquivoCarregado() - " + p.getNumeroParada() + p.getDescricao());
+			//}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao importar arquivo. Linha " + linha + ". " + e.getMessage());
 			e.printStackTrace();
@@ -247,9 +269,9 @@ public class RotaMb implements Serializable {
 					rota.getPontos().get(0).getLat() 
 					+ ", " + rota.getPontos().get(0).getLng();
 		} else {
-			this.centroMapa = "-24.750573, -51.781526";
+			this.centroMapa = "-24.754737, -51.764410";
 		}
-		this.zoomMapa = 15;
+		this.zoomMapa = 14;
 	}
 
 	private void criarMarcadorDeParada(PontoRota pontoRota) {
@@ -271,7 +293,8 @@ public class RotaMb implements Serializable {
 	}
 
 	private void criarMarcadorDeInicio(PontoRota pontoRota) {
-		String icone = "start-race-2.png";
+		//String icone = "start-race-2.png";
+		String icone = pontoRota.getNumeroParada() + ".png";
 		System.out.println(icone);
 		LatLng latLng = new LatLng(pontoRota.getLat(), 
 				pontoRota.getLng());
@@ -283,7 +306,8 @@ public class RotaMb implements Serializable {
 	}
 
 	private void criarMarcadorDeTermino(PontoRota pontoRota) {
-		String icone = "finish.png";
+		//String icone = "finish.png";
+		String icone = pontoRota.getNumeroParada() + ".png";
 		System.out.println(icone);
 		LatLng latLng = new LatLng(pontoRota.getLat(), 
 				pontoRota.getLng());

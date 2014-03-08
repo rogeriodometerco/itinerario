@@ -14,38 +14,39 @@
 		<script src="http://maps.google.com/maps/api/js?sensor=false"
 			type="text/javascript" />
 	</ui:define>
-	<ui:define name="titulo">Cadastro de atendido pela rota</ui:define>
+	<ui:define name="titulo">Cadastro de passageiro atendido pela rota</ui:define>
 	<ui:define name="conteudo">
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{atendidoMb.isListagem()}">
 			<p />
 			<p:commandButton value="Novo"
-				actionListener="#{atendidoMb.iniciarCriacao}" ajax="false" />
+				actionListener="#{atendidoMb.iniciarCriacao}" ajax="false"
+				update="@all" />
 			<p:spacer width="8px" />
 			<h:outputLabel value="Programação de veículo " />
 			<p:autoComplete value="#{atendidoMb.programacaoRotaPesquisa}"
 				completeMethod="#{programacaoRotaMb.autocomplete}" var="p"
-				itemLabel="#{p.rota.nome.concat(' - ')
-	                        	.concat(p.horaInicial).concat(' às ').concat(p.horaFinal)}"
-				temValue="#{p}" converter="#{programacaoRotaConverter}"
+				itemLabel="#{p.rota.nome.concat(' - ').concat(p.horaInicial)
+						.concat(' - ').concat(' às ').concat(p.horaFinal)}"
+				itemValue="#{p}" converter="#{programacaoRotaConverter}"
 				forceSelection="true"
 				title="Pesquise por código, nome, origem ou destino da rota">
 				<p:column>
 					<f:facet name="header">Rota</f:facet>  
-						#{p.rota.codigo}
-	                </p:column>
+					#{p.rota.codigo}
+                </p:column>
 				<p:column>
 					<f:facet name="header">Nome</f:facet>  
-						#{p.rota.nome}
-	                </p:column>
+					#{p.rota.nome}
+       	        </p:column>
 				<p:column>
 					<f:facet name="header">Origem</f:facet>  
-						#{p.rota.origem}
-	                </p:column>
+					#{p.rota.origem}
+               	</p:column>
 				<p:column>
 					<f:facet name="header">Destino</f:facet>  
-						#{p.rota.destino}
-        	       </p:column>
+					#{p.rota.destino}
+       	       </p:column>
 				<p:column>
 					<f:facet name="header">Hr inicial</f:facet>
 					<h:outputText value="#{p.horaInicial}">
@@ -59,23 +60,23 @@
 					</h:outputText>
 				</p:column>
 			</p:autoComplete>
-			<p:outputLabel value="Pessoa " />
-			<p:autoComplete value="#{atendidoMb.pessoaPesquisa}"
-				completeMethod="#{pessoaMb.autocomplete}" var="p"
-				itemLabel="#{p.codigo.concat(' - ').concat(p.nome)}"
-				itemValue="#{p}" converter="#{pessoaConverter}"
-				forceSelection="true">
+
+			<p:outputLabel value="Passageiro " />
+			<p:autoComplete value="#{atendidoMb.passageiroPesquisa}"
+				completeMethod="#{passageiroMb.autocomplete}" var="p"
+				itemLabel="#{p.pessoa.nome}" itemValue="#{p}"
+				converter="#{passageiroConverter}" forceSelection="true">
 				<p:column>
 					<f:facet name="header">Código</f:facet>  
 						#{p.codigo}
 			        </p:column>
 				<p:column>
 					<f:facet name="header">Nome</f:facet>  
-						#{p.nome}
+						#{p.pessoa.nome}
 			        </p:column>
 				<p:column>
 					<f:facet name="header">CPF</f:facet>  
-						#{p.cpf}
+						#{p.pessoa.cpf}
 			        </p:column>
 			</p:autoComplete>
 			<p:commandButton value="Pesquisar"
@@ -85,14 +86,6 @@
 			<p:dataTable id="listagem" value="#{atendidoMb.lista}" var="atendido"
 				rendered="#{atendidoMb.lista != null}"
 				emptyMessage="Nenhum registro encontrado">
-				<p:column>
-					<f:facet name="header">Pessoa</f:facet>
-					#{atendido.pessoa.codigo}
-				</p:column>
-				<p:column>
-					<f:facet name="header">Nome</f:facet>
-					#{atendido.pessoa.nome}
-				</p:column>
 				<p:column>
 					<f:facet name="header">Veículo</f:facet>
 					#{atendido.programacaoRota.veiculo.placa}
@@ -125,12 +118,26 @@
 					<f:facet name="header">Descrição</f:facet>
 					#{atendido.pontoParada.descricao}
 				</p:column>
+				<p:column>
+					<f:facet name="header">Passageiro</f:facet>
+					#{atendido.passageiro.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{atendido.passageiro.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Endereço</f:facet>
+					#{atendido.passageiro.pessoa.endereco}
+				</p:column>
 				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{atendidoMb.iniciarAlteracao(atendido)}" ajax="false" />
+							action="#{atendidoMb.iniciarAlteracao(atendido)}" ajax="false"
+							update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{atendidoMb.iniciarExclusao(atendido)}" ajax="false" />
+							action="#{atendidoMb.iniciarExclusao(atendido)}" ajax="false"
+							update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -148,99 +155,99 @@
 			</h3>
 
 			<h:panelGrid columns="2">
+				<h:panelGrid columns="1">
 
-				<p:outputLabel value="Programação de veículo " />
-				<p:autoComplete value="#{atendidoMb.atendido.programacaoRota}"
-					completeMethod="#{programacaoRotaMb.autocomplete}" var="p"
-					itemLabel="#{p.rota.nome.concat(' - ').concat(p.horaInicial)
+					<p:outputLabel value="Programação de veículo " />
+					<p:autoComplete value="#{atendidoMb.atendido.programacaoRota}"
+						completeMethod="#{programacaoRotaMb.autocomplete}" var="p"
+						itemLabel="#{p.rota.nome.concat(' - ').concat(p.horaInicial)
 						.concat(' - ').concat(' às ').concat(p.horaFinal)}"
-					itemValue="#{p}" converter="#{programacaoRotaConverter}"
-					forceSelection="true"
-					title="Pesquise por código, nome, origem ou destino da rota">
+						itemValue="#{p}" converter="#{programacaoRotaConverter}"
+						forceSelection="true"
+						title="Pesquise por código, nome, origem ou destino da rota">
 
-					<p:ajax listener="#{atendidoMb.programacaoRotaChange}"
-						event="itemSelect" process="@this" update="parada, mapa" />
+						<p:ajax listener="#{atendidoMb.programacaoRotaChange}"
+							event="itemSelect" process="@this" update="parada, mapa" />
 
-					<p:column>
-						<f:facet name="header">Rota</f:facet>  
-						#{p.rota.codigo}
-	                </p:column>
-					<p:column>
-						<f:facet name="header">Nome</f:facet>  
-						#{p.rota.nome}
-	                </p:column>
-					<p:column>
-						<f:facet name="header">Origem</f:facet>  
-						#{p.rota.origem}
-	                </p:column>
-					<p:column>
-						<f:facet name="header">Destino</f:facet>  
-						#{p.rota.destino}
-        	       </p:column>
-					<p:column>
-						<f:facet name="header">Hr inicial</f:facet>
-						<h:outputText value="#{p.horaInicial}">
-							<f:convertDateTime pattern="HH:mm" />
-						</h:outputText>
-					</p:column>
-					<p:column>
-						<f:facet name="header">Hr final</f:facet>
-						<h:outputText value="#{p.horaFinal}">
-							<f:convertDateTime pattern="HH:mm" />
-						</h:outputText>
-					</p:column>
-				</p:autoComplete>
+						<p:column>
+							<f:facet name="header">Rota</f:facet>  
+							#{p.rota.codigo}
+		                </p:column>
+						<p:column>
+							<f:facet name="header">Nome</f:facet>  
+							#{p.rota.nome}
+	        	        </p:column>
+						<p:column>
+							<f:facet name="header">Origem</f:facet>  
+							#{p.rota.origem}
+	                	</p:column>
+						<p:column>
+							<f:facet name="header">Destino</f:facet>  
+							#{p.rota.destino}
+	        	       </p:column>
+						<p:column>
+							<f:facet name="header">Hr inicial</f:facet>
+							<h:outputText value="#{p.horaInicial}">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:outputText>
+						</p:column>
+						<p:column>
+							<f:facet name="header">Hr final</f:facet>
+							<h:outputText value="#{p.horaFinal}">
+								<f:convertDateTime pattern="HH:mm" />
+							</h:outputText>
+						</p:column>
+					</p:autoComplete>
 
-				<p:outputLabel value="Pessoa " />
-				<p:autoComplete value="#{atendidoMb.atendido.pessoa}"
-					completeMethod="#{pessoaMb.autocomplete}" var="p"
-					itemLabel="#{p.codigo.concat(' - ').concat(p.nome)}"
-					itemValue="#{p}" converter="#{pessoaConverter}"
-					forceSelection="true">
-					<p:column>
-						<f:facet name="header">Código</f:facet>  
-						#{p.codigo}
-			        </p:column>
-					<p:column>
-						<f:facet name="header">Nome</f:facet>  
-						#{p.nome}
-			        </p:column>
-					<p:column>
-						<f:facet name="header">CPF</f:facet>  
-						#{p.cpf}
-			        </p:column>
+					<p:outputLabel value="Passageiro " />
+					<p:autoComplete value="#{atendidoMb.atendido.passageiro}"
+						completeMethod="#{passageiroMb.autocomplete}" var="p"
+						itemLabel="#{p.pessoa.nome}" itemValue="#{p}"
+						converter="#{passageiroConverter}" forceSelection="true">
+						<p:column>
+							<f:facet name="header">Código</f:facet>  
+							#{p.codigo}
+			        	</p:column>
+						<p:column>
+							<f:facet name="header">Nome</f:facet>  
+							#{p.pessoa.nome}
+				        </p:column>
+						<p:column>
+							<f:facet name="header">CPF</f:facet>  
+							#{p.pessoa.cpf}
+				        </p:column>
 
-					<p:ajax listener="#{atendidoMb.pessoaChange}" event="itemSelect"
-						process="@this" update="mapa" />
-				</p:autoComplete>
+						<p:ajax listener="#{atendidoMb.passageiroChange}"
+							event="itemSelect" process="@this" update="mapa" />
+					</p:autoComplete>
 
-				<h:outputText value="Parada: " />
-				<p:selectOneMenu id="parada"
-					value="#{atendidoMb.atendido.pontoParada}" effect="fade"
-					converter="#{pontoRotaConverter}">
-					<f:selectItem itemLabel="Selecione" itemValue="" />
-					<f:selectItems value="#{atendidoMb.paradas}" var="parada"
-						itemValue="#{parada}" itemLabel="#{parada.numeroParada}" />
-				</p:selectOneMenu>
+					<h:outputText value="Parada: " />
+					<p:selectOneMenu id="parada"
+						value="#{atendidoMb.atendido.pontoParada}"
+						converter="#{pontoRotaConverter}" style="width: 200px">
+						<f:selectItem itemLabel="Selecione" itemValue="" />
+						<f:selectItems value="#{atendidoMb.paradas}" var="parada"
+							itemValue="#{parada}" itemLabel="#{parada.numeroParada}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
 
+				<p:gmap id="mapa" center="#{atendidoMb.centroMapa}"
+					zoom="#{atendidoMb.zoomMapa}" type="ROADMAP"
+					style="height: 450px; width: 600px; border: 1px solid #c0c0d1;"
+					model="#{atendidoMb.mapModel}" widgetVar="mapa" fitBounds="false">
+					<p:ajax event="stateChange"
+						listener="#{atendidoMb.mapOnStateChange}" />
+				</p:gmap>
 			</h:panelGrid>
-			<br />
-			<p:gmap id="mapa" center="#{atendidoMb.centroMapa}"
-				zoom="#{atendidoMb.zoomMapa}" type="ROADMAP"
-				style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
-				model="#{atendidoMb.mapModel}" widgetVar="mapa" fitBounds="true">
-				<p:ajax event="stateChange"
-					listener="#{atendidoMb.mapOnStateChange}" />
-			</p:gmap>
-			<br />
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{atendidoMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{atendidoMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{atendidoMb.isCriacao() || atendidoMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{atendidoMb.terminarExclusao()}" ajax="false"
-				rendered="#{atendidoMb.isExclusao()}" immediate="true" />
+				action="#{atendidoMb.terminarExclusao()}" update="@all"
+				rendered="#{atendidoMb.isExclusao()}" immediate="false" />
 			<p:commandButton value="Cancelar" action="#{atendidoMb.cancelar()}"
-				ajax="false" immediate="true" />
+				update="@all" immediate="false" />
 		</h:form>
 
 	</ui:define>

@@ -8,27 +8,8 @@
 
 	<navigation-rule>
 		<navigation-case>
-			<from-outcome>criarLinha</from-outcome>
-			<to-view-id>/criarLinha.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>atualizarLinha</from-outcome>
-			<to-view-id>/atualizarLinha.xhtml</to-view-id>
-			<redirect/>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>listarLinhas</from-outcome>
-			<to-view-id>/listarLinhas.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<navigation-case>
-			<from-outcome>excluirLinha</from-outcome>
-			<to-view-id>/excluirLinha.xhtml</to-view-id>
+			<from-outcome>motorista</from-outcome>
+			<to-view-id>/motorista.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 

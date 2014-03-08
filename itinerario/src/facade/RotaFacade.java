@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import modelo.Calendario;
 import modelo.EscolaRota;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -38,10 +39,14 @@ public class RotaFacade
 	}
 
 	private Rota recuperarParaEdicaoOuExclusao(Long id) throws Exception {
-		// TODO Refactoring. Esta não é a melhor forma.
-		Rota rota = dao.recuperar(id);
-		rota.getPontos().size();
-		return rota;
+		String sql = "select x"
+				+ " from Rota x "
+				+ " left join fetch x.pontos " 
+				+ " where x.id = :id";
+		return getEntityManager().createQuery(sql, Rota.class)
+				.setParameter("id", id)
+				.getSingleResult();
+
 	}
 	
 	public List<Rota> autocomplete(String chave) 

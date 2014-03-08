@@ -14,22 +14,27 @@
 	<ui:define name="conteudo">
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{calendarioMb.isListagem()}">
-			<h:outputLabel value="Nome " />
+			<p />
+			<p:commandButton value="Novo"
+				actionListener="#{calendarioMb.iniciarCriacao}" ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Nome " />
 			<p:inputText value="#{calendarioMb.nomePesquisa}" />
-
-			<p:commandButton value="Pesquisar" actionListener="#{calendarioMb.listar}" update="listagem" />
-			<p:commandButton value="Novo" actionListener="#{calendarioMb.iniciarCriacao}" ajax="false" />
-			<p:dataTable id="listagem" value="#{calendarioMb.lista}" var="c" style="width: 500px">
+			<p:commandButton value="Pesquisar"
+				actionListener="#{calendarioMb.listar}" update="listagem" />
+			<p />
+			<p:dataTable id="listagem" value="#{calendarioMb.lista}" var="c"
+				style="width: 400px">
 				<p:column>
 					<f:facet name="header">Calendário</f:facet>
 					#{c.nome}
 				</p:column>
-				<p:column>
+				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{calendarioMb.iniciarAlteracao(c)}" ajax="false"/>
+							action="#{calendarioMb.iniciarAlteracao(c)}" ajax="false" update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{calendarioMb.iniciarExclusao(c)}" ajax="false"/>
+							action="#{calendarioMb.iniciarExclusao(c)}" ajax="false" update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -38,26 +43,60 @@
 		<h:form id="form2"
 			rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao() || calendarioMb.isExclusao()}">
 			<h3>
-				<h:outputLabel value="Criar calendário"
+				<p:outputLabel value="Criar calendário"
 					rendered="#{calendarioMb.isCriacao()}" />
-				<h:outputLabel value="Alterar calendário"
+				<p:outputLabel value="Alterar calendário"
 					rendered="#{calendarioMb.isAlteracao()}" />
-				<h:outputLabel value="Excluir calendário"
+				<p:outputLabel value="Excluir calendário"
 					rendered="#{calendarioMb.isExclusao()}" />
 			</h3>
 
-			<h:panelGrid columns="2">
-				<h:outputLabel value="Nome " />
+			<h:panelGrid columns="3">
+				<p:outputLabel value="Nome " />
 				<p:inputText value="#{calendarioMb.calendario.nome}" />
+				<p:outputPanel rendered="#{calendarioMb.isCriacao()}">
+					<p:outputLabel value="Gerar dias para o ano " />
+					<p:inputText id="ano" value="#{calendarioMb.ano}"
+						style="width: 30px" />
+					<p:commandButton value="Gerar"
+						actionListener="#{calendarioMb.gerarDias}" process="@form"
+						update="dias" />
+				</p:outputPanel>
 			</h:panelGrid>
-			<br />
+			<p />
+			<p:outputPanel id="dias">
+				<p:dataTable value="#{calendarioMb.calendario.dias}" var="dia"
+					style="width: 370px" emptyMessage="">
+					<p:column style="width: 30px; text-align: center">
+						<f:facet name="header">Dia</f:facet>
+						<h:outputLabel value="#{dia.diaSemana}">
+						</h:outputLabel>
+					</p:column>
+					<p:column style="width: 50px; text-align: center">
+						<f:facet name="header">Data</f:facet>
+						<h:outputLabel value="#{dia.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+					<p:column style="width: 30px; text-align: center">
+						<f:facet name="header">Útil</f:facet>
+						<p:selectBooleanCheckbox value="#{dia.util}" />
+					</p:column>
+					<p:column style="width: 140px; text-align: center">
+						<f:facet name="header">Observação</f:facet>
+						<p:inputText value="#{dia.observacao}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{calendarioMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{calendarioMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{calendarioMb.terminarExclusao()}" ajax="false"
-				rendered="#{calendarioMb.isExclusao()}" />
-			<p:commandButton value="Cancelar" action="#{calendarioMb.cancelar()}" ajax="false"/>
+				action="#{calendarioMb.terminarExclusao()}" immediate="false"
+				update="@all" rendered="#{calendarioMb.isExclusao()}" />
+			<p:commandButton value="Cancelar" action="#{calendarioMb.cancelar()}"
+				immediate="false" update="@all" />
 		</h:form>
 
 	</ui:define>

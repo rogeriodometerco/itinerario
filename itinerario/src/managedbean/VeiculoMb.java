@@ -22,6 +22,7 @@ public class VeiculoMb implements Serializable {
 	private static final String EXCLUSAO = "exclusao";
 	private Veiculo veiculo;
 	private List<Veiculo> lista;
+	private String placaPesquisa;
 	private String estadoView;
 	@EJB
 	private VeiculoFacade facade;
@@ -60,7 +61,11 @@ public class VeiculoMb implements Serializable {
 
 	public void listar() { 
 		try {
-			this.lista = facade.listar();
+			if (placaPesquisa == null || placaPesquisa.trim().length() == 0) {
+				this.lista = facade.listar();
+			} else {
+				this.lista = facade.listarPorParteDaPlaca(placaPesquisa);
+			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
 		}
@@ -139,6 +144,14 @@ public class VeiculoMb implements Serializable {
 
 	public Boolean isExclusao() {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
+	}
+
+	public String getPlacaPesquisa() {
+		return placaPesquisa;
+	}
+
+	public void setPlacaPesquisa(String placaPesquisa) {
+		this.placaPesquisa = placaPesquisa;
 	}
 
 }

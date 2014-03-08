@@ -15,11 +15,18 @@
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{veiculoMb.isListagem()}">
 			<p />
-			<p:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}" ajax="false"/>
+			<p:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Placa" />
+			<p:inputText value="#{veiculoMb.placaPesquisa}"
+				title="Pesquisar por placa" />
+			<p:commandButton value="Pesquisar"
+				actionListener="#{veiculoMb.listar}" update="listagem :mensagens" />
 			<p />
-			
-			<p:dataTable value="#{veiculoMb.lista}" var="veiculo"
-				emptyMessage="Nenhum registro encontrado" style="width: 600px">
+
+			<p:dataTable id="listagem" value="#{veiculoMb.lista}" var="veiculo"
+				emptyMessage="Nenhum registro encontrado" style="width: 1100px">
 				<p:column>
 					<f:facet name="header">Placa</f:facet>
 					#{veiculo.placa}
@@ -33,15 +40,27 @@
 					#{veiculo.cor}
 				</p:column>
 				<p:column>
+					<f:facet name="header">Marca</f:facet>
+					#{veiculo.marca}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Modelo</f:facet>
+					#{veiculo.modelo}
+				</p:column>
+				<p:column>
 					<f:facet name="header">Ocupantes</f:facet>
 					#{veiculo.ocupantes}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Motorista</f:facet>
+					#{veiculo.motorista.pessoa.nome}
 				</p:column>
 				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{veiculoMb.iniciarAlteracao(veiculo)}" ajax="false" />
+							action="#{veiculoMb.iniciarAlteracao(veiculo)}" ajax="false" update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{veiculoMb.iniciarExclusao(veiculo)}" ajax="false" />
+							action="#{veiculoMb.iniciarExclusao(veiculo)}" ajax="false" update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -60,28 +79,54 @@
 
 			<h:panelGrid columns="2">
 				<p:outputLabel value="Placa" />
-				<p:inputText value="#{veiculoMb.veiculo.placa}" />
+				<p:inputText value="#{veiculoMb.veiculo.placa}" style="width: 200px" />
 				<p:outputLabel value="Ano fabricação" />
-				<p:inputText value="#{veiculoMb.veiculo.anoFabricacao}" />
+				<p:inputText value="#{veiculoMb.veiculo.anoFabricacao}"
+					style="width: 200px" />
 				<p:outputLabel value="Cor" />
-				<p:inputText value="#{veiculoMb.veiculo.cor}" />
+				<p:inputText value="#{veiculoMb.veiculo.cor}" style="width: 200px" />
+				<p:outputLabel value="Marca" />
+				<p:inputText value="#{veiculoMb.veiculo.marca}" style="width: 200px" />
+				<p:outputLabel value="Modelo" />
+				<p:inputText value="#{veiculoMb.veiculo.modelo}"
+					style="width: 200px" />
 				<p:outputLabel value="Qtde ocupantes" />
-				<p:inputText value="#{veiculoMb.veiculo.ocupantes}" />
+				<p:inputText value="#{veiculoMb.veiculo.ocupantes}"
+					style="width: 200px" />
 				<p:outputLabel value="Chassi" />
-				<p:inputText value="#{veiculoMb.veiculo.chassi}" />
+				<p:inputText value="#{veiculoMb.veiculo.chassi}"
+					style="width: 200px" />
+				<p:outputLabel value="Proprietário" />
+				<p:inputText value="#{veiculoMb.veiculo.proprietario}"
+					style="width: 200px" />
 				<p:outputLabel value="Estado de conservação" />
-				<p:inputTextarea cols="50" rows="2" value="#{veiculoMb.veiculo.conservacao}" />
+				<p:inputText value="#{veiculoMb.veiculo.conservacao}"
+					style="width: 200px" />
+				<p:outputLabel value="Motorista " />
+				<p:autoComplete value="#{veiculoMb.veiculo.motorista}"
+					completeMethod="#{motoristaMb.autocomplete}" var="m"
+					itemLabel="#{m.pessoa.nome}" itemValue="#{m}"
+					converter="#{motoristaConverter}" forceSelection="true"
+					size="35">
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{m.pessoa.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">CPF</f:facet>  
+						#{m.pessoa.cpf}
+			        </p:column>
+				</p:autoComplete>
 			</h:panelGrid>
-			<br />
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{veiculoMb.terminarCriacaoOuAlteracao()}"
-				ajax="false"
+				action="#{veiculoMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{veiculoMb.isCriacao() || veiculoMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{veiculoMb.terminarExclusao()}" ajax="false"
-				rendered="#{veiculoMb.isExclusao()}" immediate="true"/>
-			<p:commandButton value="Cancelar"
-				action="#{veiculoMb.cancelar()}" ajax="false" immediate="true"/>
+				action="#{veiculoMb.terminarExclusao()}" update="@all"
+				rendered="#{veiculoMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{veiculoMb.cancelar()}"
+				update="@all" immediate="false" />
 		</h:form>
 	</ui:define>
 </ui:composition>

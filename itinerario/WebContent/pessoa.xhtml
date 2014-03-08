@@ -93,20 +93,20 @@
 				<p:outputLabel value="Longitude" />
 				<p:outputLabel id="lng" value="#{pessoaMb.pessoa.lng}" />
 			</h:panelGrid>
-			
-			<p:outputLabel value="Marque no mapa onde a pessoa reside" />
-			<br/>
+			<p />
+			<p:outputLabel value="Marque no mapa o local da residência" />
+			<p />
 			<p:gmap id="mapa" center="#{pessoaMb.centroMapa}"
 				zoom="#{pessoaMb.zoomMapa}" type="HYBRID"
 				model="#{pessoaMb.mapModel}" widgetVar="mapa"
-				style="height: 500px; width: 800px; border: 1px solid #c0c0d1;"	>
+				style="height: 500px; width: 600px; border: 1px solid #c0c0d1;"	>
 				<p:ajax event="stateChange" listener="#{pessoaMb.onMapStateChange}" />
 				<p:ajax event="markerDrag" listener="#{pessoaMb.onMarkerDrag}"
 					update="lat, lng, mapa" />
 				<p:ajax event="pointSelect" listener="#{pessoaMb.onPointSelect}"
 					update="lat, lng, mapa" />
 			</p:gmap>
-			<br />
+			<p />
 			<p:commandButton value="Salvar"
 				action="#{pessoaMb.terminarCriacaoOuAlteracao()}" ajax="false"
 				rendered="#{pessoaMb.isCriacao() || pessoaMb.isAlteracao()}" />

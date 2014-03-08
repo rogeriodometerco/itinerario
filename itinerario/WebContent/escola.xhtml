@@ -16,7 +16,7 @@
 		<h:form id="form1" rendered="#{escolaMb.isListagem()}">
 			<p />
 			<p:commandButton value="Nova" action="#{escolaMb.iniciarCriacao}"
-				ajax="false" />
+				ajax="false" update="@all" />
 			<p:spacer width="8px" />
 			<p:inputText value="#{escolaMb.chavePesquisa}" 
 				title="Pesquisar por código, nome ou localidade"/>
@@ -49,9 +49,9 @@
 				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false" />
+							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false" update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false" />
+							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false" update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -82,13 +82,13 @@
 			</h:panelGrid>
 			<br />
 			<p:commandButton value="Salvar"
-				action="#{escolaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{escolaMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{escolaMb.terminarExclusao()}" ajax="false"
-				rendered="#{escolaMb.isExclusao()}" immediate="true" />
+				action="#{escolaMb.terminarExclusao()}" update="@all"
+				rendered="#{escolaMb.isExclusao()}" immediate="false" />
 			<p:commandButton value="Cancelar" action="#{escolaMb.cancelar()}"
-				ajax="false" immediate="true" />
+				update="@all" immediate="false" />
 		</h:form>
 	</ui:define>
 </ui:composition>

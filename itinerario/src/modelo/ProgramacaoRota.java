@@ -20,12 +20,14 @@ public class ProgramacaoRota {
 	private Date horaInicial;
 	@Temporal(value=TemporalType.TIME)
 	private Date horaFinal;
-	private Date inicioVigencia;
-	private Date terminoVigencia;
+	private Date inicioPeriodo;
+	private Date terminoPeriodo;
 	@ManyToOne
 	private Calendario calendario;
 	@ManyToOne
 	private Veiculo veiculo;
+	@ManyToOne
+	private Motorista motorista;
 
 	public Long getId() {
 		return id;
@@ -51,17 +53,17 @@ public class ProgramacaoRota {
 	public void setHoraFinal(Date horaFinal) {
 		this.horaFinal = horaFinal;
 	}
-	public Date getInicioVigencia() {
-		return inicioVigencia;
+	public Date getInicioPeriodo() {
+		return inicioPeriodo;
 	}
-	public void setInicioVigencia(Date inicioVigencia) {
-		this.inicioVigencia = inicioVigencia;
+	public void setInicioPeriodo(Date inicioPeriodo) {
+		this.inicioPeriodo = inicioPeriodo;
 	}
-	public Date getTerminoVigencia() {
-		return terminoVigencia;
+	public Date getTerminoPeriodo() {
+		return terminoPeriodo;
 	}
-	public void setTerminoVigencia(Date terminoVigencia) {
-		this.terminoVigencia = terminoVigencia;
+	public void setTerminoPeriodo(Date terminoPeriodo) {
+		this.terminoPeriodo = terminoPeriodo;
 	}
 	public Calendario getCalendario() {
 		return calendario;
@@ -74,6 +76,12 @@ public class ProgramacaoRota {
 	}
 	public void setVeiculo(Veiculo veiculo) {
 		this.veiculo = veiculo;
+	}
+	public Motorista getMotorista() {
+		return motorista;
+	}
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
 	}
 
 }

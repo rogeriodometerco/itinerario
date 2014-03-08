@@ -12,7 +12,7 @@ public class Atendido {
 	private Long id;
 
 	@ManyToOne
-	private Pessoa pessoa;
+	private Passageiro passageiro;
 	@ManyToOne
 	private ProgramacaoRota programacaoRota;
 	@ManyToOne
@@ -24,11 +24,11 @@ public class Atendido {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Pessoa getPessoa() {
-		return pessoa;
+	public Passageiro getPassageiro() {
+		return passageiro;
 	}
-	public void setPessoa(Pessoa pessoa) {
-		this.pessoa = pessoa;
+	public void setPassageiro(Passageiro passageiro) {
+		this.passageiro = passageiro;
 	}
 	public ProgramacaoRota getProgramacaoRota() {
 		return programacaoRota;

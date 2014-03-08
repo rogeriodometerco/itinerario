@@ -1,14 +1,18 @@
 package managedbean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import modelo.Calendario;
+import modelo.DiaCalendario;
 import util.JsfUtil;
 import facade.CalendarioFacade;
 
@@ -21,6 +25,7 @@ public class CalendarioMb implements Serializable {
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
 	private Calendario calendario;
+	private Integer ano;
 	private List<Calendario> lista;
 	private String estadoView;
 	private String nomePesquisa;
@@ -30,6 +35,7 @@ public class CalendarioMb implements Serializable {
 
 	@PostConstruct
 	private void inicializar() {
+		ano = null;
 		this.estadoView = LISTAGEM;
 	}
 
@@ -74,9 +80,29 @@ public class CalendarioMb implements Serializable {
 		this.calendario = new Calendario();
 	}
 
+	/*
+	public void anoChange(ValueChangeEvent event) {
+		calendario.setDias(facade.montarDias((Integer)event.getNewValue()));
+		for (DiaCalendario dia: calendario.getDias()) {
+			dia.setCalendario(calendario);
+		}
+	}
+	*/
+	
+	public void gerarDias() {
+		calendario.setDias(facade.montarDias(ano));
+		for (DiaCalendario dia: calendario.getDias()) {
+			dia.setCalendario(calendario);
+		}
+	}
+	
 	public void iniciarAlteracao(Calendario calendario) {
-		this.calendario = calendario;
-		this.estadoView = ALTERACAO;
+		try {
+			this.calendario = facade.recuperarParaEdicao(calendario.getId());
+			this.estadoView = ALTERACAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar calendário para edição: " + e.getMessage());
+		}
 	}
 
 	public void terminarCriacaoOuAlteracao() {
@@ -92,8 +118,12 @@ public class CalendarioMb implements Serializable {
 	}
 
 	public void iniciarExclusao(Calendario calendario) {
-		this.calendario = calendario;
-		this.estadoView = EXCLUSAO;
+		try {
+			this.calendario = facade.recuperarParaEdicao(calendario.getId());
+			this.estadoView = EXCLUSAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar calendário para exclusão: " + e.getMessage());
+		}
 	}
 
 	public void terminarExclusao() {
@@ -136,4 +166,12 @@ public class CalendarioMb implements Serializable {
 		this.nomePesquisa = nomePesquisa;
 	}
 
+	public Integer getAno() {
+		return ano;
+	}
+
+	public void setAno(Integer ano) {
+		this.ano = ano;
+	}
+	
 }

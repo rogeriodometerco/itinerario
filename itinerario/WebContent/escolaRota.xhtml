@@ -152,15 +152,15 @@
 				</p:autoComplete>
 
 			</h:panelGrid>
-			<br />
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{escolaRotaMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{escolaRotaMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{escolaRotaMb.isCriacao() || escolaRotaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
 				action="#{escolaRotaMb.terminarExclusao()}" ajax="false"
-				rendered="#{escolaRotaMb.isExclusao()}" immediate="true" />
+				rendered="#{escolaRotaMb.isExclusao()}" immediate="false" />
 			<p:commandButton value="Cancelar" action="#{escolaRotaMb.cancelar()}"
-				ajax="false" immediate="true" />
+				ajax="false" immediate="false" />
 		</h:form>
 
 	</ui:define>

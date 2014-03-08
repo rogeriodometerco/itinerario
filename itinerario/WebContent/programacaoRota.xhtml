@@ -64,8 +64,20 @@
 					#{prog.rota.nome}
 				</p:column>
 				<p:column>
+					<f:facet name="header">Origem</f:facet>
+					#{prog.rota.origem}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>
+					#{prog.rota.destino}
+				</p:column>
+				<p:column>
 					<f:facet name="header">Veículo</f:facet>
 					#{prog.veiculo.placa}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Motorista</f:facet>
+					#{prog.motorista.pessoa.nome}
 				</p:column>
 				<p:column>
 					<f:facet name="header">Hr inicial</f:facet>
@@ -81,13 +93,13 @@
 				</p:column>
 				<p:column>
 					<f:facet name="header">Início vigência</f:facet>
-					<h:outputText value="#{prog.inicioVigencia}">
+					<h:outputText value="#{prog.inicioPeriodo}">
 						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
 					</h:outputText>
 				</p:column>
 				<p:column>
 					<f:facet name="header">Término vigência</f:facet>
-					<h:outputText value="#{prog.terminoVigencia}">
+					<h:outputText value="#{prog.terminoPeriodo}">
 						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
 					</h:outputText>
 				</p:column>
@@ -146,6 +158,15 @@
 					completeMethod="#{veiculoMb.autocomplete}" var="v"
 					itemLabel="#{v.placa}" itemValue="#{v}"
 					converter="#{veiculoConverter}" forceSelection="true">
+					<p:ajax event="itemSelect" listener="#{programacaoRotaMb.veiculoChange}"
+					process="@this" update="motorista" />
+				</p:autoComplete>
+				<p:outputLabel value="Motorista " />
+				<p:autoComplete id="motorista" value="#{programacaoRotaMb.programacaoRota.motorista}"
+					completeMethod="#{motoristaMb.autocomplete}" var="m"
+					itemLabel="#{m.codigo.concat(' - ').concat(m.pessoa.nome)}" 
+					itemValue="#{m}"
+					converter="#{motoristaConverter}" forceSelection="true">
 				</p:autoComplete>
 				<p:outputLabel value="Hora inicial " />
 				<p:inputMask
@@ -159,6 +180,14 @@
 					<f:convertDateTime pattern="HH:mm" />
 				</p:inputMask>
 
+				<p:outputLabel value="Início período " />
+				<p:calendar
+					value="#{programacaoRotaMb.programacaoRota.inicioPeriodo}"
+					pattern="dd/MM/yyyy" />
+				<p:outputLabel value="Término período " />
+				<p:calendar
+					value="#{programacaoRotaMb.programacaoRota.terminoPeriodo}"
+					pattern="dd/MM/yyyy" />
 				<p:outputLabel value="Calendário " />
 				<p:autoComplete
 					value="#{programacaoRotaMb.programacaoRota.calendario}"
@@ -167,15 +196,6 @@
 					converter="#{calendarioConverter}" forceSelection="true">
 				</p:autoComplete>
 
-				<p:outputLabel value="Início vigência " />
-				<p:calendar
-					value="#{programacaoRotaMb.programacaoRota.inicioVigencia}"
-					pattern="dd/MM/yyyy" />
-				<p:outputLabel value="Término vigência " />
-				<p:calendar
-					value="#{programacaoRotaMb.programacaoRota.terminoVigencia}"
-					pattern="dd/MM/yyyy" />
-
 			</h:panelGrid>
 			<br />
 			<p:commandButton value="Salvar"
@@ -183,10 +203,10 @@
 				ajax="false"
 				rendered="#{programacaoRotaMb.isCriacao() || programacaoRotaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{programacaoRotaMb.terminarExclusao()}" ajax="false"
-				rendered="#{programacaoRotaMb.isExclusao()}" immediate="true"/>
+				action="#{programacaoRotaMb.terminarExclusao()}" update="@all"
+				rendered="#{programacaoRotaMb.isExclusao()}" immediate="false"/>
 			<p:commandButton value="Cancelar"
-				action="#{programacaoRotaMb.cancelar()}" ajax="false" immediate="true"/>
+				action="#{programacaoRotaMb.cancelar()}" update="@all" immediate="false"/>
 		</h:form>
 
 	</ui:define>

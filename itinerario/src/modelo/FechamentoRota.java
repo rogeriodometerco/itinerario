@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -22,7 +23,9 @@ public class FechamentoRota {
 	private Date dataFinal;
 	private Boolean concluido;
 
-	@OneToMany(cascade=CascadeType.ALL, mappedBy="fechamentoRota", orphanRemoval=false)
+	@OneToMany(fetch=FetchType.EAGER, 
+			cascade={CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH},
+			mappedBy="fechamentoRota")
 	private List<AnaliseViagem> analisesViagem;
 
 	public Long getId() {
@@ -72,7 +75,21 @@ public class FechamentoRota {
 	public void setConcluido(Boolean concluido) {
 		this.concluido = concluido;
 	}
-	
+
+	public Integer getQtdeViagensPrevistas() {
+		return analisesViagem.size();
+	}
+
+	public Integer getQtdeViagensRealizadas() {
+		Integer qtde = 0;
+		for (AnaliseViagem a: analisesViagem) {
+			if (a.getKmRealizado() > 0) {
+				qtde++;
+			}
+		}
+		return qtde;
+	}
+
 	public Double getKmPrevisto() {
 		Double km = 0d;
 		for (AnaliseViagem a: analisesViagem) {
@@ -80,6 +97,7 @@ public class FechamentoRota {
 		}
 		return km;
 	}
+
 	public Double getKmRealizado() {
 		Double km = 0d;
 		for (AnaliseViagem a: analisesViagem) {
@@ -95,7 +113,7 @@ public class FechamentoRota {
 		}
 		return km;
 	}
-	
+
 	public Double getKmForaTrajeto() {
 		Double km = 0d;
 		for (AnaliseViagem a: analisesViagem) {
@@ -119,7 +137,7 @@ public class FechamentoRota {
 		}
 		return km;
 	}
-	
+
 	public Integer getParadasPrevistas() {
 		Integer paradas = 0;
 		for (AnaliseViagem a: analisesViagem) {

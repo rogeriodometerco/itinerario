@@ -15,7 +15,7 @@
 <h:body>
 	<h:form>
 		<h:outputStylesheet name="geral.css" library="css" />
-
+<!-- 
 		<div style="float: left">
 			<a href='http://prefeituradepitanga.blogspot.com.br/'
 				style='display: inline; margin-top: 20px; margin-left: 30px'> <img
@@ -24,7 +24,9 @@
 				style='display: inline' width='250px;  ' />
 			</a>
 		</div>
-		<div style="float: left;">
+	
+ -->
+ 	<div style="float: left;">
 			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
 			<!-- 
 		<h:selectOneMenu value="#{skinBean.skin}" >
@@ -68,27 +70,30 @@
 	<p:spacer height="3px"/>
 		<p:menubar>
 			<p:submenu label="| Cadastro">
-				<p:menuitem action="pessoa" value="Pessoa" />
+				<p:menuitem outcome="motorista" value="Motorista" />
+				<p:menuitem outcome="veiculo" value="Veículo" />
+				<p:menuitem outcome="passageiro" value="Passageiro" />
 				<p:menuitem action="escola" value="Escola" />
 				<p:menuitem action="aluno" value="Aluno" />
-				<p:menuitem action="veiculo" value="Veículo" />
 				<p:menuitem action="calendario" value="Calendário" />
-				<p:submenu label="Rota">
-					<p:menuitem action="rota" value="Rota" />
-					<p:menuitem action="programacaoRota" value="Programação de veículos" />
-					<p:menuitem action="escolaRota" value="Escolas atendidas" />
-					<p:menuitem action="atendido" value="Pessoas atendidas" />
-				</p:submenu>
+				<p:menuitem outcome="rota" value="Rota" />
+				<p:menuitem outcome="escolaRota" value="Escolas atendidas pela rota" />
+				<p:menuitem outcome="atendido" value="Passageiros atendidos pela rota" />
 			</p:submenu>
-			<p:menuitem action="ultimaPosicaoDaFrota"
+			<p:submenu label="| Viagens">
+				<p:menuitem outcome="programacaoRota" value="Programação de veículos" />
+				<p:menuitem outcome="preFechamentoRota" value="Pré-fechamento" />
+				<p:menuitem outcome="fechamentoRota" value="Fechamento" />
+			</p:submenu>
+			<p:menuitem outcome="ultimaPosicaoDaFrota"
 				value="| Última posição da frota"/>
-			<p:menuitem action="analiseViagem" value="| Analisar viagens" />
-			<p:menuitem action="consultaAnaliseViagem" value="| Consultar análises de viagens" />
-			<p:menuitem action="posicoesDoVeiculo"
+			<p:menuitem outcome="analiseViagem" value="| Analisar viagens" />
+			<p:menuitem outcome="consultaAnaliseViagem" value="| Consultar análises de viagens" />
+			<p:menuitem outcome="posicoesDoVeiculo"
 				value="| Consultar posições do veículo" />
-			<p:menuitem action="cargaDados"
+			<p:menuitem outcome="cargaDados"
 				value="| Carregar dados do rastreador" />
-			<p:menuitem action="processarAnalises"
+			<p:menuitem outcome="processarAnalises"
 				value="| Processar análises" />
 		</p:menubar>
 	</h:form>

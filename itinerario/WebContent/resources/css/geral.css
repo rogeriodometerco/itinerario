@@ -21,6 +21,8 @@ body {font-family: Univers, "Univers 55", "Lucida Grande CE", lucida, Helvetica,
 
 h1, h2 {color: black}
 
+input[type=text] {width:200px}
+
 .cabecalho {
 	position:top;
 	width:100%;

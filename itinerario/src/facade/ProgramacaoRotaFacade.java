@@ -21,8 +21,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 
 	@EJB
 	private ProgramacaoRotaDao dao;
-	@EJB
-	private CalendarioLetivoFacade calendarioFacade;
 
 	@Override
 	protected ProgramacaoRotaDao getDao() {
@@ -37,7 +35,7 @@ extends GenericCrudFacade<ProgramacaoRota> {
 	@SuppressWarnings("unchecked")
 	public List<ProgramacaoRota> recuperarProgramacoes(Date data) throws Exception {
 		String sql = "select p from ProgramacaoRota as p"
-				+ " where p.inicioVigencia <= :data and p.terminoVigencia >= :data";
+				+ " where p.inicioPeriodo <= :data and p.terminoPeriodo >= :data";
 		List<ProgramacaoRota> lista = (List<ProgramacaoRota>)getEntityManager()
 				.createQuery(sql)
 				.setParameter("data", data, TemporalType.TIMESTAMP)
@@ -123,6 +121,9 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		if (p.getVeiculo() == null) {
 			erros.add("Informe o veículo");
 		}
+		if (p.getMotorista() == null) {
+			erros.add("Informe o motorista");
+		}
 		if (p.getHoraInicial() == null) {
 			erros.add("Informe a hora inicial");
 		}
@@ -132,8 +133,17 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		if (p.getCalendario() == null) {
 			erros.add("Informe o calendário");
 		}
-		if (p.getInicioVigencia() == null) {
-			erros.add("Informe a data de início da vigência");
+		if (p.getInicioPeriodo() == null) {
+			erros.add("Informe a data de início do período");
+		}
+		if (p.getInicioPeriodo() != null && p.getTerminoPeriodo() != null) {
+			if (p.getTerminoPeriodo().before(p.getInicioPeriodo())) {
+				erros.add("Data final não pode ser menor que a data inicial");
+			}
+		}
+		if (p.getHoraFinal() != null && p.getHoraInicial() != null
+				&& p.getHoraFinal().before(p.getHoraInicial())) {
+			erros.add("Hora final não pode ser menor que a hora inicial");
 		}
 		if (erros.size() > 0) {
 			throw new Exception(erros.toString());

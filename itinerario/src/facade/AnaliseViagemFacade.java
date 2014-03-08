@@ -81,6 +81,21 @@ extends GenericCrudFacade<AnaliseViagem> {
 				.getResultList();
 	}
 
+	public List<AnaliseViagem> recuperarAnalisesViagemAFechar(Date dataInicialViagem, Date dataFinalViagem, Rota rota) 
+			throws Exception {
+
+		String sql = "select x"
+				+ " from AnaliseViagem as x" 
+				+ " where x.dataViagem between :dataInicial and :dataFinal"
+				+ " and x.rota = :rota"
+				+ " and x.fechamentoRota is null";
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
+				.setParameter("dataInicial", dataInicialViagem)
+				.setParameter("dataFinal", dataFinalViagem)
+				.setParameter("rota", rota)
+				.getResultList();
+	}
+	
 	public List<AnaliseViagem> recuperarAnalisesViagem(Date dataInicialViagem, 
 			Date dataFinalViagem, Rota rota, Veiculo veiculo) throws Exception {
 		String sql = "select x"

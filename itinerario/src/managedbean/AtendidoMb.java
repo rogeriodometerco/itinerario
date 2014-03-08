@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import modelo.Atendido;
+import modelo.Passageiro;
 import modelo.Pessoa;
 import modelo.PontoRota;
 import modelo.ProgramacaoRota;
@@ -37,7 +38,7 @@ public class AtendidoMb implements Serializable {
 	private List<PontoRota> paradas;
 	private String estadoView;
 	private ProgramacaoRota programacaoRotaPesquisa;
-	private Pessoa pessoaPesquisa;
+	private Passageiro passageiroPesquisa;
 	@EJB
 	private AtendidoFacade facade;
 	@EJB
@@ -62,14 +63,14 @@ public class AtendidoMb implements Serializable {
 
 	public void listar() { 
 		try {
-			if (programacaoRotaPesquisa == null && pessoaPesquisa == null) {
+			if (programacaoRotaPesquisa == null && passageiroPesquisa == null) {
 				this.lista = facade.listar();
-			} else if (programacaoRotaPesquisa != null && pessoaPesquisa == null) {
+			} else if (programacaoRotaPesquisa != null && passageiroPesquisa == null) {
 				this.lista = facade.listar(programacaoRotaPesquisa);
-			} else if (programacaoRotaPesquisa == null && pessoaPesquisa != null) {
-				this.lista = facade.listar(pessoaPesquisa);
-			} else if (programacaoRotaPesquisa != null && pessoaPesquisa != null) {
-				this.lista = facade.listar(programacaoRotaPesquisa, pessoaPesquisa);
+			} else if (programacaoRotaPesquisa == null && passageiroPesquisa != null) {
+				this.lista = facade.listar(passageiroPesquisa);
+			} else if (programacaoRotaPesquisa != null && passageiroPesquisa != null) {
+				this.lista = facade.listar(programacaoRotaPesquisa, passageiroPesquisa);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -156,12 +157,12 @@ public class AtendidoMb implements Serializable {
 		this.programacaoRotaPesquisa = programacaoRota;
 	}
 
-	public Pessoa getPessoaPesquisa() {
-		return pessoaPesquisa;
+	public Passageiro getPassageiroPesquisa() {
+		return passageiroPesquisa;
 	}
 
-	public void setPessoaPesquisa(Pessoa pessoa) {
-		this.pessoaPesquisa = pessoa;
+	public void setPassageiroPesquisa(Passageiro passageiro) {
+		this.passageiroPesquisa = passageiro;
 	}
 
 	public List<PontoRota> getParadas() {
@@ -203,7 +204,7 @@ public class AtendidoMb implements Serializable {
 		sincronizarMarcadores();
 	}
 
-	public void pessoaChange() {
+	public void passageiroChange() {
 		sincronizarMarcadores();
 	}
 
@@ -218,10 +219,10 @@ public class AtendidoMb implements Serializable {
 		try {
 			mapModel = new DefaultMapModel();
 
-			if (atendido != null && atendido.getPessoa() != null) {
-				criarMarcadorPessoa(atendido.getPessoa());
-				if (atendido.getPessoa().getLat() != null && atendido.getPessoa().getLng() != null) {
-					this.centroMapa = atendido.getPessoa().getLat() + (", ") + (atendido.getPessoa().getLng());
+			if (atendido != null && atendido.getPassageiro() != null) {
+				criarMarcadorPassageiro(atendido.getPassageiro());
+				if (atendido.getPassageiro().getPessoa().getLat() != null && atendido.getPassageiro().getPessoa().getLng() != null) {
+					this.centroMapa = atendido.getPassageiro().getPessoa().getLat() + (", ") + (atendido.getPassageiro().getPessoa().getLng());
 				}
 			}
 
@@ -278,14 +279,14 @@ public class AtendidoMb implements Serializable {
 		this.mapModel.addOverlay(marker);
 	}
 
-	private void criarMarcadorPessoa(Pessoa pessoa) {
+	private void criarMarcadorPassageiro(Passageiro passageiro) {
 		String icone;
 		icone = "male-2.png";
 
-		LatLng latLng = new LatLng(pessoa.getLat(), pessoa.getLng());
-		Marker marker = new Marker(latLng, "", pessoa);
+		LatLng latLng = new LatLng(passageiro.getPessoa().getLat(), passageiro.getPessoa().getLng());
+		Marker marker = new Marker(latLng, "", passageiro);
 		marker.setIcon("resources/icones/" + icone);
-		String titulo = pessoa.getNome();
+		String titulo = passageiro.getPessoa().getNome();
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}

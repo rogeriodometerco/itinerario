@@ -1,7 +1,6 @@
 package managedbean;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -11,26 +10,29 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
 
-import modelo.AnalisePosicao;
+import dto.FechamentoRotaReport;
+import dto.PreFechamentoRota;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
+
 import modelo.AnaliseViagem;
 import modelo.FechamentoRota;
 import modelo.PontoRota;
 import modelo.Rota;
-
-import org.primefaces.event.map.StateChangeEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
-import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
-import org.primefaces.model.map.Polyline;
-
-import util.AnoMes;
+import teste.FichaKmRodado;
 import util.JsfUtil;
-import facade.AnalisePosicaoFacade;
-import facade.AnaliseViagemFacade;
 import facade.FechamentoRotaFacade;
-import facade.PontoRotaFacade;
 
 @ManagedBean
 @ViewScoped
@@ -40,42 +42,27 @@ public class FechamentoRotaMb implements Serializable {
 	private static final String CRIACAO = "criacao";
 	private static final String ALTERACAO = "alteracao";
 	private static final String EXCLUSAO = "exclusao";
-	private static final String MAPA = "mapa";
 	private FechamentoRota fechamentoRota;
-	private AnaliseViagem analiseNoMapa;
-	private AnoMes anomes;
 	private List<FechamentoRota> lista;
-	private List<AnaliseViagem> analisesViagem;
 	private String estadoView;
 	private Rota rotaPesquisa;
 	private Date dataInicialPesquisa;
 	private Date dataFinalPesquisa;
-	private MapModel mapModel;
-	private String centroMapa;
-	private Integer zoomMapa;
-	private double[] total;
+	private double total[];
 	@EJB
 	private FechamentoRotaFacade facade;
-	@EJB
-	private AnaliseViagemFacade analiseViagemFacade;
-	@EJB
-	private PontoRotaFacade pontoRotaFacade;
-	@EJB
-	private AnalisePosicaoFacade analisePosicaoFacade;
-	
+
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
-		this.anomes = new AnoMes();
 		Calendar c = Calendar.getInstance();
 		c.set(2013, 10, 1);
 		dataInicialPesquisa = new Date(c.getTimeInMillis());
 		c.set(2013, 10, 30);
 		dataFinalPesquisa = new Date(c.getTimeInMillis());
-		resetarMapa();
 	}
 
-	public FechamentoRota getFechamentoRota() {
+	public FechamentoRota getfechamentoRota() {
 		return fechamentoRota;
 	}
 
@@ -83,65 +70,37 @@ public class FechamentoRotaMb implements Serializable {
 		this.fechamentoRota = fechamentoRota;
 	}
 
-	public void listar() {
-		if (dataInicialPesquisa == null) {
-			JsfUtil.addMsgErro("Informe a data inicial para pesquisar");
-			return;
-		}
-		if (dataFinalPesquisa == null) {
-			JsfUtil.addMsgErro("Informe a data final para pesquisar");
-			return;
-		}
-
+	public void listar() { 
 		try {
-			if (rotaPesquisa == null) {
-				this.lista = facade.getFechamentosRota(dataInicialPesquisa, dataFinalPesquisa);
+			if (dataInicialPesquisa != null && dataFinalPesquisa == null 
+					|| dataInicialPesquisa == null && dataFinalPesquisa != null) {
+				JsfUtil.addMsgErro("Informe o período completo");
+			} else if (rotaPesquisa != null && dataInicialPesquisa != null && dataFinalPesquisa != null) {
+				System.out.println("listar() 1");
+				this.lista = facade.listarFechamentosRota(rotaPesquisa, dataInicialPesquisa, dataFinalPesquisa);
+			} else if (dataInicialPesquisa != null && dataFinalPesquisa != null){
+				System.out.println("listar() 2");
+				this.lista = facade.listarFechamentosRota(dataInicialPesquisa, dataFinalPesquisa);
+			} else if (rotaPesquisa != null) {
+				System.out.println("listar() 3");
+				this.lista = facade.listarFechamentosRota(rotaPesquisa);
 			} else {
-				this.lista = new ArrayList<FechamentoRota>();
-				lista.add(facade.getFechamentoRota(rotaPesquisa, dataInicialPesquisa, dataFinalPesquisa));
+				System.out.println("listar() 4");
+				JsfUtil.addMsgErro("Informe a rota ou o período");
 			}
-			//multiplicarDados(); // simula quantidade de dados real
 			totalizar();
 		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao recuperar relação de fechamentos de rota: " + e.getMessage());
-		}
-	}
-
-	/*
-	 * Aumenta quantidade de dados a exibir, para simular uma situação real.
-	 */
-	private void multiplicarDados() {
-		while (lista.size() < 100) {
-			lista.add(lista.get(0));
-		}
-		for (FechamentoRota f: lista) {
-			if (f.getAnalisesViagem().size() > 0) {
-				while (f.getAnalisesViagem().size() < 30 ) {
-					f.getAnalisesViagem().addAll(f.getAnalisesViagem());
-				}
-			}
-		}
-		System.out.println("multiplicarDados()");
-	}
-
-	private void totalizar() {
-		total = new double[8];
-		for (FechamentoRota f: lista) {
-			total[0] += f.getKmPrevisto();
-			total[1] += f.getKmRealizado();
-			total[2] += f.getKmNoTrajeto();
-			total[3] += f.getKmForaTrajeto();
-			total[4] += f.getKmPago();
-			total[5] += f.getValorPago();
-			total[6] += f.getParadasPrevistas();
-			total[7] += f.getParadasCumpridas();
+			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
 		}
 	}
 
 	public List<FechamentoRota> getLista() {
-		return lista;
+		if (lista == null) {
+			//	listar();
+		}
+		return this.lista;
 	}
-	
+
 	public void iniciarCriacao() {
 		this.estadoView = CRIACAO;
 		this.fechamentoRota = new FechamentoRota();
@@ -161,16 +120,20 @@ public class FechamentoRotaMb implements Serializable {
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao salvar: " + e.getMessage());
 		}
-
 	}
 
 	public void iniciarExclusao(FechamentoRota fechamentoRota) {
+		System.out.println("iniciarExclusao() " + fechamentoRota.getRota().getCodigo());
 		this.fechamentoRota = fechamentoRota;
 		this.estadoView = EXCLUSAO;
 	}
 
 	public void terminarExclusao() {
 		try {
+			// Não exclui as análises de viagem.
+			for (AnaliseViagem a: fechamentoRota.getAnalisesViagem()) {
+				a.setFechamentoRota(null);
+			}
 			facade.excluir(fechamentoRota);
 			JsfUtil.addMsgSucesso("Informações excluídas com sucesso.");
 			listar();
@@ -201,16 +164,12 @@ public class FechamentoRotaMb implements Serializable {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
 	}
 
-	public Boolean isMapa() {
-		return this.estadoView != null && this.estadoView.equals(MAPA);
-	}
-
 	public Rota getRotaPesquisa() {
 		return rotaPesquisa;
 	}
 
-	public void setRotaPesquisa(Rota rota) {
-		this.rotaPesquisa = rota;
+	public void setRotaPesquisa(Rota rotaPesquisa) {
+		this.rotaPesquisa = rotaPesquisa;
 	}
 
 	public Date getDataInicialPesquisa() {
@@ -229,149 +188,80 @@ public class FechamentoRotaMb implements Serializable {
 		this.dataFinalPesquisa = dataFinalPesquisa;
 	}
 
+	private void totalizar() {
+		total = new double[10];
+		for (FechamentoRota f: lista) {
+			total[0] += f.getQtdeViagensPrevistas();
+			total[1] += f.getQtdeViagensRealizadas();
+			total[2] += f.getKmPrevisto();
+			total[3] += f.getKmRealizado();
+			total[4] += f.getKmNoTrajeto();
+			total[5] += f.getKmForaTrajeto();
+			total[6] += f.getKmPago();
+			total[7] += f.getValorPago();
+			total[8] += f.getParadasPrevistas();
+			total[9] += f.getParadasCumpridas();
+		}
+	}
+
 	public double[] getTotal() {
 		return total;
 	}
 
-	public List<AnaliseViagem> getAnalisesViagem() {
-		return analisesViagem;
-	}
-
-	public void setAnalisesViagem(List<AnaliseViagem> analisesViagem) {
-		this.analisesViagem = analisesViagem;
-	}  
-
-	/*	public void onRowToggle(ToggleEvent event) {
-    	analisesViagem = ((FechamentoRota)event.getData()).getAnalisesViagem();
-    }
-	 */
-	
-	/*
-	public void salvar(List<AnaliseViagem> lista) {
+	public void gerarRelatorio(FechamentoRota fechamentoRota) {
 		try {
-			System.out.println("salvar(lista) "  +lista.get(0).getKmPago());
-			System.out.println("salvar(lista) "  +this.lista.get(0).getAnalisesViagem().get(0).getKmPago());
-			analiseViagemFacade.salvar(lista);
-			JsfUtil.addMsgSucesso("Informações salvas com sucesso");
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao salvar análises: " + e.getMessage());
-		}
-	} 
-	*/
-	
-	public void onStateChange(StateChangeEvent event) {
-		zoomMapa = event.getZoomLevel();
-		centroMapa = event.getCenter().getLat() + ", " + event.getCenter().getLng();
-	}
+			System.out.println("gerarRelatorio() 1");
+			FechamentoRotaReport f = facade.getFechamentoRotaReport(fechamentoRota);
+			//TODO retirar linha abaixo após testes.
+			multiplicarDados(f);
+			System.out.println("gerarRelatorio() 2 ");
+			System.out.println("getEscolasToString " + f.getEscolasToString());
+			List<FechamentoRotaReport> lista = new ArrayList<FechamentoRotaReport>();
+			lista.add(f);
+			JasperReport report = JasperCompileManager.compileReport("c:/ambdev/teste/fechamentoRota.jrxml");
+			System.out.println("Compilou");
+			JasperPrint print = JasperFillManager
+					.fillReport(report, null, new JRBeanCollectionDataSource(
+							lista));
 
-	public MapModel getMapModel() {
-		return mapModel;
-	}
+			HttpServletResponse response = (HttpServletResponse)FacesContext
+					.getCurrentInstance().getExternalContext().getResponse();
 
-	public String getCentroMapa() {
-		return centroMapa;
-	}
+			response.setContentType("application/pdf"); 
+			//response.setHeader("Content-disposition", "attachment;filename=\"FichaKmRodado.pdf\"");  
+			response.setHeader("Content-disposition", "inline");  
+			ServletOutputStream responseStream = response.getOutputStream();  
+			JasperExportManager.exportReportToPdfStream(print, responseStream);
+			System.out.println("Exportou");
+			responseStream.flush();
+			responseStream.close();
+			FacesContext.getCurrentInstance().responseComplete();
 
-	public Integer getZoomMapa() {
-		return zoomMapa;
-	}
-
-	public void exibirMapa(AnaliseViagem analise) {
-		this.analiseNoMapa = analise;
-		this.estadoView = MAPA;
-		this.mapModel = new DefaultMapModel();
-		resetarMapa();
-		criarMarcadores();
-		criarLinhas();
-	}
-
-	public void exibirTabela() {
-		this.estadoView = ALTERACAO;
-	}
-	
-	private void criarLinhas() {
-		try {
-		Polyline polyline = new Polyline();
-		for (PontoRota ponto: pontoRotaFacade.recuperarPontos(analiseNoMapa.getProgramacao().getRota())) {
-			LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
-			polyline.getPaths().add(latLng);
-		}
-		polyline.setStrokeWeight(7);  
-		polyline.setStrokeColor("#0000FF");  
-		polyline.setStrokeOpacity(0.3);  
-		mapModel.addOverlay(polyline);
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar linhas: " + e.getMessage());
-		}
-	}
-
-	private void criarMarcadores() {
-		try {
-		for (AnalisePosicao analise: analisePosicaoFacade.recuperarAnalisesPosicao(analiseNoMapa)) {
-			criarMarcador(analise);
-		}
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar marcadores: " + e.getMessage());
+		} catch (JRException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
+
 	}
 
-	private void resetarMapa() {
-		this.centroMapa = "-24.753573,-51.762526";
-		PontoRota primeiro = null;
-		if (analiseNoMapa != null) {
-			try {
-				primeiro = pontoRotaFacade.recuperarPontos(analiseNoMapa.getProgramacao().getRota()).get(0);
-				this.centroMapa = 
-						primeiro.getLat() + ", " + primeiro.getLng();
-			} catch (Exception e) {
-				JsfUtil.addMsgErro("Um erro ocorreu ao posicionar o mapa: " + e.getMessage());
+	/*
+	 * Aumenta quantidade de dados a exibir para fazer testes.
+	 */
+	private void multiplicarDados(FechamentoRotaReport f) {
+		if (f.getFechamentoRota().getAnalisesViagem().size() > 0) {
+			while (f.getFechamentoRota().getAnalisesViagem().size() < 80 ) {
+				f.getFechamentoRota().getAnalisesViagem().add(
+						f.getFechamentoRota().getAnalisesViagem().get(0));
 			}
 		}
-		this.zoomMapa = 15;
-	}
-
-	private void criarMarcador(AnalisePosicao analise) {
-		String icone;
-		String legenda;
-		if (analise.getNoTrajeto()) {
-			if (analise.getPosicaoVeiculo().getVelocidade() > 0) {
-				// TODO Ícone que representa veículo parado.
-				icone = "mm_20_green.png";
-				legenda = "No trajeto";
-			} else {
-				icone = "mm_20_white.png";
-				legenda = "No trajeto, parado";
+		if (f.getPessoas().size() > 0) {
+			while (f.getPessoas().size() < 30 ) {
+				f.getPessoas().add(
+						f.getPessoas().get(0));
 			}
-		} else {
-			icone = "mm_20_red.png";
-			legenda = "Fora do trajeto";
 		}
-		LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
-				analise.getPosicaoVeiculo().getLng());
-		Marker marker = new Marker(latLng, "", analise);
-		marker.setIcon("resources/icones/" + icone);
-		String titulo = marker.getLatlng().toString()
-				+ "\n" + legenda
-				+ "\nVeículo: "
-				+ analise.getPosicaoVeiculo().getVeiculo().getPlaca()
-				+ "\nData e hora: " 
-				+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-		.format(analise.getPosicaoVeiculo().getDataHora())
-		+ "\nVelocidade: " 
-		+ analise.getPosicaoVeiculo().getVelocidade() + " km/h";
-		marker.setTitle(titulo);
-		this.mapModel.addOverlay(marker);
-	}
-
-
-	public AnoMes getAnomes() {
-		return anomes;
-	}
-
-
-	public void setAnomes(AnoMes anomes) {
-		this.anomes = anomes;
 	}
 
 }

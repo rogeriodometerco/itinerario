@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import modelo.Aluno;
 import modelo.Escola;
+import modelo.MotoristaVeiculo;
 import modelo.Pessoa;
 import modelo.Rota;
 import dao.AlunoDao;
@@ -70,9 +71,25 @@ public class AlunoFacade extends GenericCrudFacade<Aluno> {
 		if (entidade.getEscola() == null) {
 			erros.add("Informe a escola");
 		}
-		if (listar(entidade.getEscola(), entidade.getPessoa()) != null) {
+		if (listar(entidade.getEscola(), entidade.getPessoa()).size() > 0) {
 			erros.add("Esta pessoa já está cadastrada como aluno desta escola");
 		}
+		if (entidade.getId() != null) {
+			Aluno aluno = recuperar(entidade.getId());
+			if (aluno.getId().equals(entidade.getId())) {
+				if (entidade.getPessoa() != null) {
+					if (!aluno.getPessoa().getId().equals(entidade.getPessoa().getId())) {
+						erros.add("Pessoa não pode ser alterada, exclua o registro ou cadastre um novo");
+					}
+				}
+				if (entidade.getEscola() != null) {
+					if (!aluno.getEscola().getId().equals(entidade.getEscola().getId())) {
+						erros.add("Escola não pode ser alterada, exclua o registro ou cadastre um novo");
+					}
+				}
+			}
+		}
+
 		if (erros.size() > 0) {
 			throw new Exception(erros.toString());
 		}

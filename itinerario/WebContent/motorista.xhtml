@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="headComplementar">
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript" />
+	</ui:define>
+
+	<ui:define name="titulo">Cadastro de motorista</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{motoristaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo" action="#{motoristaMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:inputText value="#{motoristaMb.chavePesquisa}"
+				title="Pesquisar por código, nome ou cpf" />
+			<p:commandButton value="Pesquisar"
+				actionListener="#{motoristaMb.listar}" update="listagem :mensagens" />
+			<p />
+
+			<p:dataTable id="listagem" value="#{motoristaMb.lista}"
+				var="motorista" emptyMessage="Nenhum registro encontrado"
+				style="width: 800px">
+				<p:column>
+					<f:facet name="header">Código</f:facet>
+					#{motorista.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{motorista.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">CPF</f:facet>
+					#{motorista.pessoa.cpf}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Endereço</f:facet>
+					#{motorista.pessoa.endereco}
+				</p:column>
+				<p:column style="width: 120px">
+					<h:panelGroup>
+						<p:commandButton value="Editar"
+							action="#{motoristaMb.iniciarAlteracao(motorista)}" ajax="false" update="@all" />
+						<p:commandButton value="Excluir"
+							action="#{motoristaMb.iniciarExclusao(motorista)}" ajax="false" update="@all" />
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{motoristaMb.isCriacao() || motoristaMb.isAlteracao() || motoristaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar motorista"
+					rendered="#{motoristaMb.isCriacao()}" />
+				<p:outputLabel value="Alterar motorista"
+					rendered="#{motoristaMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do motorista"
+					rendered="#{motoristaMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Código" />
+				<p:inputText value="#{motoristaMb.motorista.codigo}" />
+				<p:outputLabel value="Nome" />
+				<p:inputText value="#{motoristaMb.motorista.pessoa.nome}" />
+				<p:outputLabel value="CPF" />
+				<p:inputMask value="#{motoristaMb.motorista.pessoa.cpf}"
+					mask="999.999.999-99" />
+				<p:outputLabel value="Data nascimento" />
+				<p:inputMask value="#{motoristaMb.motorista.pessoa.dataNascimento}"
+					mask="99/99/9999" >
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:inputMask>
+				<p:outputLabel value="CNH" />
+				<p:inputText value="#{motoristaMb.motorista.pessoa.cnh}" />
+				<p:outputLabel value="Endereço" />
+				<p:inputText value="#{motoristaMb.motorista.pessoa.endereco}" />
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{motoristaMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{motoristaMb.isCriacao() || motoristaMb.isAlteracao()}"/>
+			<p:commandButton value="Excluir"
+				action="#{motoristaMb.terminarExclusao()}" update="@all"
+				rendered="#{motoristaMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{motoristaMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

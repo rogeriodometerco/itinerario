@@ -7,6 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.AjaxBehaviorEvent;
+import javax.faces.event.ValueChangeEvent;
 
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -150,4 +152,21 @@ public class ProgramacaoRotaMb implements Serializable {
 		}
 		return null;
 	}
+	
+	/*
+	public void veiculoChange(ValueChangeEvent event) {
+		Veiculo v = (Veiculo)event.getNewValue();
+		if (v != null) {
+			this.programacaoRota.setMotorista(v.getMotorista());
+			System.out.println("veiculoChange() com motorista" + v);
+		}
+		System.out.println("veiculoChange() " + v);
+	}
+	*/
+	public void veiculoChange() {
+		if (programacaoRota.getVeiculo() != null) {
+			programacaoRota.setMotorista(programacaoRota.getVeiculo().getMotorista());
+		}
+	}
+	
 }

@@ -16,31 +16,26 @@
 		<h:form id="form1" rendered="#{alunoMb.isListagem()}">
 			<p />
 			<p:commandButton value="Novo"
-				actionListener="#{alunoMb.iniciarCriacao}" ajax="false" />
+				actionListener="#{alunoMb.iniciarCriacao}" update="@all" />
 			<p:spacer width="8px" />
 			<p:outputLabel value="Pessoa " />
 			<p:autoComplete value="#{alunoMb.pessoaPesquisa}"
 				completeMethod="#{pessoaMb.autocomplete}" var="p"
-				itemLabel="#{p.codigo.concat(' - ').concat(p.nome)}"
-				itemValue="#{p}" converter="#{pessoaConverter}"
-				forceSelection="true">
-				<p:column>
-					<f:facet name="header">Código</f:facet>  
-						#{p.codigo}
-			        </p:column>
+				itemLabel="#{p.nome}" itemValue="#{p}"
+				converter="#{pessoaConverter}" forceSelection="true">
 				<p:column>
 					<f:facet name="header">Nome</f:facet>  
-						#{p.nome}
-			        </p:column>
+					#{p.nome}
+			    </p:column>
 				<p:column>
 					<f:facet name="header">CPF</f:facet>  
-						#{p.cpf}
-			        </p:column>
+					#{p.cpf}
+			    </p:column>
 			</p:autoComplete>
 			<p:outputLabel value="Escola " />
 			<p:autoComplete value="#{alunoMb.escolaPesquisa}"
 				completeMethod="#{escolaMb.autocomplete}" var="e"
-				itemLabel="#{e.codigo.concat(' - ').concat(e.nome)}"
+				itemLabel="#{e.nome}"
 				itemValue="#{e}" converter="#{escolaConverter}"
 				forceSelection="true">
 				<p:column>
@@ -62,14 +57,10 @@
 
 			<p />
 			<p:dataTable id="listagem" value="#{alunoMb.lista}" var="aluno"
-				rendered="#{alunoMb.lista != null}"
+				rendered="#{alunoMb.lista != null}" style="width: 800px"
 				emptyMessage="Nenhum registro encontrado">
 				<p:column>
-					<f:facet name="header">Pessoa</f:facet>
-					#{aluno.pessoa.codigo}
-				</p:column>
-				<p:column>
-					<f:facet name="header">Nome</f:facet>
+					<f:facet name="header">Nome do aluno</f:facet>
 					#{aluno.pessoa.nome}
 				</p:column>
 				<p:column>
@@ -80,12 +71,10 @@
 					<f:facet name="header">Nome</f:facet>
 					#{aluno.escola.nome}
 				</p:column>
-				<p:column style="width: 120px">
+				<p:column style="width: 70px">
 					<h:panelGroup>
-						<p:commandButton value="Editar"
-							action="#{alunoMb.iniciarAlteracao(aluno)}" ajax="false"/>
 						<p:commandButton value="Excluir"
-							action="#{alunoMb.iniciarExclusao(aluno)}" ajax="false" />
+							action="#{alunoMb.iniciarExclusao(aluno)}" update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -106,13 +95,10 @@
 				<p:outputLabel value="Pessoa " />
 				<p:autoComplete value="#{alunoMb.aluno.pessoa}"
 					completeMethod="#{pessoaMb.autocomplete}" var="p"
-					itemLabel="#{p.codigo.concat(' - ').concat(p.nome)}"
+					itemLabel="#{p.nome}"
 					itemValue="#{p}" converter="#{pessoaConverter}"
-					forceSelection="true">
-					<p:column>
-						<f:facet name="header">Código</f:facet>  
-						#{p.codigo}
-			        </p:column>
+					forceSelection="true"
+					style="width: 200px">
 					<p:column>
 						<f:facet name="header">Nome</f:facet>  
 						#{p.nome}
@@ -125,33 +111,34 @@
 				<p:outputLabel value="Escola " />
 				<p:autoComplete value="#{alunoMb.aluno.escola}"
 					completeMethod="#{escolaMb.autocomplete}" var="e"
-					itemLabel="#{e.codigo.concat(' - ').concat(e.nome)}"
+					itemLabel="#{e.nome}"
 					itemValue="#{e}" converter="#{escolaConverter}"
-					forceSelection="true">
+					forceSelection="true"
+					style="width: 200px">
 					<p:column>
 						<f:facet name="header">Código</f:facet>  
-					#{e.codigo}
-		        </p:column>
+						#{e.codigo}
+			        </p:column>
 					<p:column>
 						<f:facet name="header">Nome</f:facet>  
-					#{e.nome}
-		        </p:column>
+						#{e.nome}
+		    	    </p:column>
 					<p:column>
 						<f:facet name="header">Localidade</f:facet>  
-					#{e.localidade}
-		        </p:column>
+						#{e.localidade}
+		        	</p:column>
 				</p:autoComplete>
 
 			</h:panelGrid>
-			<br />
+			<p />
 			<p:commandButton value="Salvar"
-				action="#{alunoMb.terminarCriacaoOuAlteracao()}" ajax="false"
+				action="#{alunoMb.terminarCriacaoOuAlteracao()}" update="@all"
 				rendered="#{alunoMb.isCriacao() || alunoMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
-				action="#{alunoMb.terminarExclusao()}" ajax="false"
-				rendered="#{alunoMb.isExclusao()}" immediate="true" />
+				action="#{alunoMb.terminarExclusao()}" update="@all"
+				rendered="#{alunoMb.isExclusao()}" immediate="false" />
 			<p:commandButton value="Cancelar" action="#{alunoMb.cancelar()}"
-				ajax="false" immediate="true" />
+				update="@all" immediate="false" />
 		</h:form>
 
 	</ui:define>
