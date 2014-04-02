@@ -10,7 +10,7 @@
 	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
 	template="/WEB-INF/template/geralRich.xhtml">
 
-	<ui:define name="titulo">Fechamentos de rota</ui:define>
+	<ui:define name="titulo">Fechamentos de viagem realizados</ui:define>
 	<ui:define name="conteudo">
 		<p:messages id="mensagens" />
 		<h:form id="form1" rendered="#{fechamentoRotaMb.isListagem()}">
@@ -46,108 +46,110 @@
 
 			<p:commandButton value="Pesquisar"
 				actionListener="#{fechamentoRotaMb.listar}"
-				update="listagem :mensagens" />
+				update="consulta :mensagens" />
 			<p />
 
-			<p:dataTable id="listagem" value="#{fechamentoRotaMb.lista}"
-				var="fechamentoRota" emptyMessage="Nenhum registro encontrado">
-				<p:column>
-					<f:facet name="header">Rota</f:facet>
+			<p:outputPanel id="consulta" >
+				<p:dataTable id="listagem" value="#{fechamentoRotaMb.lista}"
+					var="fechamentoRota" emptyMessage="Nenhum registro encontrado"
+					rendered="#{fechamentoRotaMb.lista != null}">
+					<p:column>
+						<f:facet name="header">Rota</f:facet>
 					#{fechamentoRota.rota.codigo}
 				</p:column>
-				<p:column>
-					<f:facet name="header">Nome</f:facet>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>
 					#{fechamentoRota.rota.nome}
 				</p:column>
-				<p:column>
-					<f:facet name="header">Origem</f:facet>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>
 					#{fechamentoRota.rota.origem}
 				</p:column>
-				<p:column>
-					<f:facet name="header">Destino</f:facet>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>
 					#{fechamentoRota.rota.destino}
 				</p:column>
-				<p:column>
-					<f:facet name="header">Data inicial</f:facet>
-					<h:outputText value="#{fechamentoRota.dataInicial}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column>
-					<f:facet name="header">Data final</f:facet>
-					<h:outputText value="#{fechamentoRota.dataFinal}">
-						<f:convertDateTime pattern="dd/MM/yyyy" />
-					</h:outputText>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Viagens previstas</f:facet>
+					<p:column>
+						<f:facet name="header">Data inicial</f:facet>
+						<h:outputText value="#{fechamentoRota.dataInicial}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Data final</f:facet>
+						<h:outputText value="#{fechamentoRota.dataFinal}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Viagens previstas</f:facet>
 					#{fechamentoRota.qtdeViagensPrevistas}
 					<f:facet name="footer">#{fechamentoRotaMb.total[0]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Viagens realizadas</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Viagens realizadas</f:facet>
 					#{fechamentoRota.qtdeViagensRealizadas}
 					<f:facet name="footer">#{fechamentoRotaMb.total[1]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Km previsto</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km previsto</f:facet>
 					#{fechamentoRota.kmPrevisto}
 					<f:facet name="footer">#{fechamentoRotaMb.total[2]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Km realizado</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km realizado</f:facet>
 					#{fechamentoRota.kmRealizado}
 					<f:facet name="footer">#{fechamentoRotaMb.total[3]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Km no trajeto</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km no trajeto</f:facet>
 					#{fechamentoRota.kmNoTrajeto}
 					<f:facet name="footer">#{fechamentoRotaMb.total[4]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Km fora do trajeto</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km fora do trajeto</f:facet>
 					#{fechamentoRota.kmForaTrajeto}
 					<f:facet name="footer">#{fechamentoRotaMb.total[5]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Km pago</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km pago</f:facet>
 					#{fechamentoRota.kmPago}
 					<f:facet name="footer">#{fechamentoRotaMb.total[6]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Valor pago</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Valor pago</f:facet>
 					#{fechamentoRota.valorPago}
 					<f:facet name="footer">#{fechamentoRotaMb.total[7]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Paradas previstas</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Paradas previstas</f:facet>
 					#{fechamentoRota.paradasPrevistas}
 					<f:facet name="footer">#{fechamentoRotaMb.total[8]}</f:facet>
-				</p:column>
-				<p:column style="text-align: center">
-					<f:facet name="header">Paradas cumpridas</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Paradas cumpridas</f:facet>
 					#{fechamentoRota.paradasCumpridas}
 					<f:facet name="footer">#{fechamentoRotaMb.total[9]}</f:facet>
-				</p:column>
-				<p:column style="width: 120px">
-					<h:panelGroup>
-						<p:commandButton value="Excluir"
-							action="#{fechamentoRotaMb.iniciarExclusao(fechamentoRota)}"
-							ajax="false" />
-						<h:commandLink value="Ficha" 
-							action="#{fechamentoRotaMb.gerarRelatorio(fechamentoRota)}"
-							ajax="false" target="_blank"/>
-					</h:panelGroup>
-				</p:column>
-			</p:dataTable>
+					</p:column>
+					<p:column style="width: 120px">
+						<h:panelGroup>
+							<p:commandButton value="Excluir"
+								action="#{fechamentoRotaMb.iniciarExclusao(fechamentoRota)}"
+								ajax="false" />
+							<h:commandLink value="Ficha"
+								action="#{fechamentoRotaMb.gerarRelatorio(fechamentoRota)}"
+								ajax="false" target="_blank" />
+						</h:panelGroup>
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
 		</h:form>
 
-		<h:form id="form2"
-			rendered="#{fechamentoRotaMb.isExclusao()}">
+		<h:form id="form2" rendered="#{fechamentoRotaMb.isExclusao()}">
 			<h3>
-				<p:outputLabel value="Confirmar exclusão do fechamento"/>
+				<p:outputLabel value="Confirmar exclusão do fechamento" />
 			</h3>
-			
+
 			<h:panelGrid columns="2">
 
 				<p:outputLabel>Código da rota</p:outputLabel>

@@ -6,9 +6,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.TemporalType;
 
-import managedbean.AppException;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
 import modelo.Veiculo;
@@ -21,6 +19,8 @@ extends GenericCrudFacade<ProgramacaoRota> {
 
 	@EJB
 	private ProgramacaoRotaDao dao;
+	@EJB
+	private CalendarioFacade calendarioFacade;
 
 	@Override
 	protected ProgramacaoRotaDao getDao() {
@@ -32,27 +32,18 @@ extends GenericCrudFacade<ProgramacaoRota> {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public List<ProgramacaoRota> recuperarProgramacoes(Date data) throws Exception {
+		List<ProgramacaoRota> lista = new ArrayList<ProgramacaoRota>();
 		String sql = "select p from ProgramacaoRota as p"
 				+ " where p.inicioPeriodo <= :data and p.terminoPeriodo >= :data";
-		List<ProgramacaoRota> lista = (List<ProgramacaoRota>)getEntityManager()
-				.createQuery(sql)
-				.setParameter("data", data, TemporalType.TIMESTAMP)
-				.getResultList();
-		// Se a programação é baseada no calendário letivo, verifica se no calendário a data é dia útil.
-		// Caso negativo, a programação é retirada da lista.
-
-		//TODO descomentar trecho abaixo quando o calendário estiver sendo informado na programação da rota.
-		// Em lista.remove(prog) está também dando erro - Concurrency...Modifycation
-		/*
-		for (ProgramacaoRota prog: lista) {
-			if (prog.getTipoCalendario().equals(CalendarioEnum.LETIVO) && prog.getCalendarioLetivo() != null) {
-				if (!calendarioFacade.isDiaLetivo(prog.getCalendarioLetivo(), data)) {
-					lista.remove(prog);
-				}
+		for (ProgramacaoRota p: getEntityManager()
+				.createQuery(sql, ProgramacaoRota.class)
+				.setParameter("data", data)
+				.getResultList()) {
+			if (p.getCalendario() == null || calendarioFacade.isDiaUtil(p.getCalendario(), data)) {
+				lista.add(p);
 			}
-		}*/
+		}
 		return lista;
 	}
 
@@ -61,7 +52,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		String sql = "select x"
 				+ " from ProgramacaoRota as x" 
 				+ " where x.rota = :rota";
-
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("rota", rota)
@@ -73,7 +63,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		String sql = "select x"
 				+ " from ProgramacaoRota as x" 
 				+ " where x.veiculo = :veiculo";
-
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("veiculo", veiculo)
@@ -86,7 +75,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				+ " from ProgramacaoRota as x" 
 				+ " where x.rota = :rota"
 				+ " and x.veiculo = :veiculo";
-
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("rota", rota)
@@ -105,7 +93,6 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				+ "	or upper(r.origem) like :chave"
 				+ "	or upper(r.destino) like :chave"
 				+ " )";
-
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("chave", "%" + chave.toUpperCase() + "%")

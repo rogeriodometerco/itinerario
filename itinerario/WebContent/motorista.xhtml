@@ -51,9 +51,11 @@
 				<p:column style="width: 120px">
 					<h:panelGroup>
 						<p:commandButton value="Editar"
-							action="#{motoristaMb.iniciarAlteracao(motorista)}" ajax="false" update="@all" />
+							action="#{motoristaMb.iniciarAlteracao(motorista)}" ajax="false"
+							update="@all" />
 						<p:commandButton value="Excluir"
-							action="#{motoristaMb.iniciarExclusao(motorista)}" ajax="false" update="@all" />
+							action="#{motoristaMb.iniciarExclusao(motorista)}" ajax="false"
+							update="@all" />
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
@@ -80,18 +82,39 @@
 					mask="999.999.999-99" />
 				<p:outputLabel value="Data nascimento" />
 				<p:inputMask value="#{motoristaMb.motorista.pessoa.dataNascimento}"
-					mask="99/99/9999" >
+					mask="99/99/9999">
 					<f:convertDateTime pattern="dd/MM/yyyy" />
 				</p:inputMask>
 				<p:outputLabel value="CNH" />
 				<p:inputText value="#{motoristaMb.motorista.pessoa.cnh}" />
 				<p:outputLabel value="Endereço" />
 				<p:inputText value="#{motoristaMb.motorista.pessoa.endereco}" />
+				<p:outputLabel value="Imagem" />
+				<h:panelGroup>
+					<p:fileUpload fileUploadListener="#{motoristaMb.arquivoCarregado}"
+						mode="advanced" label="Escolha o arquivo" process="@this"
+						update=":mensagens" auto="true">
+					</p:fileUpload>
+					<p:graphicImage
+						value="#{motoristaMb.motorista.pessoa.imagens[0].arquivo}"
+						style="max-width:100px; max-height: 100px"
+						title="Clique para visualizar"
+						onclick="PF('dlg').show();"/>
+				</h:panelGroup>
+
 			</h:panelGrid>
+
+			<p:dialog id="zoom" widgetVar="dlg" modal="true" closeOnEscape="true">
+					<p:graphicImage
+						value="#{motoristaMb.motorista.pessoa.imagens[0].arquivo}" 
+						style="max-width: 900px; max-height: 800px"/>
+			</p:dialog>
+			
+
 			<p />
 			<p:commandButton value="Salvar"
 				action="#{motoristaMb.terminarCriacaoOuAlteracao()}" update="@all"
-				rendered="#{motoristaMb.isCriacao() || motoristaMb.isAlteracao()}"/>
+				rendered="#{motoristaMb.isCriacao() || motoristaMb.isAlteracao()}" />
 			<p:commandButton value="Excluir"
 				action="#{motoristaMb.terminarExclusao()}" update="@all"
 				rendered="#{motoristaMb.isExclusao()}" immediate="false" />

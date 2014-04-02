@@ -18,6 +18,8 @@ extends GenericCrudFacade<Calendario> {
 
 	@EJB
 	private CalendarioDao dao;
+	@EJB
+	private DiaCalendarioFacade diaCalendarioFacade;
 
 	@Override
 	protected CalendarioDao getDao() {
@@ -74,7 +76,11 @@ extends GenericCrudFacade<Calendario> {
 	}
 
 	public boolean isDiaUtil(Calendario calendario, Date data) {
-		// TODO
-		return true;
+		DiaCalendario dia = diaCalendarioFacade.recuperar(calendario, data);
+		if (dia == null) {
+			return false;
+		} else {
+			return dia.getUtil();
+		}
 	}
 }

@@ -111,12 +111,14 @@ public class AnalisadorViagem {
 			analiseViagem.setProgramacao(programacao);
 			analiseViagem.setKmForaTrajeto(calcularKmForaDoTrajeto());
 			analiseViagem.setKmNoTrajeto(calcularKmNoTrajeto());
-			analiseViagem.setKmPago(null);
+			analiseViagem.setKmPago(calcularKmNoTrajeto());
 			analiseViagem.setKmPrevisto(programacao.getRota().getQuilometragem());
 			// deixa 2 casas decimais.
 			double kmRealizado = Math.round(viagem.getDistanciaPercorrida() * 10) / 10;
 			analiseViagem.setKmRealizado(kmRealizado); 
-			analiseViagem.setValorKm(1.0);
+			analiseViagem.setValorKm(programacao.getRota().getValorKm());
+			double valorPago = (double)Math.round(analiseViagem.getKmPago() * analiseViagem.getValorKm() * 100) / 100;
+			analiseViagem.setValorPago(valorPago);
 			analiseViagem.setParadasCumpridas(calcularParadasCumpridas());
 			analiseViagem.setParadasPrevistas(calcularParadasPrevistas());
 			analiseViagem.setVeiculo(programacao.getVeiculo());

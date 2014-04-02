@@ -1,15 +1,27 @@
 package managedbean;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 
+import modelo.ArquivoImagem;
 import modelo.Motorista;
 import modelo.Pessoa;
+
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
+
+import util.ArquivoUtil;
 import util.JsfUtil;
 import facade.MotoristaFacade;
 
@@ -49,7 +61,7 @@ public class MotoristaMb implements Serializable {
 		}
 		return null;
 	}
-	
+
 	public void listar() { 
 		try {
 			if (chavePesquisa == null) {
@@ -73,11 +85,16 @@ public class MotoristaMb implements Serializable {
 		this.estadoView = CRIACAO;
 		this.motorista = new Motorista();
 		this.motorista.setPessoa(new Pessoa());
+		this.motorista.getPessoa().setImagens(new ArrayList<ArquivoImagem>());
 	}
 
 	public void iniciarAlteracao(Motorista motorista) {
-		this.motorista = motorista;
-		this.estadoView = ALTERACAO;
+		try {
+			this.motorista = facade.recuperarParaEdicao(motorista.getId());
+			this.estadoView = ALTERACAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar motorista para edição: " + e.getMessage());
+		}
 	}
 
 	public void terminarCriacaoOuAlteracao() {
@@ -93,8 +110,12 @@ public class MotoristaMb implements Serializable {
 	}
 
 	public void iniciarExclusao(Motorista motorista) {
-		this.motorista = motorista;
-		this.estadoView = EXCLUSAO;
+		try {
+			this.motorista = facade.recuperarParaExclusao(motorista.getId());
+			this.estadoView = EXCLUSAO;
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao recuperar motorista para exclusão: " + e.getMessage());
+		}
 	}
 
 	public void terminarExclusao() {
@@ -135,6 +156,20 @@ public class MotoristaMb implements Serializable {
 
 	public void setChavePesquisa(String chave) { 
 		this.chavePesquisa = chave;
+	}
+
+	public void arquivoCarregado(FileUploadEvent event) {
+		try {
+			ArquivoImagem arquivoImagem = ArquivoUtil.gravarArquivoImagem(event.getFile().getContents(),
+					event.getFile().getFileName());
+			arquivoImagem.setPessoa(motorista.getPessoa());
+			if (motorista.getPessoa().getImagens() == null) {
+				motorista.getPessoa().setImagens(new ArrayList<ArquivoImagem>());
+			}
+			motorista.getPessoa().getImagens().set(0, arquivoImagem);
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao carregar arquivo: " + e.getMessage());
+		}
 	}
 
 }

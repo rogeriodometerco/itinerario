@@ -23,12 +23,15 @@ public class Rota {
 	private String origem;
 	private String destino;
 	private Double quilometragem;
+	private Double valorKm;
 	private String observacao;
 	private Boolean ativa;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="rota", orphanRemoval=true)
 	@OrderBy(value="sequencia")
 	private List<PontoRota> pontos;
-
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="rota", orphanRemoval=true)
+	private List<ArquivoImagem> imagens;
+	
 	public Long getId() {
 		return id;
 	}
@@ -64,6 +67,12 @@ public class Rota {
 	}
 	public void setQuilometragem(Double quilometragem) {
 		this.quilometragem = quilometragem;
+	}
+	public Double getValorKm() {
+		return valorKm;
+	}
+	public void setValorKm(Double valorKm) {
+		this.valorKm = valorKm;
 	}
 	public String getObservacao() {
 		return observacao;
@@ -109,5 +118,11 @@ public class Rota {
 		    }
 		});
 		return paradas;
+	}
+	public List<ArquivoImagem> getImagens() {
+		return imagens;
+	}
+	public void setImagens(List<ArquivoImagem> imagens) {
+		this.imagens = imagens;
 	}
 }

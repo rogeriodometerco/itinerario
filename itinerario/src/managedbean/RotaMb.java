@@ -183,7 +183,8 @@ public class RotaMb implements Serializable {
 	}
 
 	public void arquivoCarregado(FileUploadEvent event) {
-		UploadedFile arquivo = event.getFile(); 
+		UploadedFile arquivo = event.getFile();
+		System.out.println("Nome do arquivo: " + arquivo.getFileName());
 		mapModel = new DefaultMapModel();
 		int linha = 1;
 		try {

@@ -41,6 +41,7 @@ public abstract class GenericCrudFacade<T> {
 	}
 
 	public List<T> salvar(List<T> lista) throws Exception {
+		int i = 0;
 		List<T> retorno = new ArrayList<T>();
 		for (T entidade: lista) {
 			completarEdicao(entidade);
@@ -48,6 +49,9 @@ public abstract class GenericCrudFacade<T> {
 		}
 		for (T entidade: lista) {
 			retorno.add(getDao().salvar(entidade));
+		}
+		if (++i % 100 == 0) {
+			getDao().flushAndClear();
 		}
 		return retorno;
 	}

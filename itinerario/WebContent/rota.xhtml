@@ -85,6 +85,10 @@
 					<p:inputText value="#{rotaMb.rota.destino}" />
 					<p:outputLabel value="Quilometragem" />
 					<p:inputText value="#{rotaMb.rota.quilometragem}" />
+					<p:outputLabel value="Valor pago por km" />
+					<p:inputText value="#{rotaMb.rota.valorKm}">
+						<f:convertNumber pattern="#,##0.00"></f:convertNumber> 
+					</p:inputText>
 					<p:outputLabel value="Observacao" />
 					<p:inputText value="#{rotaMb.rota.observacao}" />
 					<p:outputLabel value="Trajeto"

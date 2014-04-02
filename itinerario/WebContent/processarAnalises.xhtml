@@ -18,15 +18,15 @@
 	<ui:define name="titulo">Processar análises de viagem</ui:define>
 
 	<ui:define name="conteudo">
+		<p:messages id="mensagens" errorStyle="errorMsg" infoStyle="infoMsg" />
 		<h:form>
 
-			<h:messages id="mensagens" errorStyle="errorMsg" infoStyle="infoMsg" />
-			<h:outputLabel value="Data " />
-			<rich:calendar value="#{analiseViagemMb.dataViagem}"
-				enableManualInput="true" datePattern="dd/MM/yyyy">
-			</rich:calendar>
-
-			<h:commandButton action="#{analiseViagemMb.processarAnalises}" value="Processar" />
+			<p:outputLabel value="Data " />
+			<p:calendar value="#{analiseViagemMb.dataViagem}"
+				pattern="dd/MM/yyyy" />
+			<p:commandButton
+				actionListener="#{analiseViagemMb.processarAnalises}"
+				value="Processar" update=":mensagens" />
 		</h:form>
 	</ui:define>
 </ui:composition>

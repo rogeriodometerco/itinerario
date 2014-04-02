@@ -15,7 +15,6 @@
 <h:body>
 	<h:form>
 		<h:outputStylesheet name="geral.css" library="css" />
-<!-- 
 		<div style="float: left">
 			<a href='http://prefeituradepitanga.blogspot.com.br/'
 				style='display: inline; margin-top: 20px; margin-left: 30px'> <img
@@ -25,7 +24,6 @@
 			</a>
 		</div>
 	
- -->
  	<div style="float: left;">
 			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
 			<!-- 
@@ -79,22 +77,20 @@
 				<p:menuitem outcome="rota" value="Rota" />
 				<p:menuitem outcome="escolaRota" value="Escolas atendidas pela rota" />
 				<p:menuitem outcome="atendido" value="Passageiros atendidos pela rota" />
-			</p:submenu>
-			<p:submenu label="| Viagens">
 				<p:menuitem outcome="programacaoRota" value="Programação de veículos" />
-				<p:menuitem outcome="preFechamentoRota" value="Pré-fechamento" />
-				<p:menuitem outcome="fechamentoRota" value="Fechamento" />
 			</p:submenu>
-			<p:menuitem outcome="ultimaPosicaoDaFrota"
-				value="| Última posição da frota"/>
-			<p:menuitem outcome="analiseViagem" value="| Analisar viagens" />
-			<p:menuitem outcome="consultaAnaliseViagem" value="| Consultar análises de viagens" />
-			<p:menuitem outcome="posicoesDoVeiculo"
-				value="| Consultar posições do veículo" />
-			<p:menuitem outcome="cargaDados"
-				value="| Carregar dados do rastreador" />
-			<p:menuitem outcome="processarAnalises"
-				value="| Processar análises" />
+			<p:submenu label="| Viagem">
+				<p:menuitem outcome="preFechamentoRota" value="Análise e fechamento" />
+				<p:menuitem outcome="fechamentoRota" value="Fechamentos já realizados" />
+			</p:submenu>
+			<p:submenu label="| Consulta">
+				<p:menuitem outcome="ultimaPosicaoDaFrota" value="Última posição da frota"/>
+				<p:menuitem outcome="posicoesDoVeiculo" value="Posições do veículo" />
+			</p:submenu>
+			<p:submenu label="| Serviço">
+				<p:menuitem outcome="cargaDados" value="Importar dados do rastreador" />
+				<p:menuitem outcome="processarAnalises" value="Executar processo de análise de viagem" />
+			</p:submenu>
 		</p:menubar>
 	</h:form>
 

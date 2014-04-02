@@ -1,9 +1,13 @@
 package modelo;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 @Entity
 public class Veiculo {
@@ -21,6 +25,8 @@ public class Veiculo {
 	private String conservacao;
 	@ManyToOne
 	private Motorista motorista;
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="veiculo", orphanRemoval=true)
+	private List<ArquivoImagem> imagens;
 
 	public Long getId() {
 		return id;
@@ -87,5 +93,11 @@ public class Veiculo {
 	}
 	public void setMotorista(Motorista motorista) {
 		this.motorista = motorista;
+	}
+	public List<ArquivoImagem> getImagens() {
+		return imagens;
+	}
+	public void setImagens(List<ArquivoImagem> imagens) {
+		this.imagens = imagens;
 	}
 }

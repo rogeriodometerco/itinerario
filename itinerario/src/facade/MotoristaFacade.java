@@ -25,6 +25,26 @@ public class MotoristaFacade extends GenericCrudFacade<Motorista> {
 		return motoristaDao;
 	}
 
+	public Motorista recuperarParaEdicao(Long id) throws Exception {
+		return recuperarParaEdicaoOuExclusao(id);
+	}
+	 
+	public Motorista recuperarParaExclusao(Long id) throws Exception {
+		return recuperarParaEdicaoOuExclusao(id);
+	}
+
+	private Motorista recuperarParaEdicaoOuExclusao(Long id) throws Exception {
+		//TODO Refactoring
+		String sql = "select x"
+				+ " from Motorista x "
+				+ " where x.id = :id";
+		Motorista motorista = getEntityManager().createQuery(sql, Motorista.class)
+				.setParameter("id", id)
+				.getSingleResult();
+		motorista.getPessoa().getImagens().size();
+		return motorista;
+
+	}
 	public Motorista recuperar(Pessoa pessoa) throws Exception {
 		String sql = "select x"
 				+ " from Motorista as x" 

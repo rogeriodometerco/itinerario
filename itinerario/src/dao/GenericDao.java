@@ -80,5 +80,9 @@ public abstract class GenericDao<T> {
 		}
 	}
 
+	public void flushAndClear() {
+		em.flush();
+		em.clear();
+	}
 }
  
