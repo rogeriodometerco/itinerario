@@ -20,6 +20,7 @@ public class ArquivoUtil {
 		System.out.println("nome completo do arquivo: " + nomeCompleto);
 		ArquivoImagem arquivoImagem = new ArquivoImagem();
 		arquivoImagem.setArquivo(f.getAbsolutePath());
+		arquivoImagem.setConteudo(b);
 		return arquivoImagem;
 	}
 

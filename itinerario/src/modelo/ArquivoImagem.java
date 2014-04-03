@@ -1,10 +1,17 @@
 package modelo;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import javax.imageio.ImageIO;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Entity
 public class ArquivoImagem {
@@ -19,6 +26,8 @@ public class ArquivoImagem {
 	@ManyToOne
 	private Veiculo veiculo;
 	private String arquivo;
+	@Lob
+	private byte[] conteudo;
 
 	public Long getId() {
 		return id;
@@ -50,5 +59,15 @@ public class ArquivoImagem {
 	public void setVeiculo(Veiculo veiculo) {
 		this.veiculo = veiculo;
 	}
-	
+	public byte[] getConteudo() {
+		return conteudo;
+	}
+	public void setConteudo(byte[] conteudo) {
+		this.conteudo = conteudo;
+	}
+
+	public StreamedContent getImagem() {
+		ByteArrayInputStream bi = new ByteArrayInputStream(getConteudo());
+		return new DefaultStreamedContent(bi);
+	}
 }

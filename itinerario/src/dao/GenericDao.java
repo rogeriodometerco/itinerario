@@ -11,12 +11,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-public abstract class GenericDao<T> {
-    private final static String UNIT_NAME = "itinerarioPU";
+import util.Paginador;
 
-    @PersistenceContext(unitName = UNIT_NAME)
-    private EntityManager em;
-	
+public abstract class GenericDao<T> {
+	private final static String UNIT_NAME = "itinerarioPU";
+
+	@PersistenceContext(unitName = UNIT_NAME)
+	private EntityManager em;
+
 	private Class<T> classeEntidade;
 
 	@PostConstruct
@@ -40,7 +42,7 @@ public abstract class GenericDao<T> {
 					+ classeEntidade.getSimpleName(), e);
 		}
 	}
-	
+
 	public T salvar(T entidade) throws Exception {
 		try {
 			this.getEntityManager().merge(entidade);
@@ -62,7 +64,7 @@ public abstract class GenericDao<T> {
 					+ classeEntidade.getSimpleName(), e);
 		}
 	}
-	
+
 	public List<T> listar() throws Exception {
 		try {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -80,9 +82,23 @@ public abstract class GenericDao<T> {
 		}
 	}
 
-	public void flushAndClear() {
-		em.flush();
-		em.clear();
+	public List<T> listar(Paginador paginador) throws Exception {
+		try {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+
+			CriteriaQuery<T> cq = cb.createQuery(classeEntidade);
+			Root<T> root = cq.from(classeEntidade);
+			cq.select(root);
+
+			TypedQuery<T> q = em.createQuery(cq);
+			q.setFirstResult(paginador.primeiroRegistro());
+			q.setMaxResults(paginador.getTamanhoPagina());
+			return q.getResultList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Erro ao listar entidades " 
+					+ classeEntidade.getSimpleName(), e);
+		}
 	}
+
 }
- 

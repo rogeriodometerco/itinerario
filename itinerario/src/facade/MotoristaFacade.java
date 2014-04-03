@@ -6,12 +6,10 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
-import javax.persistence.TypedQuery;
 
 import modelo.Motorista;
-import modelo.Escola;
 import modelo.Pessoa;
-import modelo.Rota;
+import util.Paginador;
 import dao.MotoristaDao;
 
 @Stateless
@@ -28,7 +26,7 @@ public class MotoristaFacade extends GenericCrudFacade<Motorista> {
 	public Motorista recuperarParaEdicao(Long id) throws Exception {
 		return recuperarParaEdicaoOuExclusao(id);
 	}
-	 
+
 	public Motorista recuperarParaExclusao(Long id) throws Exception {
 		return recuperarParaEdicaoOuExclusao(id);
 	}
@@ -69,6 +67,21 @@ public class MotoristaFacade extends GenericCrudFacade<Motorista> {
 		return getEntityManager()
 				.createQuery(sql, Motorista.class)
 				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.getResultList();
+	}
+
+	public List<Motorista> autocomplete(String chave, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Motorista x"
+				+ " where (upper(x.codigo) like :chave"
+				+ " or upper(x.pessoa.nome) like :chave)" 
+				+ " or upper(x.pessoa.cpf) like :chave)"; 
+		return getEntityManager()
+				.createQuery(sql, Motorista.class)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 

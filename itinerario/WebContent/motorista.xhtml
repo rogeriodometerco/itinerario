@@ -59,6 +59,15 @@
 					</h:panelGroup>
 				</p:column>
 			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!motoristaMb.temPaginaAnterior}"
+				actionListener="#{motoristaMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!motoristaMb.temProximaPagina}"
+				actionListener="#{motoristaMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
 		</h:form>
 
 		<h:form id="form2"
@@ -98,18 +107,20 @@
 					<p:graphicImage
 						value="#{motoristaMb.motorista.pessoa.imagens[0].arquivo}"
 						style="max-width:100px; max-height: 100px"
-						title="Clique para visualizar"
-						onclick="PF('dlg').show();"/>
+						title="Clique para visualizar" onclick="PF('dlg').show();" />
+					<p:graphicImage
+						value="#{motoristaMb.motorista.pessoa.imagens[0].imagem}"
+						style="max-width:100px; max-height: 100px"
+						title="Clique para visualizar" onclick="PF('dlg').show();" />
 				</h:panelGroup>
 
 			</h:panelGrid>
 
 			<p:dialog id="zoom" widgetVar="dlg" modal="true" closeOnEscape="true">
-					<p:graphicImage
-						value="#{motoristaMb.motorista.pessoa.imagens[0].arquivo}" 
-						style="max-width: 900px; max-height: 800px"/>
+				<p:graphicImage
+					value="#{motoristaMb.motorista.pessoa.imagens[0].arquivo}"
+					style="max-width: 900px; max-height: 800px" />
 			</p:dialog>
-			
 
 			<p />
 			<p:commandButton value="Salvar"

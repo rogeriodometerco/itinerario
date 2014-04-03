@@ -7,23 +7,24 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import util.Paginador;
 import dao.GenericDao;
 
 @Stateless
 public abstract class GenericCrudFacade<T> {
 
-    private static final String UNIT_NAME = "itinerarioPU";
+	private static final String UNIT_NAME = "itinerarioPU";
 
-    @PersistenceContext(unitName = UNIT_NAME)
-    private EntityManager em;
-	
+	@PersistenceContext(unitName = UNIT_NAME)
+	private EntityManager em;
+
 	protected EntityManager getEntityManager() {
 		return em;
 	}
 	public T recuperar(Object id) throws Exception {
 		return getDao().recuperar(id);
 	}
-	
+
 	//TODO remover este método.
 	public T salvar(T entidade) throws Exception {
 		completarEdicao(entidade);
@@ -35,13 +36,16 @@ public abstract class GenericCrudFacade<T> {
 		validarExclusao(entidade);
 		getDao().excluir(entidade);
 	}
-	
+
 	public List<T> listar() throws Exception {
 		return getDao().listar();
 	}
 
+	public List<T> listar(Paginador paginador) throws Exception {
+		return getDao().listar(paginador);
+	}
+
 	public List<T> salvar(List<T> lista) throws Exception {
-		int i = 0;
 		List<T> retorno = new ArrayList<T>();
 		for (T entidade: lista) {
 			completarEdicao(entidade);
@@ -50,9 +54,6 @@ public abstract class GenericCrudFacade<T> {
 		for (T entidade: lista) {
 			retorno.add(getDao().salvar(entidade));
 		}
-		if (++i % 100 == 0) {
-			getDao().flushAndClear();
-		}
 		return retorno;
 	}
 
@@ -60,17 +61,17 @@ public abstract class GenericCrudFacade<T> {
 		//implementar na classe especialista
 		//TODO pensar numa solução melhor
 	}
-	
+
 	protected void validarExclusao(T entidade) throws Exception {
 		//implementar na classe especialista
 		//TODO pensar numa solução melhor
 	}
-	
+
 	protected void completarEdicao(T entidade) throws Exception {
 		//implementar na classe especialista
 		//TODO pensar numa solução melhor
 	}
 
 	protected abstract GenericDao<T> getDao();
-	
+
 }

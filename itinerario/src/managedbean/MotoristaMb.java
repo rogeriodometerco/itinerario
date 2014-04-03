@@ -1,9 +1,5 @@
 package managedbean;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,17 +8,16 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 
 import modelo.ArquivoImagem;
 import modelo.Motorista;
 import modelo.Pessoa;
 
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
 
 import util.ArquivoUtil;
 import util.JsfUtil;
+import util.Paginador;
 import facade.MotoristaFacade;
 
 @ManagedBean
@@ -39,10 +34,13 @@ public class MotoristaMb implements Serializable {
 	private String chavePesquisa;
 	@EJB
 	private MotoristaFacade facade;
+	private Paginador paginador;
+
 
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		paginador = new Paginador(10);
 	}
 
 	public Motorista getMotorista() {
@@ -65,9 +63,9 @@ public class MotoristaMb implements Serializable {
 	public void listar() { 
 		try {
 			if (chavePesquisa == null) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else {
-				this.lista = facade.autocomplete(chavePesquisa);
+				this.lista = facade.autocomplete(chavePesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -150,6 +148,28 @@ public class MotoristaMb implements Serializable {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
 	}
 
+	public Boolean getTemPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean getTemProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
+	}
+
 	public String getChavePesquisa() {
 		return chavePesquisa;
 	}
@@ -166,7 +186,11 @@ public class MotoristaMb implements Serializable {
 			if (motorista.getPessoa().getImagens() == null) {
 				motorista.getPessoa().setImagens(new ArrayList<ArquivoImagem>());
 			}
-			motorista.getPessoa().getImagens().set(0, arquivoImagem);
+			if (motorista.getPessoa().getImagens().size() > 0) {
+				motorista.getPessoa().getImagens().set(0, arquivoImagem);
+			} else {
+				motorista.getPessoa().getImagens().add(arquivoImagem);
+			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao carregar arquivo: " + e.getMessage());
 		}
