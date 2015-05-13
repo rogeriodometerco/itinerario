@@ -1,0 +1,111 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de escola</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" closable="true" />
+
+		<h:form id="form1" rendered="#{escolaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Nova" action="#{escolaMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:inputText value="#{escolaMb.chavePesquisa}" 
+				title="Pesquisar por código, nome ou localidade"/>
+			<p:commandButton value="Pesquisar"
+				actionListener="#{escolaMb.listar}" update="listagem :mensagens" />
+			<p />
+
+			<p:dataTable id="listagem" value="#{escolaMb.lista}" var="escola"
+				emptyMessage="Nenhum registro encontrado" style="width: 800px">
+				<p:column>
+					<f:facet name="header">Código</f:facet>
+					#{escola.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{escola.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Localidade</f:facet>
+					#{escola.localidade}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Distância da sede (km)</f:facet>
+					#{escola.distanciaSede}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Alunos</f:facet>
+					#{escola.quantidadeAlunos}
+				</p:column>
+				<p:column style="width: 40px">
+					<h:panelGroup>
+						<p:commandLink title="Editar"
+							action="#{escolaMb.iniciarAlteracao(escola)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/edit.gif"/>
+						</p:commandLink>
+						<p:spacer width="5px" />
+						<p:commandLink title="Excluir"
+							action="#{escolaMb.iniciarExclusao(escola)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/delete.gif"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!escolaMb.temPaginaAnterior()}"
+				actionListener="#{escolaMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!escolaMb.temProximaPagina()}"
+				actionListener="#{escolaMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao() || escolaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar escola"
+					rendered="#{escolaMb.isCriacao()}" />
+				<p:outputLabel value="Alterar escola"
+					rendered="#{escolaMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão da escola"
+					rendered="#{escolaMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Código" />
+				<p:inputText value="#{escolaMb.escola.codigo}" />
+				<p:outputLabel value="Nome" />
+				<p:inputText value="#{escolaMb.escola.nome}" />
+				<p:outputLabel value="Localidade" />
+				<p:inputText value="#{escolaMb.escola.localidade}" />
+				<p:outputLabel value="Distância da sede (em km)" />
+				<p:inputText value="#{escolaMb.escola.distanciaSede}" />
+				<p:outputLabel value="Quantidade de alunos" />
+				<p:inputText value="#{escolaMb.escola.quantidadeAlunos}" />
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{escolaMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{escolaMb.isCriacao() || escolaMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{escolaMb.terminarExclusao()}" update="@all"
+				rendered="#{escolaMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{escolaMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

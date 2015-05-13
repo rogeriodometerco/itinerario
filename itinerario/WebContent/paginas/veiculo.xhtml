@@ -1,0 +1,173 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de veículo</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{veiculoMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo" action="#{veiculoMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Placa" />
+			<p:inputText value="#{veiculoMb.placaPesquisa}"
+				title="Pesquisar por placa" />
+			<p:commandButton value="Pesquisar"
+				actionListener="#{veiculoMb.listar}" update="listagem :mensagens" />
+			<p />
+
+			<p:dataTable id="listagem" value="#{veiculoMb.lista}" var="veiculo"
+				emptyMessage="Nenhum registro encontrado" style="width: 1100px">
+				<p:column>
+					<f:facet name="header">Placa</f:facet>
+					#{veiculo.placa}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ano fabricação</f:facet>
+					#{veiculo.anoFabricacao}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Cor</f:facet>
+					#{veiculo.cor}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Marca</f:facet>
+					#{veiculo.marca}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Modelo</f:facet>
+					#{veiculo.modelo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Ocupantes</f:facet>
+					#{veiculo.ocupantes}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Motorista</f:facet>
+					#{veiculo.motorista.pessoa.nome}
+				</p:column>
+				<p:column style="width: 40px">
+					<h:panelGroup>
+						<p:commandLink title="Editar"
+							action="#{veiculoMb.iniciarAlteracao(veiculo)}" ajax="false" update="@all">
+							<p:graphicImage value="/resources/icones/edit.gif"/>
+						</p:commandLink>
+						<p:spacer width="5px" />
+						<p:commandLink title="Excluir"
+							action="#{veiculoMb.iniciarExclusao(veiculo)}" ajax="false"	update="@all">
+							<p:graphicImage value="/resources/icones/delete.gif"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!veiculoMb.temPaginaAnterior()}"
+				actionListener="#{veiculoMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!veiculoMb.temProximaPagina()}"
+				actionListener="#{veiculoMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{veiculoMb.isCriacao() || veiculoMb.isAlteracao() || veiculoMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar veículo"
+					rendered="#{veiculoMb.isCriacao()}" />
+				<p:outputLabel value="Alterar veículo"
+					rendered="#{veiculoMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do veículo"
+					rendered="#{veiculoMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Placa" />
+				<p:inputText value="#{veiculoMb.veiculo.placa}" style="width: 200px" />
+				<p:outputLabel value="Ano fabricação" />
+				<p:inputText value="#{veiculoMb.veiculo.anoFabricacao}"
+					style="width: 200px" />
+				<p:outputLabel value="Cor" />
+				<p:inputText value="#{veiculoMb.veiculo.cor}" style="width: 200px" />
+				<p:outputLabel value="Marca" />
+				<p:inputText value="#{veiculoMb.veiculo.marca}" style="width: 200px" />
+				<p:outputLabel value="Modelo" />
+				<p:inputText value="#{veiculoMb.veiculo.modelo}"
+					style="width: 200px" />
+				<p:outputLabel value="Qtde ocupantes" />
+				<p:inputText value="#{veiculoMb.veiculo.ocupantes}"
+					style="width: 200px" />
+				<p:outputLabel value="Chassi" />
+				<p:inputText value="#{veiculoMb.veiculo.chassi}"
+					style="width: 200px" />
+				<p:outputLabel value="Proprietário" />
+				<p:inputText value="#{veiculoMb.veiculo.proprietario}"
+					style="width: 200px" />
+				<p:outputLabel value="Estado de conservação" />
+				<p:inputText value="#{veiculoMb.veiculo.conservacao}"
+					style="width: 200px" />
+				<p:outputLabel value="Motorista " />
+				<p:autoComplete value="#{veiculoMb.veiculo.motorista}"
+					completeMethod="#{motoristaMb.autocomplete}" var="m"
+					itemLabel="#{m.pessoa.nome}" itemValue="#{m}"
+					converter="#{motoristaConverter}" forceSelection="true"
+					size="35">
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{m.pessoa.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">CPF</f:facet>  
+						#{m.pessoa.cpf}
+			        </p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Imagem do veículo" />
+				<h:panelGroup id="grupoImagem">
+					<p:fileUpload fileUploadListener="#{veiculoMb.arquivoCarregado}"
+						mode="advanced" label="Escolha o arquivo" process="@this"
+						allowTypes="/(\.|\/)(jpe?g)$/" 
+						invalidFileMessage="Formato de arquivo inválido. Selecione um arquivo JPEG. "
+						rendered="#{!veiculoMb.isExclusao()}"
+						update=":mensagens, grupoImagem, zoom" auto="true">
+					</p:fileUpload>
+					<p:graphicImage id="imagem"
+						value="#{veiculoMb.caminhoImagem}"
+						rendered="#{veiculoMb.caminhoImagem != null and veiculoMb.caminhoImagem.length() > 0}"
+						style="max-width:100px; max-height: 100px"
+						title="Clique para visualizar" onclick="PF('dlg').show();" />
+					<p />
+					<p:commandLink id="limpar" value="Limpar imagem" 
+						actionListener="#{veiculoMb.limparImagem}"
+						rendered="#{veiculoMb.caminhoImagem != null and veiculoMb.caminhoImagem.length() > 0
+							and !veiculoMb.isExclusao()}"
+						ajax="true" update="grupoImagem, zoom"/>
+				</h:panelGroup>
+			</h:panelGrid>
+			<p:dialog id="zoom" widgetVar="dlg" modal="true" closeOnEscape="true">
+				<p:graphicImage
+					value="#{veiculoMb.caminhoImagem}"
+					style="max-width: 700px; max-height: 600px" />
+			</p:dialog>
+
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{veiculoMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{veiculoMb.isCriacao() || veiculoMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{veiculoMb.terminarExclusao()}" update="@all"
+				rendered="#{veiculoMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{veiculoMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

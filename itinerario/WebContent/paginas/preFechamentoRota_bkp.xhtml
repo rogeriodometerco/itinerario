@@ -1,0 +1,351 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="headComplementar">
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript"></script>
+	</ui:define>
+	<ui:define name="titulo">Análise e fechamento de viagem</ui:define>
+	<ui:define name="conteudo">
+		<p:growl id="mensagens" />
+		<h:form id="form1" rendered="#{preFechamentoRotaMb.isListagem()}">
+			<p />
+			<h:panelGrid columns="11">
+				<!-- 
+				<p:outputLabel value="Mês " />
+				<p:selectOneMenu value="#{preFechamentoRotaMb.anomes.mes}">
+					<f:selectItem itemValue="0" itemLabel="Jan" />
+					<f:selectItem itemValue="1" itemLabel="Fev" />
+					<f:selectItem itemValue="2" itemLabel="Mar" />
+					<f:selectItem itemValue="3" itemLabel="Abr" />
+					<f:selectItem itemValue="4" itemLabel="Mai" />
+					<f:selectItem itemValue="5" itemLabel="Jun" />
+					<f:selectItem itemValue="6" itemLabel="Jul" />
+					<f:selectItem itemValue="7" itemLabel="Ago" />
+					<f:selectItem itemValue="8" itemLabel="Set" />
+					<f:selectItem itemValue="9" itemLabel="Out" />
+					<f:selectItem itemValue="10" itemLabel="Nov" />
+					<f:selectItem itemValue="11" itemLabel="Dez" />
+				</p:selectOneMenu>
+				<p:outputLabel value="Ano " />
+				<p:inputText value="#{preFechamentoRotaMb.anomes.ano}"
+					style="width: 50px" />
+			 -->
+				<p:outputLabel value="Rota " />
+				<p:autoComplete value="#{preFechamentoRotaMb.rotaPesquisa}"
+					completeMethod="#{rotaMb.autocomplete}" var="r"
+					itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+					itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+						#{r.codigo}
+		        	</p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{r.nome}
+		        	</p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>  
+						#{r.origem}
+		        	</p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>  
+						#{r.destino}
+		        	</p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Data inicial " />
+				<p:calendar value="#{preFechamentoRotaMb.dataInicialPesquisa}"
+					pattern="dd/MM/yyyy" />
+				<p:outputLabel value="Data final " />
+				<p:calendar value="#{preFechamentoRotaMb.dataFinalPesquisa}"
+					pattern="dd/MM/yyyy" />
+
+				<p:commandButton value="Pesquisar"
+					actionListener="#{preFechamentoRotaMb.listar}"
+					update="consulta :mensagens" />
+			</h:panelGrid>
+
+			<p />
+			<p:outputPanel id="consulta">
+				<p:dataTable id="listagem" value="#{preFechamentoRotaMb.lista}"
+					var="e" emptyMessage="Nenhum registro encontrado"
+					rendered="#{preFechamentoRotaMb.lista != null}">
+
+					<p:ajax event="rowToggle" />
+					<p:column style="width:10px">
+						<p:rowToggler />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">Rota</f:facet>
+					#{e.rota.codigo
+						.concat(' - ').concat(e.rota.nome)
+						.concat(' - ').concat(e.rota.origem)
+						.concat(' - ').concat(e.rota.destino)}
+				</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Viagens previstas</f:facet>
+					#{e.qtdeViagensPrevistas}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[0]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Viagens realizadas</f:facet>
+					#{e.qtdeViagensRealizadas}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[1]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km previsto</f:facet>
+					#{e.kmPrevisto}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[2]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km realizado</f:facet>
+					#{e.kmRealizado}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[3]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km no trajeto</f:facet>
+					#{e.kmNoTrajeto}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[4]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km fora do trajeto</f:facet>
+					#{e.kmForaTrajeto}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[5]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Km pago</f:facet>
+					#{e.kmPago}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[6]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Valor pago</f:facet>
+					#{e.valorPago}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[7]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Paradas previstas</f:facet>
+					#{e.paradasPrevistas}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[8]}</f:facet>
+					</p:column>
+					<p:column style="text-align: center">
+						<f:facet name="header">Paradas cumpridas</f:facet>
+					#{e.paradasCumpridas}
+					<f:facet name="footer">#{preFechamentoRotaMb.total[9]}</f:facet>
+					</p:column>
+
+					<p:column style="width: 70px">
+						<h:panelGroup>
+							<p:commandButton value="Editar"
+								actionListener="#{preFechamentoRotaMb.iniciarAlteracao(e)}"
+								update="@all" />
+							<p:commandLink value="PDF" rendered="#{e.concluido}" />
+						</h:panelGroup>
+					</p:column>
+					<p:rowExpansion>
+						<p />
+						<p:panel style="margin-left: 20px">
+							<f:facet name="header">Viagens analisadas</f:facet>
+							<p:dataTable id="listagemAnalises" value="#{e.analisesViagem}"
+								var="analise" emptyMessage="Nenhum registro encontrado">
+								<p:column>
+									<f:facet name="header">Data</f:facet>
+									<h:outputText value="#{analise.dataViagem}">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Hr início</f:facet>
+									<h:outputText value="#{analise.programacao.horaInicial}">
+										<f:convertDateTime pattern="HH:mm" />
+									</h:outputText>
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Hr término</f:facet>
+									<h:outputText value="#{analise.programacao.horaFinal}">
+										<f:convertDateTime pattern="HH:mm" />
+									</h:outputText>
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Km previsto</f:facet>
+									<h:outputText value="#{analise.programacao.rota.quilometragem}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Km realizado</f:facet>
+									<h:outputText value="#{analise.kmRealizado}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Km no trajeto</f:facet>
+									<h:outputText value="#{analise.kmNoTrajeto}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Diferença km</f:facet>
+									<h:outputText
+										value="#{analise.kmNoTrajeto - analise.kmPrevisto}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Km fora do trajeto</f:facet>
+									<h:outputText value="#{analise.kmForaTrajeto}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Km pago</f:facet>
+									<h:outputText value="#{analise.kmPago}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Valor pago</f:facet>
+									<h:outputText value="#{analise.valorPago}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Paradas previstas</f:facet>
+									<h:outputText value="#{analise.paradasPrevistas}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Paradas cumpridas</f:facet>
+									<h:outputText value="#{analise.paradasCumpridas}" />
+								</p:column>
+								<p:column style="text-align: center">
+									<f:facet name="header">Observação</f:facet>
+									<h:outputText value="#{analise.observacao}" />
+								</p:column>
+							</p:dataTable>
+						</p:panel>
+						<p />
+					</p:rowExpansion>
+				</p:dataTable>
+			</p:outputPanel>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{preFechamentoRotaMb.isCriacao() || preFechamentoRotaMb.isAlteracao() || preFechamentoRotaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Analisar viagens" />
+			</h3>
+
+			<p:dataTable id="listagemAnalises"
+				value="#{preFechamentoRotaMb.preFechamentoRota.analisesViagem}"
+				var="analise" emptyMessage="Nenhum registro encontrado">
+
+				<f:facet name="header">
+					<h:outputText
+						value="#{preFechamentoRotaMb.preFechamentoRota.rota.codigo
+						.concat(' - ').concat(preFechamentoRotaMb.preFechamentoRota.rota.nome) 
+						.concat(' - ').concat(preFechamentoRotaMb.preFechamentoRota.rota.origem) 
+						.concat(' - ').concat(preFechamentoRotaMb.preFechamentoRota.rota.destino)}" />
+					<h:outputText value=" de " />
+					<h:outputText value="#{preFechamentoRotaMb.dataInicialPesquisa}">
+						<f:convertDateTime patter="dd/MM/yyyy" />
+					</h:outputText>
+					<h:outputText value=" até " />
+					<h:outputText value="#{preFechamentoRotaMb.dataFinalPesquisa}">
+						<f:convertDateTime patter="dd/MM/yyyy" />
+					</h:outputText>
+				</f:facet>
+				<p:column>
+					<f:facet name="header">Data</f:facet>
+					<h:outputText value="#{analise.dataViagem}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Hr início</f:facet>
+					<h:outputText value="#{analise.programacao.horaInicial}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Hr término</f:facet>
+					<h:outputText value="#{analise.programacao.horaFinal}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Km previsto
+					</f:facet>
+					<h:outputText value="#{analise.programacao.rota.quilometragem}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Km realizado
+					</f:facet>
+					<h:outputText value="#{analise.kmRealizado}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Km no trajeto
+					</f:facet>
+					<h:outputText value="#{analise.kmNoTrajeto}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Diferença km</f:facet>
+					<h:outputText value="#{analise.kmNoTrajeto - analise.kmPrevisto}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Km fora do trajeto</f:facet>
+					<h:outputText value="#{analise.kmForaTrajeto}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Km pago</f:facet>
+					<p:inputText value="#{analise.kmPago}"
+						style="text-align: center; width: 40px" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Valor pago</f:facet>
+					<h:outputText value="#{analise.valorPago}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Paradas previstas</f:facet>
+					<h:outputText value="#{analise.paradasPrevistas}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Paradas cumpridas</f:facet>
+					<h:outputText value="#{analise.paradasCumpridas}" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Observação</f:facet>
+					<p:inputTextarea value="#{analise.observacao}" rows="2" cols="40" />
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Opção</f:facet>
+					<p:commandLink value="Mapa"
+						actionListener="#{preFechamentoRotaMb.exibirMapa(analise)}"
+						ajax="false" />
+				</p:column>
+			</p:dataTable>
+			<p />
+			<h:panelGrid columns="2">
+				<p:selectBooleanCheckbox id="concluido"
+					value="#{preFechamentoRotaMb.preFechamentoRota.concluido}" />
+				<p:outputLabel for="concluido" value="Fechar período para pagamento" />
+			</h:panelGrid>
+
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{preFechamentoRotaMb.terminarCriacaoOuAlteracao()}"
+				ajax="false"
+				rendered="#{preFechamentoRotaMb.isCriacao() || preFechamentoRotaMb.isAlteracao()}" />
+			<p:commandButton value="Cancelar"
+				action="#{preFechamentoRotaMb.cancelar()}" ajax="false"
+				immediate="true" />
+		</h:form>
+
+		<h:form id="form3" rendered="#{preFechamentoRotaMb.isMapa()}">
+			<p:commandLink value="Voltar"
+				actionListener="#{preFechamentoRotaMb.exibirTabela}" ajax="false" />
+			<p:gmap id="mapa" center="#{preFechamentoRotaMb.centroMapa}"
+				zoom="#{preFechamentoRotaMb.zoomMapa}" type="ROADMAP"
+				style="height: 450px; width: 80%; border: 1px solid #c0c0d1;"
+				fitBounds="true" model="#{preFechamentoRotaMb.mapModel}"
+				widgetVar="mapa">
+				<p:ajax event="stateChange"
+					listener="#{preFechamentoRotaMb.onStateChange}" />
+			</p:gmap>
+		</h:form>
+	</ui:define>
+</ui:composition>

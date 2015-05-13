@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de calendário</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{calendarioMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo"
+				actionListener="#{calendarioMb.iniciarCriacao}" ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Nome " />
+			<p:inputText value="#{calendarioMb.nomePesquisa}" />
+			<p:commandButton value="Pesquisar"
+				actionListener="#{calendarioMb.listar}" update="listagem" />
+			<p />
+			<p:dataTable id="listagem" value="#{calendarioMb.lista}" var="c"
+				style="width: 400px">
+				<p:column>
+					<f:facet name="header">Calendário</f:facet>
+					#{c.nome}
+				</p:column>
+				<p:column style="width: 40px">
+					<h:panelGroup>
+						<p:commandLink title="Editar"
+							action="#{calendarioMb.iniciarAlteracao(c)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/edit.gif"/>
+						</p:commandLink>
+						<p:spacer width="5px" />
+						<p:commandLink title="Excluir"
+							action="#{calendarioMb.iniciarExclusao(c)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/delete.gif"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!calendarioMb.temPaginaAnterior()}"
+				actionListener="#{calendarioMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!calendarioMb.temProximaPagina()}"
+				actionListener="#{calendarioMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao() || calendarioMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar calendário"
+					rendered="#{calendarioMb.isCriacao()}" />
+				<p:outputLabel value="Alterar calendário"
+					rendered="#{calendarioMb.isAlteracao()}" />
+				<p:outputLabel value="Excluir calendário"
+					rendered="#{calendarioMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="3">
+				<p:outputLabel value="Nome " />
+				<p:inputText value="#{calendarioMb.calendario.nome}" />
+				<p:outputPanel rendered="#{calendarioMb.isCriacao()}">
+					<p:outputLabel value="Gerar dias para o ano " />
+					<p:inputText id="ano" value="#{calendarioMb.ano}"
+						style="width: 30px" />
+					<p:commandButton value="Gerar"
+						actionListener="#{calendarioMb.gerarDias}" process="@form"
+						update="dias" />
+				</p:outputPanel>
+			</h:panelGrid>
+			<p />
+			<p:outputPanel id="dias">
+				<p:dataTable value="#{calendarioMb.calendario.dias}" var="dia"
+					style="width: 370px" emptyMessage="">
+					<p:column style="width: 30px; text-align: center">
+						<f:facet name="header">Dia</f:facet>
+						<h:outputLabel value="#{dia.diaSemana}">
+						</h:outputLabel>
+					</p:column>
+					<p:column style="width: 50px; text-align: center">
+						<f:facet name="header">Data</f:facet>
+						<h:outputLabel value="#{dia.data}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+					<p:column style="width: 30px; text-align: center">
+						<f:facet name="header">Útil</f:facet>
+						<p:selectBooleanCheckbox value="#{dia.util}" />
+					</p:column>
+					<p:column style="width: 140px; text-align: center">
+						<f:facet name="header">Observação</f:facet>
+						<p:inputText value="#{dia.observacao}" />
+					</p:column>
+				</p:dataTable>
+			</p:outputPanel>
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{calendarioMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{calendarioMb.isCriacao() || calendarioMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{calendarioMb.terminarExclusao()}" immediate="false"
+				update="@all" rendered="#{calendarioMb.isExclusao()}" />
+			<p:commandButton value="Cancelar" action="#{calendarioMb.cancelar()}"
+				immediate="false" update="@all" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

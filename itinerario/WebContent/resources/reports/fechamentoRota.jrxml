@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="fechamentoRota" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isSummaryWithPageHeaderAndFooter="true" uuid="98a367d6-f266-45f3-beda-950ba1cfcfa0">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 3_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 4_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Dataset Viagens" uuid="43e4ff64-7629-434c-a57f-5fb7e6c1ccf5">
+		<field name="dataViagem" class="java.util.Date"/>
+		<field name="veiculo" class="modelo.Veiculo"/>
+		<field name="kmForaTrajeto" class="java.lang.Double">
+			<fieldDescription><![CDATA[kmForaTrajeto]]></fieldDescription>
+		</field>
+		<field name="kmNoTrajeto" class="java.lang.Double">
+			<fieldDescription><![CDATA[kmNoTrajeto]]></fieldDescription>
+		</field>
+		<field name="kmPago" class="java.lang.Double">
+			<fieldDescription><![CDATA[kmPago]]></fieldDescription>
+		</field>
+		<field name="kmPrevisto" class="java.lang.Double">
+			<fieldDescription><![CDATA[kmPrevisto]]></fieldDescription>
+		</field>
+		<field name="kmRealizado" class="java.lang.Double">
+			<fieldDescription><![CDATA[kmRealizado]]></fieldDescription>
+		</field>
+		<field name="valorPago" class="java.lang.Double"/>
+		<field name="fechamentoRota" class="modelo.FechamentoRota">
+			<fieldDescription><![CDATA[fechamentoRota]]></fieldDescription>
+		</field>
+		<field name="observacao" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="Dataset Pessoas" uuid="838f28ab-2cc0-489c-b1da-6998a8a1b943">
+		<field name="nome" class="java.lang.String">
+			<fieldDescription><![CDATA[nome]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="Dataset Assinaturas" uuid="2a0d6676-6d08-453c-aa8a-fe9cc24ad53b">
+		<field name="nome" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\AmbDev\\teste\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="escolas" class="java.util.List">
+		<fieldDescription><![CDATA[escolas]]></fieldDescription>
+	</field>
+	<field name="escolasToString" class="java.lang.String">
+		<fieldDescription><![CDATA[escolasToString]]></fieldDescription>
+	</field>
+	<field name="fechamentoRota" class="modelo.FechamentoRota">
+		<fieldDescription><![CDATA[fechamentoRota]]></fieldDescription>
+	</field>
+	<field name="imagemMotorista" class="java.lang.Object">
+		<fieldDescription><![CDATA[imagemMotorista]]></fieldDescription>
+	</field>
+	<field name="imagemRota" class="java.lang.Object">
+		<fieldDescription><![CDATA[imagemRota]]></fieldDescription>
+	</field>
+	<field name="nomesAssinatura" class="java.util.List">
+		<fieldDescription><![CDATA[nomesAssinatura]]></fieldDescription>
+	</field>
+	<field name="pessoas" class="java.util.List">
+		<fieldDescription><![CDATA[pessoas]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="275" splitType="Stretch">
+			<textField>
+				<reportElement x="171" y="51" width="300" height="20" uuid="dbef9b77-aa9b-42e3-8712-e734fc01d1ca"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getRota().getCodigo()
++ " - " + $F{fechamentoRota}.getRota().getNome()]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement mode="Transparent" x="1" y="0" width="200" height="28" backcolor="#FFFFFF" uuid="634df0a0-6ee5-446a-8d6c-9ab8bb55bf7d"/>
+				<imageExpression><![CDATA["C:\\AmbDev\\teste\\topo_prefeitura.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="205" y="7" width="231" height="20" uuid="5510de59-17b2-4a3a-b8f0-e489a70d4a65"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ficha de controle de quilômetros rodados]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="122" y="51" width="50" height="20" uuid="2587842b-6051-422a-be45-18cc9802ddaa"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Rota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="122" y="71" width="50" height="20" uuid="62e8858b-77dd-469f-9ebd-b3a75be4e6d7"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Origem]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="172" y="71" width="300" height="20" uuid="a979804f-c16e-4f1d-b620-c8f270636c10"/>
+				<textElement verticalAlignment="Middle">
+					<font isStrikeThrough="false"/>
+					<paragraph lineSpacing="Proportional"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getRota().getOrigem()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="123" y="91" width="50" height="20" uuid="077b766b-9ff4-4f81-92d0-ae2e6ec9d782"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Destino]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="172" y="91" width="300" height="20" uuid="d369153c-85af-4d99-9743-89ad2502648a"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getRota().getDestino()]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement positionType="Float" x="122" y="131" width="360" height="19" uuid="182b5820-6cb6-4ff6-8b4d-da43dd825e78"/>
+				<staticText>
+					<reportElement positionType="Float" x="2" y="0" width="50" height="19" uuid="49c87df5-ed54-4a3f-9e6d-634012d419e9"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Escola(s)]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true">
+					<reportElement positionType="Float" x="50" y="0" width="299" height="19" uuid="c9c8ff33-1edb-41b4-9a0a-83c9d62ffc2b"/>
+					<textElement verticalAlignment="Middle"/>
+					<textFieldExpression><![CDATA[$F{escolasToString}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement positionType="Float" x="123" y="111" width="50" height="20" uuid="dbc62deb-95be-4048-b22f-049927795ce1"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Período]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="171" y="111" width="57" height="20" uuid="c14ed846-c611-419e-80b6-ad19538e6571"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getDataInicial()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="228" y="111" width="12" height="20" uuid="646ee289-d3b9-4615-b4e4-5a6d03f94484"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[a]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement positionType="Float" x="241" y="111" width="61" height="20" uuid="9176d679-2ab0-4b35-9eae-98934c243b16"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getDataFinal()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="498" y="7" width="36" height="22" uuid="a106803d-ba42-4737-a69d-46b58b86e34c"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Pág. "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="534" y="7" width="21" height="22" uuid="9854a2e0-a99e-43aa-abe1-df3db57afcca"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealSize" vAlign="Middle" isUsingCache="false">
+				<reportElement x="6" y="51" width="111" height="98" uuid="e51eaba5-83be-4caf-94c5-963b2bf5a9e4"/>
+				<imageExpression><![CDATA[new ByteArrayInputStream((byte[])$F{imagemRota})]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement positionType="Float" x="173" y="171" width="300" height="20" uuid="a2823426-4ec9-4fc0-900b-916919c9b3cb"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getMotorista().getPessoa().getNome()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="171" width="50" height="20" uuid="b61a5901-adbc-46bf-813d-058b3f3d57b6"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Motorista]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="173" y="191" width="300" height="20" uuid="e32839e6-dbbb-428b-b7c5-4b4d4145b6c4"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getMotorista().getPessoa().getCpf()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="191" width="50" height="20" uuid="5142de81-459d-461b-8635-642d07e57747"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CPF]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="211" width="50" height="20" uuid="bd9aa847-862b-483d-abbc-cd9274125301"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CNH	]]></text>
+			</staticText>
+			<textField>
+				<reportElement positionType="Float" x="174" y="211" width="300" height="20" uuid="b5469edc-a412-4c6a-a10e-bf7dbd37a959"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getMotorista().getPessoa().getCnh()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="124" y="230" width="50" height="20" uuid="978b45e3-783e-466a-8a03-fa3e615c8385"/>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Validade]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="174" y="230" width="300" height="20" uuid="2b3123ba-f97c-43b4-982e-1206ed210bb1"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{fechamentoRota}.getMotorista().getPessoa().getValidadeCnh()]]></textFieldExpression>
+			</textField>
+			<image scaleImage="RealSize" vAlign="Middle" isUsingCache="false">
+				<reportElement positionType="Float" x="6" y="173" width="111" height="98" uuid="67724654-8e51-40a4-af04-55c7a445aa84"/>
+				<imageExpression><![CDATA[new ByteArrayInputStream((byte[])$F{imagemMotorista})]]></imageExpression>
+			</image>
+			<rectangle>
+				<reportElement x="0" y="32" width="555" height="20" backcolor="#3D6600" uuid="33c92c6c-a716-4798-bda3-3cd13d2014f6"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement mode="Transparent" x="5" y="32" width="100" height="20" forecolor="#FFFFFF" uuid="9d7c1a09-fc8e-4379-a0c6-b29bd839192d"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Informações da rota]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement positionType="Float" x="1" y="153" width="555" height="20" backcolor="#3D6600" uuid="79dd8012-c5ec-4a9b-aaf1-1a9f77b97f3e"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" mode="Transparent" x="6" y="153" width="140" height="20" forecolor="#FFFFFF" uuid="78bed044-490f-4a8b-98c4-8b2f4bdd9e06"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Informações do motorista]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy HH:mm:ss">
+				<reportElement x="438" y="9" width="60" height="20" uuid="d6b56186-2d2f-4df7-b220-c14f3a4e3dc8"/>
+				<textElement verticalAlignment="Middle">
+					<font size="6"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="31" splitType="Stretch">
+			<rectangle>
+				<reportElement positionType="Float" x="0" y="0" width="555" height="20" backcolor="#3D6600" uuid="ce5bc69a-08a1-441a-9915-60aae70e9a30"/>
+				<graphicElement>
+					<pen lineColor="#FFFFFF"/>
+				</graphicElement>
+			</rectangle>
+			<staticText>
+				<reportElement positionType="Float" mode="Transparent" x="6" y="0" width="140" height="20" forecolor="#FFFFFF" uuid="06a098de-7b6b-475d-9290-400f7732965f"/>
+				<textElement verticalAlignment="Middle">
+					<font isBold="true" isItalic="false"/>
+				</textElement>
+				<text><![CDATA[Resumo das viagens]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="24" splitType="Stretch">
+			<componentElement>
+				<reportElement key="Viagens" style="table 2" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="350" height="24" uuid="17331b8b-96e6-4cee-a7b9-1483e1e112aa"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset Viagens" uuid="500e9843-3181-4c13-b6d1-927dc7548cfa">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{fechamentoRota}.getAnalisesViagem())]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="350" uuid="21659b24-e6ec-464d-bbd5-96bdc21f7dc0">
+						<jr:tableHeader height="12" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="350" height="12" uuid="562c77ef-d5c6-43b7-8aeb-77df83cf5dae"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<text><![CDATA[Viagens realizadas]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:tableFooter height="19" rowSpan="1">
+							<staticText>
+								<reportElement x="2" y="0" width="308" height="19" uuid="b606f67d-b4d0-44a0-a097-8ebe4b0971be"/>
+								<textElement>
+									<font size="6"/>
+								</textElement>
+								<text><![CDATA[KmPr: quilometragem prevista KmR: quilometragem realizada KmD: quilometragem percorrida dentro do trajeto KmF: quilometragem percorrida fora do trajeto KmPg: quilometragem paga.]]></text>
+							</staticText>
+						</jr:tableFooter>
+						<jr:columnGroup width="80" uuid="e9b9e821-dcbb-4628-ad4c-159fa93cde3c">
+							<jr:columnFooter style="table_TH" height="12" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="80" height="12" uuid="252d07fb-3d1a-451a-b720-8f5e9a898e9b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[Total]]></text>
+								</staticText>
+							</jr:columnFooter>
+							<jr:column width="40" uuid="db46c847-eef1-4827-8345-50eca403e10d">
+								<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="10" uuid="3ed62e89-ce37-411f-9370-5c4425da97ce"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font size="6"/>
+										</textElement>
+										<text><![CDATA[Data]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+									<box>
+										<pen lineWidth="0.1" lineColor="#666666"/>
+									</box>
+									<textField pattern="dd/MM/yyyy">
+										<reportElement x="0" y="0" width="40" height="10" uuid="7d0284e7-ab13-45f2-86e2-b5b02e4f5180"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font size="6" isStrikeThrough="false"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$F{dataViagem}]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+							<jr:column width="40" uuid="632c7b2d-1c41-4899-8877-2cc5454607ca">
+								<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+									<staticText>
+										<reportElement x="0" y="0" width="40" height="10" uuid="1a011f62-b6d1-43fc-afdd-6af8fea4a7ec"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font size="6"/>
+										</textElement>
+										<text><![CDATA[Veículo]]></text>
+									</staticText>
+								</jr:columnHeader>
+								<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+									<box>
+										<pen lineWidth="0.1" lineColor="#666666"/>
+									</box>
+									<textField>
+										<reportElement x="0" y="0" width="40" height="10" uuid="9150e12a-afc4-49f0-96e8-c05eb19f1af8"/>
+										<textElement textAlignment="Center" verticalAlignment="Middle">
+											<font size="6"/>
+										</textElement>
+										<textFieldExpression><![CDATA[$F{veiculo}.getPlaca()]]></textFieldExpression>
+									</textField>
+								</jr:detailCell>
+							</jr:column>
+						</jr:columnGroup>
+						<jr:column width="25" uuid="b8f69a87-5da6-4f99-be9d-fc4305a48d4b">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="25" height="10" uuid="aa5e5d1d-2d3e-4db4-bc18-44705ad1886b"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[KmPr]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="25" height="12" uuid="ec0b7661-db26-4b87-b645-854b2b2bfe27"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{fechamentoRota}.getKmPrevisto())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="25" height="10" uuid="d5ae15f1-abde-42f5-a6b9-63076e929a62"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{kmPrevisto})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="25" uuid="f63acae2-c575-4f2e-b56c-39f2888d905c">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="25" height="10" uuid="ce62a2b0-7397-4c6e-9c0e-d7e3cb14cb68"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[KmR]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="25" height="12" uuid="92060bce-0c2e-461d-b875-7ee10e03ef3a"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{fechamentoRota}.getKmRealizado())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="25" height="10" uuid="707a68da-8ac8-4215-ac03-e6cd32a53a93"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{kmRealizado})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="25" uuid="f7827559-a7cd-431e-80a3-5d5e53592a21">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="25" height="10" uuid="24f4cc98-0b94-48c5-acba-060c57f5c82c"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[KmD]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="25" height="12" uuid="ced1619c-4209-497b-afeb-2476219ee2f8"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{fechamentoRota}.getKmNoTrajeto())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="25" height="10" uuid="099c7ba3-85f7-4b39-b70d-2685c3d967bc"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{kmNoTrajeto})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="25" uuid="e41c415e-acf2-45a9-9210-c793e207a7cc">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="25" height="10" uuid="2521ebfa-872b-46af-aa12-2ba5a9e37357"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[KmF]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="25" height="12" uuid="a4145fe8-6cb6-4cba-a988-8d22a9a088f4"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{fechamentoRota}.getKmForaTrajeto())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="25" height="10" uuid="f8cb0437-6746-4d29-b8d0-88ccb1875e8e"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{kmForaTrajeto})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="25" uuid="f4c6a4ea-89fc-46d8-869f-c747faf3f56c">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="25" height="10" uuid="0413c571-d1b9-4717-b1d3-1e5685ccd6f5"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[KmPg]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField>
+									<reportElement x="0" y="0" width="25" height="12" uuid="13f64876-6b61-4356-9977-45ab647a4561"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{fechamentoRota}.getKmPago())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="25" height="10" uuid="5f38a642-eed5-416a-b4e3-afa20897e16a"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.##").format($F{kmPago})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="40" uuid="3dea9bc2-e92a-4d45-aff3-9124af84a115">
+							<jr:columnHeader style="table 1_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="40" height="10" uuid="6cb6eca7-5137-4d3c-bcd5-b22ad5f7dfa2"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[Valor (R$)]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table 1_TH" height="12" rowSpan="1">
+								<textField pattern="#,##0.00">
+									<reportElement x="0" y="0" width="40" height="12" uuid="d052c5c7-5d4f-4fff-9d67-23d3d52d0868"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.00").format($F{fechamentoRota}.getValorPago())]]></textFieldExpression>
+								</textField>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<box>
+									<pen lineWidth="0.1" lineColor="#666666"/>
+								</box>
+								<textField pattern="#,##0.00">
+									<reportElement x="0" y="0" width="40" height="10" uuid="e964fe26-f707-4684-9136-d65fbc9f8173"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[new DecimalFormat("##,##0.00").format($F{valorPago})]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+						<jr:column width="105" uuid="5ddbd0ba-37af-4888-9f6c-40b1fb995957">
+							<jr:columnHeader style="table_TH" height="10" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="105" height="10" uuid="3c60b1cd-488a-41ec-9116-f068674f9f6c"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[Observação]]></text>
+								</staticText>
+							</jr:columnHeader>
+							<jr:columnFooter style="table_TH" height="12" rowSpan="1">
+								<staticText>
+									<reportElement x="0" y="0" width="105" height="12" uuid="adc522c1-5f7e-47b6-be42-f6fd4ac2a474"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<text><![CDATA[----]]></text>
+								</staticText>
+							</jr:columnFooter>
+							<jr:detailCell style="table 1_TD" height="10" rowSpan="1">
+								<textField isStretchWithOverflow="true">
+									<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="105" height="10" uuid="61511f3f-8313-4c61-a8ea-18b83d8746e9"/>
+									<textElement verticalAlignment="Middle">
+										<font size="6"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{observacao}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+				</jr:table>
+			</componentElement>
+			<componentElement>
+				<reportElement key="table 4" style="table 4" x="390" y="0" width="165" height="24" uuid="0ca5a856-dcb6-4283-ae02-8d7867c537b1"/>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="Dataset Pessoas" uuid="e69e4895-56a6-4f4e-abed-a883a3b4297d">
+						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{pessoas})]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="150" uuid="0c6ecd90-5843-48a1-ae7b-146aeea1c970">
+						<jr:tableHeader style="table" height="12" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="150" height="12" uuid="f4894c98-c678-48ed-b840-04267ee8ef67"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<text><![CDATA[Pessoas atendidas]]></text>
+							</staticText>
+						</jr:tableHeader>
+						<jr:columnHeader style="table_TH" height="10" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="150" height="10" uuid="5327506f-cee6-415a-b6ad-5422fd1b34cc"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<text><![CDATA[Nome]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="table 4_TD" height="10" rowSpan="1">
+							<textField>
+								<reportElement x="0" y="0" width="150" height="10" uuid="500052ec-7948-42ec-9f3d-814cbb19e9f1"/>
+								<textElement verticalAlignment="Middle">
+									<font size="7"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<summary>
+		<band height="99" splitType="Stretch">
+			<staticText>
+				<reportElement positionType="Float" x="0" y="18" width="555" height="34" uuid="4c174d6b-25c2-4326-b12a-a30aae37ad50"/>
+				<textElement textAlignment="Justified" verticalAlignment="Middle">
+					<font size="8"/>
+					<paragraph leftIndent="1"/>
+				</textElement>
+				<text><![CDATA[As pessoas abaixo relacionadas aprovam as informações deste relatório com as viagens realizadas no período em atendimento às pessoas relacionadas e estão de acordo com o pagamento do valor total por parte do Município de Pitanga pelos serviços prestados.]]></text>
+			</staticText>
+			<line>
+				<reportElement positionType="Float" x="5" y="76" width="125" height="1" uuid="80704046-f3f6-4181-a9cd-cf19399baaee"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="146" y="75" width="125" height="1" uuid="4f820cff-cb1f-4187-8971-01bb76c53f32"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="285" y="74" width="125" height="1" uuid="195c0ad7-9e50-4770-a297-b061cc014684"/>
+			</line>
+			<line>
+				<reportElement positionType="Float" x="424" y="73" width="125" height="1" uuid="b30630b9-7600-4a12-88ad-d5e53baad9e1"/>
+			</line>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="5" y="77" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="4d9a6631-ff17-49a0-8dc1-8caacff490fa"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(0)).getNome()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="424" y="77" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="467cac4a-d3c9-4a5d-a805-a595afe1bc81"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(3)).getNome()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="285" y="77" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="7f3b09fc-a4af-43e4-9667-9c4483390fe6"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(2)).getNome()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="146" y="77" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="972ce926-a176-438a-aa03-5858b003c4ac"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(1)).getNome()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="5" y="88" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="abb2f6f2-054d-4e07-ad0d-747e1695bfb4"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(0)).getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="146" y="88" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="318fe860-8c4f-4664-9e5e-de42dc04e702"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(1)).getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="285" y="88" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="35a9a3db-0651-4d9b-bfdb-c03ab9bfbbc6"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(2)).getDescricao()]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="424" y="88" width="125" height="11" isPrintWhenDetailOverflows="true" uuid="d6f6be1e-08c2-4f82-835f-f9832b53c66d"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[((dto.NomeAssinatura)$F{nomesAssinatura}.get(3)).getDescricao()]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

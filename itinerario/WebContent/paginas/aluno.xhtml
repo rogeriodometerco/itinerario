@@ -1,0 +1,152 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de aluno</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{alunoMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo"
+				actionListener="#{alunoMb.iniciarCriacao}" update="@all" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Passageiro " />
+			<p:autoComplete value="#{alunoMb.passageiroPesquisa}"
+				completeMethod="#{passageiroMb.autocomplete}" var="p"
+				itemLabel="#{p.pessoa.nome}" itemValue="#{p}"
+				converter="#{passageiroConverter}" forceSelection="true">
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+					#{p.pessoa.nome}
+			    </p:column>
+				<p:column>
+					<f:facet name="header">CPF</f:facet>  
+					#{p.pessoa.cpf}
+			    </p:column>
+			</p:autoComplete>
+			<p:outputLabel value="Escola " />
+			<p:autoComplete value="#{alunoMb.escolaPesquisa}"
+				completeMethod="#{escolaMb.autocomplete}" var="e"
+				itemLabel="#{e.nome}" itemValue="#{e}"
+				converter="#{escolaConverter}" forceSelection="true">
+				<p:column>
+					<f:facet name="header">Código</f:facet>  
+					#{e.codigo}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+					#{e.nome}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Localidade</f:facet>  
+					#{e.localidade}
+		        </p:column>
+			</p:autoComplete>
+
+			<p:commandButton value="Pesquisar" actionListener="#{alunoMb.listar}"
+				update="listagem, :mensagens" />
+
+			<p />
+			<p:dataTable id="listagem" value="#{alunoMb.lista}" var="aluno"
+				rendered="#{alunoMb.lista != null}" style="width: 800px"
+				emptyMessage="Nenhum registro encontrado">
+				<p:column>
+					<f:facet name="header">Nome do aluno</f:facet>
+					#{aluno.passageiro.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Escola</f:facet>
+					#{aluno.escola.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{aluno.escola.nome}
+				</p:column>
+				<p:column style="width: 20px">
+					<p:commandLink title="Excluir"
+						action="#{alunoMb.iniciarExclusao(aluno)}" ajax="false"
+						update="@all">
+						<p:graphicImage value="/resources/icones/delete.gif"/>
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!alunoMb.temPaginaAnterior()}"
+				actionListener="#{alunoMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!alunoMb.temProximaPagina()}"
+				actionListener="#{alunoMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{alunoMb.isCriacao() || alunoMb.isAlteracao() || alunoMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar aluno" rendered="#{alunoMb.isCriacao()}" />
+				<p:outputLabel value="Alterar aluno"
+					rendered="#{alunoMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do aluno"
+					rendered="#{alunoMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+
+				<p:outputLabel value="Pessoa " />
+				<p:autoComplete value="#{alunoMb.aluno.passageiro}"
+					completeMethod="#{passageiroMb.autocomplete}" var="p"
+					itemLabel="#{p.pessoa.nome}" itemValue="#{p}"
+					converter="#{passageiroConverter}" forceSelection="true"
+					style="width: 200px">
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{p.pessoa.nome}
+			    	</p:column>
+					<p:column>
+						<f:facet name="header">CPF</f:facet>  
+						#{p.pessoa.cpf}
+			    	</p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Escola " />
+				<p:autoComplete value="#{alunoMb.aluno.escola}"
+					completeMethod="#{escolaMb.autocomplete}" var="e"
+					itemLabel="#{e.nome}" itemValue="#{e}"
+					converter="#{escolaConverter}" forceSelection="true"
+					style="width: 200px">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+						#{e.codigo}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{e.nome}
+		    	    </p:column>
+					<p:column>
+						<f:facet name="header">Localidade</f:facet>  
+						#{e.localidade}
+		        	</p:column>
+				</p:autoComplete>
+
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{alunoMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{alunoMb.isCriacao() || alunoMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{alunoMb.terminarExclusao()}" update="@all"
+				rendered="#{alunoMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{alunoMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,94 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de usuário</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" closable="true" />
+
+		<h:form id="form1" rendered="#{usuarioMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo" action="#{usuarioMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:commandButton value="Listar"
+				actionListener="#{usuarioMb.listar}" update="listagem :mensagens" />
+			<p />
+
+			<p:dataTable id="listagem" value="#{usuarioMb.lista}" var="usuario"
+				emptyMessage="Nenhum registro encontrado" style="width: 50%">
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{usuario.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Login</f:facet>
+					#{usuario.login}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Perfil</f:facet>
+					#{usuario.role}
+				</p:column>
+				<p:column style="text-align: center">
+					<f:facet name="header">Status</f:facet>
+					<h:outputText value="ativo" rendered="#{!usuario.inativo}"/>
+					<h:outputText value="inativo" rendered="#{usuario.inativo}" style="color: red"/>
+				</p:column>
+				<p:column style="width: 20px">
+					<p:commandLink title="Editar"
+						action="#{usuarioMb.iniciarAlteracao(usuario)}" ajax="false"
+						update="@all">
+						<p:graphicImage value="/resources/icones/edit.gif"/>
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!usuarioMb.temPaginaAnterior()}"
+				actionListener="#{usuarioMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!usuarioMb.temProximaPagina()}"
+				actionListener="#{usuarioMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{usuarioMb.isCriacao() || usuarioMb.isAlteracao() || usuarioMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar usuário"
+					rendered="#{usuarioMb.isCriacao()}" />
+				<p:outputLabel value="Alterar usuário"
+					rendered="#{usuarioMb.isAlteracao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Nome " />
+				<p:inputText value="#{usuarioMb.usuario.nome}" />
+				<p:outputLabel value="Login " />
+				<p:inputText value="#{usuarioMb.usuario.login}" />
+				<p:outputLabel value="Perfil " />
+				<p:selectOneMenu value="#{usuarioMb.usuario.role}">
+		            <f:selectItem itemValue="USER" itemLabel="USER" />  
+            		<f:selectItem itemValue="ADMIN" itemLabel="ADMIN" />  
+        		</p:selectOneMenu>  
+				<p:outputLabel value="Inativo " rendered="#{usuarioMb.isAlteracao()}"/>
+				<p:selectBooleanCheckbox value="#{usuarioMb.usuario.inativo}" 
+					rendered="#{usuarioMb.isAlteracao()}"/>
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{usuarioMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{usuarioMb.isCriacao() || usuarioMb.isAlteracao()}" />
+			<p:commandButton value="Cancelar" action="#{usuarioMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

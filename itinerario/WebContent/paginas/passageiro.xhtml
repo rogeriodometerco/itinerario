@@ -1,0 +1,142 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="headComplementar">
+		<script src="http://maps.google.com/maps/api/js?sensor=false"
+			type="text/javascript" />
+	</ui:define>
+
+	<ui:define name="titulo">Cadastro de passageiro</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{passageiroMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo" action="#{passageiroMb.iniciarCriacao}"
+				ajax="false" update="@all" />
+			<p:spacer width="8px" />
+			<p:inputText value="#{passageiroMb.chavePesquisa}"
+				title="Pesquisar por código, nome ou cpf" />
+			<p:commandButton value="Pesquisar"
+				actionListener="#{passageiroMb.listar}" update="listagem :mensagens" />
+			<p />
+
+			<p:dataTable id="listagem" value="#{passageiroMb.lista}"
+				var="passageiro" emptyMessage="Nenhum registro encontrado"
+				style="width: 800px">
+				<p:column>
+					<f:facet name="header">Código</f:facet>
+					#{passageiro.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{passageiro.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">CPF</f:facet>
+					#{passageiro.pessoa.cpf}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Endereço</f:facet>
+					#{passageiro.pessoa.endereco}
+				</p:column>
+				<p:column style="width: 40px">
+					<h:panelGroup>
+						<p:commandLink title="Editar"
+							action="#{passageiroMb.iniciarAlteracao(passageiro)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/edit.gif"/>
+						</p:commandLink>
+						<p:spacer width="5px" />
+						<p:commandLink title="Excluir"
+							action="#{passageiroMb.iniciarExclusao(passageiro)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/delete.gif"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!passageiroMb.temPaginaAnterior()}"
+				actionListener="#{passageiroMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!passageiroMb.temProximaPagina()}"
+				actionListener="#{passageiroMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{passageiroMb.isCriacao() || passageiroMb.isAlteracao() || passageiroMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar passageiro"
+					rendered="#{passageiroMb.isCriacao()}" />
+				<p:outputLabel value="Alterar passageiro"
+					rendered="#{passageiroMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do passageiro"
+					rendered="#{passageiroMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+				<h:panelGrid columns="1">
+					<p:outputLabel value="Código" />
+					<p:inputText value="#{passageiroMb.passageiro.codigo}" />
+					<p:outputLabel value="Nome" />
+					<p:inputText value="#{passageiroMb.passageiro.pessoa.nome}" />
+					<p:outputLabel value="CPF" />
+					<p:inputMask value="#{passageiroMb.passageiro.pessoa.cpf}"
+						mask="999.999.999-99" />
+					<p:outputLabel value="Data nascimento" />
+					<p:inputMask
+						value="#{passageiroMb.passageiro.pessoa.dataNascimento}"
+						mask="99/99/9999">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</p:inputMask>
+					<p:outputLabel value="Nome do pai" />
+					<p:inputText value="#{passageiroMb.passageiro.pessoa.nomePai}" />
+					<p:outputLabel value="Nome da mãe" />
+					<p:inputText value="#{passageiroMb.passageiro.pessoa.nomeMae}" />
+					<p:outputLabel value="Endereço" />
+					<p:inputText value="#{passageiroMb.passageiro.pessoa.endereco}" />
+					<p:outputLabel value="Residência (marque no mapa)"/>
+					<p:outputLabel id="lat" value="#{passageiroMb.passageiro.pessoa.lat}"/>
+					<p:outputLabel id="lng" value="#{passageiroMb.passageiro.pessoa.lng}" />
+				</h:panelGrid>
+
+				<h:panelGroup>
+					<p:outputLabel value="Marque no mapa o local da residência" />
+					<p:gmap id="mapa" center="#{passageiroMb.centroMapa}"
+						zoom="#{passageiroMb.zoomMapa}" type="HYBRID"
+						model="#{passageiroMb.mapModel}" widgetVar="mapa"
+						style="height: 400px; width: 600px; border: 1px solid #c0c0d1;">
+						<p:ajax event="stateChange"
+							listener="#{passageiroMb.onMapStateChange}" />
+						<p:ajax event="markerDrag" listener="#{passageiroMb.onMarkerDrag}"
+							update="lat, lng, mapa" />
+						<p:ajax event="pointSelect"
+							listener="#{passageiroMb.onPointSelect}" process="@form"
+							update="lat, lng, mapa" />
+					</p:gmap>
+				</h:panelGroup>
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Salvar"
+				action="#{passageiroMb.terminarCriacaoOuAlteracao()}" update="@all"
+				rendered="#{passageiroMb.isCriacao() || passageiroMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{passageiroMb.terminarExclusao()}" update="@all"
+				rendered="#{passageiroMb.isExclusao()}" immediate="false" />
+			<p:commandButton value="Cancelar" action="#{passageiroMb.cancelar()}"
+				update="@all" immediate="false" />
+		</h:form>
+	</ui:define>
+</ui:composition>

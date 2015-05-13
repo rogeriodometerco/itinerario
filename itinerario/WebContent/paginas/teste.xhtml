@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/WEB-INF/template/geralRich.xhtml">
+
+	<ui:define name="titulo">teste</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form>
+			<p:commandButton value="Testar" actionListener="#{testeMb.testar}" update=":mensagens" />
+			<p:commandButton value="Testar arquivo" actionListener="#{testeMb.testarArquivo()}" update=":mensagens" />
+			<p:commandButton value="PDF" action="#{testeMb.PDF}" ajax="false" update=":mensagens" />
+			<h:commandLink value="PDF" action="#{testeMb.PDF}" target="_blank"/>
+			<p:commandButton value="Download" actionListener="#{testeMb.downloadFile}" update=":mensagens" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>

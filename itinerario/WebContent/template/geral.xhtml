@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</h:head>
+
+<h:body>
+	<h:form>
+		<h:outputStylesheet name="geral.css" library="css" />
+		<div style="float: left">
+			<a href='http://prefeituradepitanga.blogspot.com.br/'
+				style='display: inline; margin-top: 20px; margin-left: 30px'> <img
+				alt='Prefeitura Municipal de Pitanga' id='Header1_headerimg'
+				src='http://2.bp.blogspot.com/-Cq3nXYusAuc/UiZlQfNcSZI/AAAAAAAAFh4/BZHEQjEkSDY/s1600/logotipo.png'
+				style='display: inline' width='250px;  ' />
+			</a>
+		</div>
+		<div style="float: left;">
+			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
+		</div>
+
+		<div style="clear: both; background-color: #222; height: 3px">
+		</div>
+		<p:menubar>
+			<p:menuitem action="ultimaPosicaoDaFrota"
+				value=" Última posição da frota "/>
+			<p:menuitem action="analiseViagem" value="Analisar viagens" />
+			<p:menuitem action="consultaAnaliseViagem" value="Consultar análises de viagens" />
+			<p:menuitem action="posicoesDoVeiculo"
+				value="Consultar posições do veículo" />
+			<p:menuitem action="rota" value="Cadastrar rota" />
+			<p:menuitem action="veiculo" value="Cadastrar veículo" />
+			<p:menuitem action="cargaDados"
+				value="Carregar dados do rastreador" />
+			<p:menuitem action="processarAnalises"
+				value="Processar análises" />
+		</p:menubar>
+	</h:form>
+
+	<ui:insert name="corpo"></ui:insert>
+</h:body>
+
+</html>

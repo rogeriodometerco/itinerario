@@ -1,0 +1,229 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Programação de veículos para rota</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{programacaoRotaMb.isListagem()}">
+			<p />
+			<p:commandButton value="Nova"
+				actionListener="#{programacaoRotaMb.iniciarCriacao}" ajax="false" />
+			<p:spacer width="8px" />
+			<p:outputLabel value="Rota " />
+			<p:autoComplete value="#{programacaoRotaMb.rotaPesquisa}"
+				completeMethod="#{rotaMb.autocomplete}" var="r"
+				itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+				itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+				<p:column>
+					<f:facet name="header">Código</f:facet>  
+					#{r.codigo}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+					#{r.nome}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Origem</f:facet>  
+					#{r.origem}
+		        </p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>  
+					#{r.destino}
+		        </p:column>
+			</p:autoComplete>
+			<p:outputLabel value="Veículo " />
+			<p:autoComplete value="#{programacaoRotaMb.veiculoPesquisa}"
+				completeMethod="#{veiculoMb.autocomplete}" var="v"
+				itemLabel="#{v.placa}" itemValue="#{v}"
+				converter="#{veiculoConverter}" forceSelection="true">
+			</p:autoComplete>
+
+			<p:commandButton value="Pesquisar"
+				actionListener="#{programacaoRotaMb.listar}"
+				update="listagem :mensagens" />
+
+			<p />
+			<p:dataTable id="listagem" value="#{programacaoRotaMb.lista}"
+				var="prog" rendered="#{programacaoRotaMb.lista != null}"
+				emptyMessage="Nenhum registro encontrado">
+				<p:column>
+					<f:facet name="header">Rota</f:facet>
+					#{prog.rota.codigo}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Nome</f:facet>
+					#{prog.rota.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Origem</f:facet>
+					#{prog.rota.origem}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Destino</f:facet>
+					#{prog.rota.destino}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Veículo</f:facet>
+					#{prog.veiculo.placa}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Motorista</f:facet>
+					#{prog.motorista.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Hr inicial</f:facet>
+					<h:outputText value="#{prog.horaInicial}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Hr final</f:facet>
+					<h:outputText value="#{prog.horaFinal}">
+						<f:convertDateTime pattern="HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Início período</f:facet>
+					<h:outputText value="#{prog.inicioPeriodo}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Término período</f:facet>
+					<h:outputText value="#{prog.terminoPeriodo}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Calendário</f:facet>
+					<h:outputText value="#{prog.calendario.nome}" />
+				</p:column>
+				<p:column style="width: 40px">
+					<h:panelGroup>
+						<p:commandLink title="Editar"
+							action="#{programacaoRotaMb.iniciarAlteracao(prog)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/edit.gif"/>
+						</p:commandLink>
+						<p:spacer width="5px" />
+						<p:commandLink title="Excluir"
+							action="#{programacaoRotaMb.iniciarExclusao(prog)}" ajax="false"
+							update="@all">
+							<p:graphicImage value="/resources/icones/delete.gif"/>
+						</p:commandLink>
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+			<p />
+			<p:commandButton id="anterior" value="Anterior" title="Página anterior"
+				disabled="#{!programacaoRotaMb.temPaginaAnterior()}"
+				actionListener="#{programacaoRotaMb.paginaAnterior}"
+				update="listagem, anterior, proxima" />
+			<p:commandButton id="proxima" value="Próxima" title="Próxima página"
+				disabled="#{!programacaoRotaMb.temProximaPagina()}"
+				actionListener="#{programacaoRotaMb.proximaPagina}"
+				update="listagem, anterior, proxima" />
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{programacaoRotaMb.isCriacao() || programacaoRotaMb.isAlteracao() || programacaoRotaMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar programação"
+					rendered="#{programacaoRotaMb.isCriacao()}" />
+				<p:outputLabel value="Alterar programação"
+					rendered="#{programacaoRotaMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão da programação"
+					rendered="#{programacaoRotaMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+
+				<p:outputLabel value="Rota " />
+				<p:autoComplete value="#{programacaoRotaMb.programacaoRota.rota}"
+					completeMethod="#{rotaMb.autocomplete}" var="r"
+					itemLabel="#{r.codigo.concat(' - ').concat(r.nome)}"
+					itemValue="#{r}" converter="#{rotaConverter}" forceSelection="true">
+					<p:column>
+						<f:facet name="header">Código</f:facet>  
+						#{r.codigo}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{r.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Origem</f:facet>  
+						#{r.origem}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">Destino</f:facet>  
+						#{r.destino}
+			        </p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Veículo " />
+				<p:autoComplete value="#{programacaoRotaMb.programacaoRota.veiculo}"
+					completeMethod="#{veiculoMb.autocomplete}" var="v"
+					itemLabel="#{v.placa}" itemValue="#{v}"
+					converter="#{veiculoConverter}" forceSelection="true">
+					<p:ajax event="itemSelect" listener="#{programacaoRotaMb.veiculoChange}"
+					process="@this" update="motorista" />
+				</p:autoComplete>
+				<p:outputLabel value="Motorista " />
+				<p:autoComplete id="motorista" value="#{programacaoRotaMb.programacaoRota.motorista}"
+					completeMethod="#{motoristaMb.autocomplete}" var="m"
+					itemLabel="#{m.codigo.concat(' - ').concat(m.pessoa.nome)}" 
+					itemValue="#{m}"
+					converter="#{motoristaConverter}" forceSelection="true">
+				</p:autoComplete>
+				<p:outputLabel value="Hora inicial " />
+				<p:inputMask
+					value="#{programacaoRotaMb.programacaoRota.horaInicial}"
+					mask="99:99">
+					<f:convertDateTime pattern="HH:mm" />
+				</p:inputMask>
+				<p:outputLabel value="Hora final " />
+				<p:inputMask value="#{programacaoRotaMb.programacaoRota.horaFinal}"
+					mask="99:99">
+					<f:convertDateTime pattern="HH:mm" />
+				</p:inputMask>
+
+				<p:outputLabel value="Início período " />
+				<p:calendar
+					value="#{programacaoRotaMb.programacaoRota.inicioPeriodo}"
+					pattern="dd/MM/yyyy" />
+				<p:outputLabel value="Término período " />
+				<p:calendar
+					value="#{programacaoRotaMb.programacaoRota.terminoPeriodo}"
+					pattern="dd/MM/yyyy" />
+				<p:outputLabel value="Calendário " />
+				<p:autoComplete
+					value="#{programacaoRotaMb.programacaoRota.calendario}"
+					completeMethod="#{calendarioMb.autocomplete}" var="c"
+					itemLabel="#{c.nome}" itemValue="#{c}"
+					converter="#{calendarioConverter}" forceSelection="true">
+				</p:autoComplete>
+
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{programacaoRotaMb.terminarCriacaoOuAlteracao()}"
+				ajax="false"
+				rendered="#{programacaoRotaMb.isCriacao() || programacaoRotaMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{programacaoRotaMb.terminarExclusao()}" update="@all"
+				rendered="#{programacaoRotaMb.isExclusao()}" immediate="false"/>
+			<p:commandButton value="Cancelar"
+				action="#{programacaoRotaMb.cancelar()}" update="@all" immediate="false"/>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

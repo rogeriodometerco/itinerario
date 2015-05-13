@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Importar dados do rastreador</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" closeable="true" />
+
+		<h:form enctype="multipart/form-data">
+
+			<p />
+			<p:outputLabel value="Veículo " />
+			<p:autoComplete value="#{cargaDadosMb.veiculo}" id="veiculo"
+				completeMethod="#{veiculoMb.autocomplete}" var="v"
+				itemLabel="#{v.placa}" itemValue="#{v}"
+				converter="#{veiculoConverter}" forceSelection="true">
+				<p:ajax event="itemSelect" process="veiculo" />
+				<p:ajax event="change" process="veiculo" />
+			</p:autoComplete>
+			<p />
+			<p:fileUpload fileUploadListener="#{cargaDadosMb.arquivoCarregado}"
+				mode="advanced" label="Selecionar arquivo" process="@form"
+				update=":mensagens, @form" auto="true">
+			</p:fileUpload>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

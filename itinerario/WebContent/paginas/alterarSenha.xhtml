@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Alteração de senha</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" closeable="true" />
+
+		<h:form id="form1">
+			<p />
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Senha atual " />
+				<p:password value="#{usuarioMb.senhaAtual}"/>
+				<p:outputLabel value="Nova senha " />
+				<p:password value="#{usuarioMb.novaSenha}"/>
+				<p:outputLabel value="Confirme a senha " />
+				<p:password value="#{usuarioMb.confirmaSenha}" />
+			</h:panelGrid>
+			<p />
+			<p:commandButton value="Alterar"
+				action="#{usuarioMb.alterarSenha}" update="@all" />
+		</h:form>
+	</ui:define>
+</ui:composition>

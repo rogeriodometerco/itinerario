@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<ui:insert name="headComplementar" />
+</h:head>
+
+<h:body>
+	<h:form>
+		<h:outputStylesheet name="geral.css" library="css" />
+		<div style="float: left">
+
+			<a href='http://prefeituradepitanga.blogspot.com.br/'
+				style='display: inline; margin-top: 20px; margin-left: 30px'> 
+				<img
+				alt='Prefeitura Municipal de Pitanga' id='Header1_headerimg'
+				src='http://2.bp.blogspot.com/-Cq3nXYusAuc/UiZlQfNcSZI/AAAAAAAAFh4/BZHEQjEkSDY/s1600/logotipo.png'
+				style='display: inline' width='250px;  ' />
+			</a>
+		</div>
+
+		 <!-- 
+		<div style="float: left">
+			<a href='http://prefeituradepitanga.blogspot.com.br/'
+				style='display: inline; margin-top: 20px; margin-left: 30px'> 
+				<img
+				alt='Prefeitura Municipal de Pitanga' id='Header1_headerimg'
+				src='/itinerario/resources/imagens/topo_prefeitura.jpg'
+				style='display: inline' width='250px;  ' />
+			</a>
+		</div>
+		 -->
+	
+ 	<div style="float: left;">
+			<h2 style="margin-left: 200px">Sistema de Monitoramento de Frota</h2>
+			<!-- 
+		<h:selectOneMenu value="#{skinBean.skin}" >
+		   	<f:selectItem itemValue="wine" itemLabel="wine" />
+ 		  	<f:selectItem itemValue="ruby" itemLabel="ruby" />
+ 		  	<f:selectItem itemValue="japanCherry" itemLabel="japanCherry" />
+ 		  	<f:selectItem itemValue="emeraldTown" itemLabel="emeraldTown" />
+ 		  	<f:selectItem itemValue="deepMarine" itemLabel="deepMarine" />
+ 		  	<f:selectItem itemValue="classic" itemLabel="classic" />
+ 		  	<f:selectItem itemValue="blueSky" itemLabel="blueSky" />
+ 		  	<f:ajax execute="@all" render="@all"/>
+		</h:selectOneMenu> -->
+		</div>
+		<div style="clear: both; background-color: #222; height: 2px">
+		</div>
+		
+	<p:spacer height="3px"/>
+		<p:menubar id="menuBar">
+			<p:submenu label="Cadastro">
+				<p:menuitem outcome="/paginas/motorista" value="Motorista" />
+				<p:menuitem outcome="/paginas/veiculo" value="Veículo" />
+				<p:menuitem outcome="/paginas/passageiro" value="Passageiro" />
+				<p:menuitem action="/paginas/escola" value="Escola" />
+				<p:menuitem action="/paginas/aluno" value="Aluno" />
+				<p:menuitem action="/paginas/calendario" value="Calendário" />
+				<p:menuitem outcome="/paginas/rota3" value="Rota" />
+				<p:menuitem outcome="/paginas/escolaRota" value="Escolas atendidas pela rota" />
+				<p:menuitem outcome="/paginas/atendido" value="Passageiros atendidos pela rota" />
+				<p:menuitem outcome="/paginas/programacaoRota" value="Programação de veículos" />
+			</p:submenu>
+			<p:submenu label="Viagem">
+				<p:menuitem outcome="/paginas/preFechamentoRota" value="Análise e fechamento" />
+				<p:menuitem outcome="/paginas/fechamentoRota" value="Fechamentos já realizados" />
+			</p:submenu>
+			<p:submenu label="Consulta">
+				<p:menuitem outcome="/paginas/ultimaPosicaoDaFrota" value="Última posição da frota"/>
+				<p:menuitem outcome="/paginas/posicoesDoVeiculo" value="Posições do veículo" />
+			</p:submenu>
+			<p:submenu label="Serviço">
+				<p:menuitem outcome="/paginas/cargaDados" value="Importar dados do rastreador" />
+				<p:menuitem outcome="/paginas/admin/processarAnalises" value="Executar processo de análise de viagem" />
+				<p:menuitem outcome="/paginas/admin/usuario" value="Gerenciar usuários" />
+			</p:submenu>
+			<p:submenu label="#{sessaoMb.login}">
+				<p:menuitem outcome="/paginas/alterarSenha" value="Alterar senha" />
+				<p:menuitem action="#{sessaoMb.logout}" immediate="true" value="Sair" />
+			</p:submenu>
+		</p:menubar>
+	</h:form>
+
+	<p:spacer height="3px"/>
+
+	<p:panel >
+		<f:facet name="header">
+			<ui:insert name="titulo" />
+		</f:facet>
+		<ui:insert name="conteudo" />
+	</p:panel>
+
+</h:body>
+
+</html>

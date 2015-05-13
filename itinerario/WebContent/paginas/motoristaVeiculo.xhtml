@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:p="http://primefaces.org/ui" xmlns:a4j="http://richfaces.org/a4j"
+	template="/template/geralRich.xhtml">
+
+	<ui:define name="titulo">Cadastro de motorista por veículo</ui:define>
+	<ui:define name="conteudo">
+		<p:messages id="mensagens" />
+		<h:form id="form1" rendered="#{motoristaVeiculoMb.isListagem()}">
+			<p />
+			<p:commandButton value="Novo"
+				actionListener="#{motoristaVeiculoMb.iniciarCriacao}" ajax="false" />
+			<p:spacer width="8px" />
+
+			<p:outputLabel value="Motorista " />
+			<p:autoComplete
+				value="#{motoristaVeiculoMb.motoristaPesquisa}"
+				completeMethod="#{motoristaMb.autocomplete}" var="m"
+				itemLabel="#{m.pessoa.nome}" itemValue="#{m}"
+				converter="#{motoristaConverter}" forceSelection="true"
+				style="width:200px">
+				<p:column>
+					<f:facet name="header">Nome</f:facet>  
+						#{m.pessoa.nome}
+			        </p:column>
+				<p:column>
+					<f:facet name="header">CPF</f:facet>  
+						#{m.pessoa.cpf}
+			        </p:column>
+			</p:autoComplete>
+			<p:outputLabel value="Veículo " />
+			<p:autoComplete
+				value="#{motoristaVeiculoMb.veiculoPesquisa}"
+				completeMethod="#{veiculoMb.autocomplete}" var="v"
+				itemLabel="#{v.placa}" itemValue="#{v}"
+				converter="#{veiculoConverter}" forceSelection="true">
+			</p:autoComplete>
+			<p:commandButton value="Pesquisar"
+				actionListener="#{motoristaVeiculoMb.listar}"
+				update="listagem, :mensagens" />
+
+			<p />
+			<p:dataTable id="listagem" value="#{motoristaVeiculoMb.lista}"
+				var="motoristaVeiculo"
+				rendered="#{motoristaVeiculoMb.lista != null}"
+				emptyMessage="Nenhum registro encontrado" style="width: 800px">
+				<p:column>
+					<f:facet name="header">Motorista</f:facet>
+					#{motoristaVeiculo.motorista.pessoa.nome}
+				</p:column>
+				<p:column>
+					<f:facet name="header">CPF</f:facet>
+					#{motoristaVeiculo.motorista.pessoa.cpf}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Veículo</f:facet>
+					#{motoristaVeiculo.veiculo.placa}
+				</p:column>
+				<p:column>
+					<f:facet name="header">Data/hora inicial</f:facet>
+					<h:outputText value="#{motoristaVeiculo.dataInicial}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column>
+					<f:facet name="header">Data/hora final</f:facet>
+					<h:outputText value="#{motoristaVeiculo.dataFinal}">
+						<f:convertDateTime pattern="dd/MM/yyyy HH:mm" />
+					</h:outputText>
+				</p:column>
+				<p:column style="width: 120px">
+					<h:panelGroup>
+						<p:commandButton value="Editar"
+							action="#{motoristaVeiculoMb.iniciarAlteracao(motoristaVeiculo)}"
+							ajax="false" />
+						<p:commandButton value="Excluir"
+							action="#{motoristaVeiculoMb.iniciarExclusao(motoristaVeiculo)}"
+							ajax="false" />
+					</h:panelGroup>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+		<h:form id="form2"
+			rendered="#{motoristaVeiculoMb.isCriacao() || motoristaVeiculoMb.isAlteracao() || motoristaVeiculoMb.isExclusao()}">
+			<h3>
+				<p:outputLabel value="Criar motorista por veículo"
+					rendered="#{motoristaVeiculoMb.isCriacao()}" />
+				<p:outputLabel value="Alterar motorista por veículo"
+					rendered="#{motoristaVeiculoMb.isAlteracao()}" />
+				<p:outputLabel value="Confirmar exclusão do motorista por veículo"
+					rendered="#{motoristaVeiculoMb.isExclusao()}" />
+			</h3>
+
+			<h:panelGrid columns="2">
+
+				<p:outputLabel value="Motorista " />
+				<p:autoComplete
+					value="#{motoristaVeiculoMb.motoristaVeiculo.motorista}"
+					completeMethod="#{motoristaMb.autocomplete}" var="m"
+					itemLabel="#{m.pessoa.nome}" itemValue="#{m}"
+					converter="#{motoristaConverter}" forceSelection="true" 
+					style="width:200px">
+					<p:column>
+						<f:facet name="header">Nome</f:facet>  
+						#{m.pessoa.nome}
+			        </p:column>
+					<p:column>
+						<f:facet name="header">CPF</f:facet>  
+						#{m.pessoa.cpf}
+			        </p:column>
+				</p:autoComplete>
+				<p:outputLabel value="Veículo " />
+				<p:autoComplete
+					value="#{motoristaVeiculoMb.motoristaVeiculo.veiculo}"
+					completeMethod="#{veiculoMb.autocomplete}" var="v"
+					itemLabel="#{v.placa}" itemValue="#{v}"
+					converter="#{veiculoConverter}" forceSelection="true">
+				</p:autoComplete>
+				<p:outputLabel value="Data e hora inicial " />
+				<p:inputMask mask="99/99/9999 99:99" value="#{motoristaVeiculoMb.motoristaVeiculo.dataInicial}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+				</p:inputMask>
+				<p:outputLabel value="Data e hora final " />
+				<p:inputMask mask="99/99/9999 99:99" value="#{motoristaVeiculoMb.motoristaVeiculo.dataFinal}">
+					<f:convertDateTime pattern="dd/MM/yyyy HH:mm"/>
+				</p:inputMask>
+
+			</h:panelGrid>
+			<br />
+			<p:commandButton value="Salvar"
+				action="#{motoristaVeiculoMb.terminarCriacaoOuAlteracao()}"
+				ajax="false"
+				rendered="#{motoristaVeiculoMb.isCriacao() || motoristaVeiculoMb.isAlteracao()}" />
+			<p:commandButton value="Excluir"
+				action="#{motoristaVeiculoMb.terminarExclusao()}" ajax="false"
+				rendered="#{motoristaVeiculoMb.isExclusao()}" immediate="true" />
+			<p:commandButton value="Cancelar"
+				action="#{motoristaVeiculoMb.cancelar()}" ajax="false"
+				immediate="true" />
+		</h:form>
+
+	</ui:define>
+</ui:composition>
