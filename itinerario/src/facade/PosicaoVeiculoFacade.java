@@ -29,10 +29,21 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	public List<PosicaoVeiculo> recuperarPosicoes(
 			Veiculo veiculo, Date dataHoraInicial, Date dataHoraFinal) throws Exception {
 
-		return getDao().recuperar(veiculo, dataHoraInicial, dataHoraFinal);
+		String sql = "select p from PosicaoVeiculo as p"
+				+ " where p.veiculo = :veiculo"
+				+ " and p.dataHora >= :dataInicial"
+				+ " and p.dataHora < :dataFinal"
+				+ " order by p.dataHora";
+
+		return getEntityManager().createQuery(sql, PosicaoVeiculo.class)
+				.setParameter("veiculo", veiculo)
+				.setParameter("dataInicial", dataHoraInicial)
+				.setParameter("dataFinal", dataHoraFinal)
+				.getResultList();
 
 	}
 
+	
 	public PosicaoVeiculo recuperarPosicao(Veiculo veiculo, Date dataHora) 
 			throws Exception {
 		String sql = "select p from PosicaoVeiculo as p"
@@ -57,27 +68,29 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public List<PosicaoVeiculo> recuperarPosicoes(Veiculo veiculo, Date data) 
 			throws Exception {
 		Calendar aux = Calendar.getInstance();
 		aux.setTime(data);
 		aux.add(Calendar.DAY_OF_MONTH, 1);
+		return recuperarPosicoes(veiculo, data, aux.getTime());
+		
+		/*
 		String sql = "select p from PosicaoVeiculo as p"
 				+ " where p.veiculo = :veiculo"
 				+ " and p.dataHora >= :dataInicial"
 				+ " and p.dataHora < :dataFinal"
 				+ " order by p.dataHora";
 
-		return (List<PosicaoVeiculo>)getEntityManager().createQuery(sql)
+		return getEntityManager().createQuery(sql, PosicaoVeiculo.class)
 				.setParameter("veiculo", veiculo)
 				.setParameter("dataInicial", data)
 				.setParameter("dataFinal", aux.getTime())
 				.getResultList();
+		*/
 	}
 
 
-	@SuppressWarnings("unchecked")
 	public List<PosicaoVeiculo> recuperarUltimaPosicaoDeCadaVeiculo() 
 			throws Exception {
 
@@ -86,7 +99,9 @@ extends GenericCrudFacade<PosicaoVeiculo> {
 				+ "select p.veiculo, max(p.dataHora) from PosicaoVeiculo p"
 				+ " group by p.veiculo)"
 				+ " order by ultima.veiculo.placa";
-		return (List<PosicaoVeiculo>)getEntityManager().createQuery(sql).getResultList();
+		return getEntityManager()
+				.createQuery(sql, PosicaoVeiculo.class)
+				.getResultList();
 		/*
 
 		List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();

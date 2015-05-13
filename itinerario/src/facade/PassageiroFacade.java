@@ -7,6 +7,9 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
+import util.Paginador;
+
+import modelo.Motorista;
 import modelo.Passageiro;
 import modelo.Pessoa;
 import dao.PassageiroDao;
@@ -48,6 +51,21 @@ public class PassageiroFacade extends GenericCrudFacade<Passageiro> {
 		return getEntityManager()
 				.createQuery(sql, Passageiro.class)
 				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.getResultList();
+	}
+
+	public List<Passageiro> autocomplete(String chave, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Passageiro x"
+				+ " where (upper(x.codigo) like :chave"
+				+ " or upper(x.pessoa.nome) like :chave)" 
+				+ " or upper(x.pessoa.cpf) like :chave)"; 
+		return getEntityManager()
+				.createQuery(sql, Passageiro.class)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 

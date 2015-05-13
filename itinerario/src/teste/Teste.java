@@ -28,8 +28,8 @@ public class Teste {
 
 		//reportCalendario();
 		//testarDate();
-		reportFichaKmRodado();
-		//reportRotaEPontos();
+		//reportFichaKmRodado();
+		reportRotaEPontos();
 
 	}
 

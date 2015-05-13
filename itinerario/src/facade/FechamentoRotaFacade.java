@@ -2,24 +2,27 @@ package facade;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
 import modelo.AnaliseViagem;
+import modelo.ArquivoImagem;
 import modelo.Atendido;
 import modelo.Escola;
 import modelo.EscolaRota;
 import modelo.FechamentoRota;
 import modelo.Pessoa;
 import modelo.Rota;
-
-import java.util.List;
 import dao.FechamentoRotaDao;
 import dto.FechamentoRotaReport;
+import dto.NomeAssinatura;
 import dto.PreFechamentoRota;
 
 @Stateless
@@ -36,7 +39,9 @@ extends GenericCrudFacade<FechamentoRota> {
 	private EscolaRotaFacade escolaRotaFacade;
 	@EJB
 	private AtendidoFacade atendidoFacade;
-
+	@EJB
+	private ArquivoImagemFacade arquivoImagemFacade;
+	
 	@Override
 	protected FechamentoRotaDao getDao() {
 		return dao;
@@ -55,13 +60,42 @@ extends GenericCrudFacade<FechamentoRota> {
 		for (Atendido a: atendidoFacade.listar(fechamentoRota.getRota())) {
 			pessoas.add(a.getPassageiro().getPessoa());
 		}
-		
-		return new FechamentoRotaReport(fechamentoRota, new ArrayList<Pessoa>(pessoas), escolas);		
+		// Recupera imagens do motorista e da rota.
+		ArquivoImagem arquivoImagemRota = null;
+		ArquivoImagem arquivoImagemMotorista = null;
+		try {
+			arquivoImagemRota = arquivoImagemFacade.recuperarImagemRota(fechamentoRota.getRota());
+			arquivoImagemMotorista = arquivoImagemFacade.recuperarImagemMotorista(fechamentoRota.getMotorista());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		byte[] imagemMotorista = null;
+		byte[] imagemRota = null;
+		if (arquivoImagemMotorista != null) {
+			imagemMotorista = arquivoImagemMotorista.getConteudo();
+		}
+		if (arquivoImagemRota != null) {
+			imagemRota = arquivoImagemRota.getConteudo();
+		}
+		// Nomes assinatura.
+		List<NomeAssinatura> nomesAssinatura = new ArrayList<NomeAssinatura>();
+		nomesAssinatura.add(new NomeAssinatura(fechamentoRota.getMotorista().getPessoa().getNome(), "Motorista"));
+		nomesAssinatura.add(new NomeAssinatura(fechamentoRota.getRota().getResponsavel(), "Responsável pela rota"));
+		nomesAssinatura.add(new NomeAssinatura("Cristiano", "Responsável pelo Transporte"));
+		nomesAssinatura.add(new NomeAssinatura("Paulo Boch", "Chefe Geral"));
+		return new FechamentoRotaReport(fechamentoRota, new ArrayList<Pessoa>(pessoas), 
+				escolas, imagemMotorista, imagemRota, nomesAssinatura);		
 	}
 	
 	public List<PreFechamentoRota> getPreFechamentosRota(Date dataInicial, Date dataFinal) 
 			throws Exception {
 
+		List<AnaliseViagem> analises = analiseViagemFacade
+				.recuperarAnalisesViagemAFechar(dataInicial, dataFinal);
+
+		return agruparAnalisesEmPreFechamentos(analises, dataInicial, dataFinal);
+
+		/*
 		List<PreFechamentoRota> lista = new ArrayList<PreFechamentoRota>();
 		PreFechamentoRota f = null;
 		for (Rota r: rotaFacade.listar()) {
@@ -71,32 +105,79 @@ extends GenericCrudFacade<FechamentoRota> {
 			}
 		}
 		return lista;
+		*/
 	}
 
-	public PreFechamentoRota getPreFechamentoRota(Rota rota, Date dataInicial, Date dataFinal)
+	public List<PreFechamentoRota> getPreFechamentosRota(Rota rota, Date dataInicial, Date dataFinal)
 			throws Exception {
 
-		PreFechamentoRota f = null;
 		List<AnaliseViagem> analises = analiseViagemFacade
 				.recuperarAnalisesViagemAFechar(dataInicial, dataFinal, rota);
 
+		return agruparAnalisesEmPreFechamentos(analises, dataInicial, dataFinal);
+		/*
 		// Retorna pré-fechamento não nulo se houver alguma análise de viagem.
 		if (analises.size() > 0) {
 			f = new PreFechamentoRota();
 			f.setRota(rota);
+			f.setMotorista(analises.get(0).getMotorista()); // TODO Resolver inicialização do motorista.
 			f.setDataInicial(dataInicial);
 			f.setDataFinal(dataFinal);
 			f.setAnalisesViagem(analises);
 		}
 		return f;
+		*/
 	}
 
+	private List<PreFechamentoRota> agruparAnalisesEmPreFechamentos(List<AnaliseViagem> analises, 
+			Date dataInicial, Date dataFinal) {
+
+		List<PreFechamentoRota> preFechamentos = new ArrayList<PreFechamentoRota>();
+		
+		// Ordena lista por rota e motorista.
+		Collections.sort(analises, new Comparator<AnaliseViagem>() {
+			public int compare(AnaliseViagem o1, AnaliseViagem o2) {
+				if (o1.getRota().getId().longValue() < o2.getRota().getId().longValue()) {
+					return -1;
+				} else if (o1.getRota().getId().longValue() > o2.getRota().getId().longValue()) {
+					return 1;
+				} else {					
+					if (o1.getMotorista().getId().longValue() < o2.getMotorista().getId().longValue()) {
+						return -1;
+					} else if (o1.getMotorista().getId().longValue() > o2.getMotorista().getId().longValue()) {
+						return 1;
+					} else {	
+						return 0;
+					}
+				}
+			}
+		});
+
+		PreFechamentoRota preFechamentoRota = null;
+		for (AnaliseViagem analise: analises) {
+			if (preFechamentoRota == null 
+					|| !analise.getRota().getId().equals(preFechamentoRota.getRota().getId())  
+					|| !analise.getMotorista().getId().equals(preFechamentoRota.getMotorista().getId())) {
+				preFechamentoRota = new PreFechamentoRota();
+				preFechamentoRota.setRota(analise.getRota());
+				preFechamentoRota.setMotorista(analise.getMotorista());
+				preFechamentoRota.setDataInicial(dataInicial);
+				preFechamentoRota.setDataFinal(dataFinal);
+				preFechamentoRota.setAnalisesViagem(new ArrayList<AnaliseViagem>());
+				preFechamentos.add(preFechamentoRota);
+			}
+			preFechamentoRota.getAnalisesViagem().add(analise);
+		}
+		return preFechamentos;
+	}
+	
 	public FechamentoRota criarFechamentoRota(PreFechamentoRota preFechamentoRota) 
 			throws Exception {
 		return salvar(
 				preFechamentoRota.getFechamentoRota());
 	}
 
+	/*
 	public List<FechamentoRota> getFechamentosRota(Date dataInicial, Date dataFinal) 
 			throws Exception {
 
@@ -106,7 +187,8 @@ extends GenericCrudFacade<FechamentoRota> {
 		}
 		return lista;
 	}
-
+	*/
+	
 	/**
 	 * Recupera fechamento para a rota. Não existindo, cria.
 	 * @param rota

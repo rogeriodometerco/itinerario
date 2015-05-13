@@ -8,6 +8,8 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import util.Paginador;
+
 import modelo.Calendario;
 import modelo.DiaCalendario;
 import dao.CalendarioDao;
@@ -33,6 +35,18 @@ extends GenericCrudFacade<Calendario> {
 				+ " where upper(x.nome) like :chave";
 		return getEntityManager().createQuery(sql, Calendario.class)
 				.setParameter("chave", "%" + parteDoNome.toUpperCase() + "%")
+				.getResultList();
+	}
+	
+	public List<Calendario> listarPorNomeContendo(String parteDoNome, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Calendario x "
+				+ " where upper(x.nome) like :chave";
+		return getEntityManager().createQuery(sql, Calendario.class)
+				.setParameter("chave", "%" + parteDoNome.toUpperCase() + "%")
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 	

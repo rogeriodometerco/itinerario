@@ -14,6 +14,7 @@ import org.primefaces.model.map.MapModel;
 import org.primefaces.model.map.Marker;
 
 import util.JsfUtil;
+import util.RotaMapModel;
 
 import facade.PosicaoVeiculoFacade;
 
@@ -60,6 +61,9 @@ public class PosicaoFrotaMb {
 
 	private void criarMarcador(PosicaoVeiculo posicao) {
 		String icone = "resources/icones/mm_20_green.png";
+		icone = "http://thydzik.com/thydzikGoogleMap/markerlink.php?"
+				+ "text=" + posicao.getVeiculo().getPlaca()
+				+ "&color=" + RotaMapModel.COR_MARCADOR_VEICULO;
 		LatLng latLng = new LatLng(posicao.getLat(), posicao.getLng());
 		Marker marker = new Marker(latLng, "", posicao);
 		marker.setIcon(icone);
@@ -82,22 +86,28 @@ public class PosicaoFrotaMb {
 
 	private void resetarMapa() {
 		if (posicaoEmFoco == null) {
-			this.centroMapa = "-24.753573,-51.762526";
-			this.zoomMapa = 13;
+			this.centroMapa = RotaMapModel.CENTRO_MAPA_PADRAO;
+			this.zoomMapa = RotaMapModel.ZOOM_MAPA_PADRAO;
 		} else {
 			this.centroMapa = 
 					posicaoEmFoco.getLat() 
 					+ ", " + posicaoEmFoco.getLng();
-			this.zoomMapa = 16;
+			this.zoomMapa = 15;
 		} 
+		/*
+		String icone = "";
 		for (Marker m: getMapModel().getMarkers()) {
 			if (posicaoEmFoco != null && ((PosicaoVeiculo)m.getData()).equals(posicaoEmFoco)) {
-				m.setIcon("");
-			} else {
-				m.setIcon("resources/icones/mm_20_green.png");
-			}
-		}
+				icone = "http://thydzik.com/thydzikGoogleMap/markerlink.php?"
+						+ "text=" + ((PosicaoVeiculo)m.getData()).getVeiculo().getPlaca()
+						+ "&color=" + RotaMapModel.COR_MARCADOR_VEICULO;
 
+			} else {
+				icone = "resources/icones/mm_20_green.png";
+			}
+			m.setIcon(icone);
+		}
+		*/
 	}
 
 

@@ -14,6 +14,11 @@
 
 .ui-widget,.ui-widget.ui-widget {font-size: 11px ;}
 
+.ui-menu-child {  
+    white-space:nowrap !important;  
+    width:230px !important;  
+}
+
 body {font-family: Univers, "Univers 55", "Lucida Grande CE", lucida, Helvetica, san-serif;
 	font-size:small;
 	background-color: #8FB200;

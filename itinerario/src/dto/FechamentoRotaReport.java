@@ -3,45 +3,35 @@ package dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.JsfUtil;
+
 import modelo.Escola;
 import modelo.FechamentoRota;
 import modelo.Pessoa;
 
 public class FechamentoRotaReport {
 	private FechamentoRota fechamentoRota;
+	private byte[] imagemMotorista;
+	private byte[] imagemRota;
+	private String caminhoLogo;
 	private List<Pessoa> pessoas;
 	private List<Escola> escolas;
 	private List<NomeAssinatura> nomesAssinatura;
-	private List<List<NomeAssinatura>> nomesAssinaturaLista;
 	private String escolasToString;
 	
 	public FechamentoRotaReport(FechamentoRota fechamentoRota, List<Pessoa> pessoas, 
-			List<Escola> escolas) {
+			List<Escola> escolas, byte[] imagemMotorista, byte[] imagemRota, 
+			List<NomeAssinatura> nomesAssinatura) {
 		this.fechamentoRota = fechamentoRota;
 		this.pessoas = pessoas;
 		this.escolas = escolas;
+		this.imagemMotorista = imagemMotorista;
+		this.imagemRota = imagemRota;
+		this.nomesAssinatura = nomesAssinatura;
+		this.caminhoLogo = JsfUtil.getExternalContext().getRealPath("/resources/imagens/logo.jpg");
 		definirEscolasToString();
-		definirNomesAssinatura();
-		definirNomesAssinaturaLista();
 	}
 
-	private void definirNomesAssinatura() {
-		nomesAssinatura =  new ArrayList<NomeAssinatura>();
-		nomesAssinatura.add(new NomeAssinatura("Dino da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("Jefferson da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("José da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("Pedro da Silva"));
-	}
-
-	private void definirNomesAssinaturaLista() {
-		nomesAssinaturaLista = new ArrayList<List<NomeAssinatura>>();
-		List<NomeAssinatura> nomesAssinatura = new ArrayList<NomeAssinatura>();
-		nomesAssinatura.add(new NomeAssinatura("Dino da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("Jefferson da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("José da Silva Sauro"));
-		nomesAssinatura.add(new NomeAssinatura("Pedro da Silva"));
-		nomesAssinaturaLista.add(nomesAssinatura);
-	}
 
 	private void definirEscolasToString() {
 		this.escolasToString = new String();
@@ -68,6 +58,18 @@ public class FechamentoRotaReport {
 
 	public List<NomeAssinatura> getNomesAssinatura() {
 		return nomesAssinatura;
+	}
+
+	public byte[] getImagemMotorista() {
+		return imagemMotorista;
+	}
+
+	public byte[] getImagemRota() {
+		return imagemRota;
+	}
+
+	public String getCaminhoLogo() {
+		return caminhoLogo;
 	}
 	
 }

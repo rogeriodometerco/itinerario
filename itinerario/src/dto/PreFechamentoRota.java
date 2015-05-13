@@ -5,10 +5,12 @@ import java.util.List;
 
 import modelo.AnaliseViagem;
 import modelo.FechamentoRota;
+import modelo.Motorista;
 import modelo.Rota;
 
 public class PreFechamentoRota {
 	private Rota rota;
+	private Motorista motorista;
 	private Date dataInicial;
 	private Date dataFinal;
 	private Boolean concluido;
@@ -20,6 +22,14 @@ public class PreFechamentoRota {
 
 	public void setRota(Rota rota) {
 		this.rota = rota;
+	}
+
+	public Motorista getMotorista() {
+		return motorista;
+	}
+
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
 	}
 
 	public Date getDataInicial() {
@@ -73,14 +83,14 @@ public class PreFechamentoRota {
 		for (AnaliseViagem a: analisesViagem) {
 			km += a.getKmPrevisto();
 		}
-		return km;
+		return (double)Math.round(km * 100) / 100;
 	}
 	public Double getKmRealizado() {
 		Double km = 0d;
 		for (AnaliseViagem a: analisesViagem) {
 			km += a.getKmRealizado();
 		}
-		return km;
+		return (double)Math.round(km * 100) / 100;
 	}
 
 	public Double getKmNoTrajeto() {
@@ -88,7 +98,7 @@ public class PreFechamentoRota {
 		for (AnaliseViagem a: analisesViagem) {
 			km += a.getKmNoTrajeto();
 		}
-		return km;
+		return (double)Math.round(km * 100) / 100;
 	}
 	
 	public Double getKmForaTrajeto() {
@@ -96,7 +106,7 @@ public class PreFechamentoRota {
 		for (AnaliseViagem a: analisesViagem) {
 			km += a.getKmForaTrajeto();
 		}
-		return km;
+		return (double)Math.round(km * 100) / 100;
 	}
 
 	public Double getKmPago() {
@@ -104,15 +114,15 @@ public class PreFechamentoRota {
 		for (AnaliseViagem a: analisesViagem) {
 			km += a.getKmPago();
 		}
-		return km;
+		return (double)Math.round(km * 100) / 100;
 	}
 
 	public Double getValorPago() {
-		Double km = 0d;
+		Double valor = 0d;
 		for (AnaliseViagem a: analisesViagem) {
-			km += a.getValorPago();
+			valor += a.getValorPago();
 		}
-		return km;
+		return (double)Math.round(valor * 100) / 100;
 	}
 	
 	public Integer getParadasPrevistas() {
@@ -134,6 +144,7 @@ public class PreFechamentoRota {
 	public FechamentoRota getFechamentoRota() {
 		FechamentoRota f = new FechamentoRota();
 		f.setRota(getRota());
+		f.setMotorista(getMotorista());
 		f.setDataInicial(getDataInicial());
 		f.setDataFinal(getDataFinal());
 		f.setAnalisesViagem(getAnalisesViagem());

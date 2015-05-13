@@ -5,7 +5,7 @@
 	id="WebApp_ID" version="3.0">
 	<display-name>itinerario</display-name>
 	<welcome-file-list>
-		<welcome-file>ultimaPosicaoDaFrota.xhtml</welcome-file>
+		<welcome-file>/index.jsp</welcome-file>
 	</welcome-file-list>
 
 	<servlet>
@@ -15,23 +15,8 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>/faces/*</url-pattern>
-		<url-pattern>*.jsf</url-pattern>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
-
-<!-- 
-	<context-param>
-		<param-name>org.richfaces.skin</param-name>
-		<param-value>pitanga</param-value>
-	</context-param>
-
-	<context-param>
-		<param-name>org.richfaces.CONTROL_SKINNING</param-name>
-		<param-value>enable</param-value>
-	</context-param>
- -->
-
 
 	<context-param>
 		<param-name>primefaces.THEME</param-name>
@@ -48,11 +33,6 @@
 		<servlet-name>Faces Servlet</servlet-name>
 	</filter-mapping>
 
-	<!-- Upload de arquivos com Richfaces -->
-	<!-- <context-param> <param-name>org.richfaces.fileUpload.createTempFiles</param-name> 
-		<param-value>true</param-value> </context-param> <context-param> <param-name>org.richfaces.fileUpload.maxRequestSize</param-name> 
-		<param-value>2000000</param-value> </context-param> -->
-
 	<!-- contornando erro: Cannot create a session after the response has been 
 		committed -->
 	<context-param>
@@ -61,7 +41,7 @@
 	</context-param>
 
 	<session-config>
-		<session-timeout>1440</session-timeout>
+		<session-timeout>30</session-timeout>
 	</session-config>
 	<context-param>
 		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
@@ -72,4 +52,51 @@
 		<param-value>true</param-value>
 	</context-param>
 
+	<!-- System roles -->
+	<security-role>
+		<role-name>ADMIN</role-name>
+	</security-role>
+	<security-role>
+		<role-name>USER</role-name>
+	</security-role>
+
+	<!-- Protected area definition -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Área protegida - ADMIN e USER</web-resource-name>
+			<url-pattern>*.xhtml</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+			<role-name>USER</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Área restrita - ADMIN</web-resource-name>
+			<url-pattern>/paginas/admin/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>ADMIN</role-name>
+		</auth-constraint>
+	</security-constraint>
+
+	<!-- Login page -->
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/paginas/login.jsp</form-login-page>
+			<form-error-page>/paginas/loginError.html</form-error-page>
+		</form-login-config>
+	</login-config>
+
+	<error-page>
+		<error-code>403</error-code>
+		<location>/paginas/naoAutorizado.html</location>
+	</error-page>
+
+	<error-page>
+		<exception-type>javax.faces.application.ViewExpiredException</exception-type>
+		<location>/index.jsp</location>
+	</error-page>
 </web-app>

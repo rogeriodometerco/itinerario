@@ -14,6 +14,7 @@ import javax.faces.event.ValueChangeEvent;
 import modelo.Calendario;
 import modelo.DiaCalendario;
 import util.JsfUtil;
+import util.Paginador;
 import facade.CalendarioFacade;
 
 @ManagedBean
@@ -32,11 +33,13 @@ public class CalendarioMb implements Serializable {
 
 	@EJB
 	private CalendarioFacade facade;
+	private Paginador paginador;
 
 	@PostConstruct
 	private void inicializar() {
-		ano = null;
+		this.ano = null;
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 	}
 
 	public Calendario getcalendario() {
@@ -50,9 +53,9 @@ public class CalendarioMb implements Serializable {
 	public void listar() { 
 		try {
 			if (nomePesquisa == null || nomePesquisa.trim().isEmpty()) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else {
-				this.lista = facade.listarPorNomeContendo(nomePesquisa);
+				this.lista = facade.listarPorNomeContendo(nomePesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -174,4 +177,25 @@ public class CalendarioMb implements Serializable {
 		this.ano = ano;
 	}
 	
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
+	}
 }

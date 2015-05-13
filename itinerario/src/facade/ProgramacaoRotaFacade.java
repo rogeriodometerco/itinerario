@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
 import modelo.Veiculo;
+import util.Paginador;
 import dao.ProgramacaoRotaDao;
 
 
@@ -58,6 +59,19 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				.getResultList();
 	}
 
+	public List<ProgramacaoRota> listar(Rota rota, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from ProgramacaoRota as x" 
+				+ " where x.rota = :rota";
+		return getEntityManager()
+				.createQuery(sql, ProgramacaoRota.class)
+				.setParameter("rota", rota)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
+			.getResultList();
+	}
+
 	public List<ProgramacaoRota> listar(Veiculo veiculo) 
 			throws Exception {
 		String sql = "select x"
@@ -66,6 +80,19 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("veiculo", veiculo)
+				.getResultList();
+	}
+
+	public List<ProgramacaoRota> listar(Veiculo veiculo, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from ProgramacaoRota as x" 
+				+ " where x.veiculo = :veiculo";
+		return getEntityManager()
+				.createQuery(sql, ProgramacaoRota.class)
+				.setParameter("veiculo", veiculo)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 
@@ -79,6 +106,21 @@ extends GenericCrudFacade<ProgramacaoRota> {
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("rota", rota)
 				.setParameter("veiculo", veiculo)
+				.getResultList();
+	}
+
+	public List<ProgramacaoRota> listar(Rota rota, Veiculo veiculo, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from ProgramacaoRota as x" 
+				+ " where x.rota = :rota"
+				+ " and x.veiculo = :veiculo";
+		return getEntityManager()
+				.createQuery(sql, ProgramacaoRota.class)
+				.setParameter("rota", rota)
+				.setParameter("veiculo", veiculo)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 
@@ -96,6 +138,25 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		return getEntityManager()
 				.createQuery(sql, ProgramacaoRota.class)
 				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.getResultList();
+	}
+
+	public List<ProgramacaoRota> autocomplete(String chave, Paginador paginador) 
+			throws Exception {
+		String sql = "select p"
+				+ " from ProgramacaoRota as p, Rota as r" 
+				+ " where p.rota = r"
+				+ " and ("
+				+ "	upper(r.codigo) like :chave"
+				+ "	or upper(r.nome) like :chave"
+				+ "	or upper(r.origem) like :chave"
+				+ "	or upper(r.destino) like :chave"
+				+ " )";
+		return getEntityManager()
+				.createQuery(sql, ProgramacaoRota.class)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 
@@ -117,15 +178,20 @@ extends GenericCrudFacade<ProgramacaoRota> {
 		if (p.getHoraFinal() == null) {
 			erros.add("Informe a hora final");
 		}
+		/*
 		if (p.getCalendario() == null) {
 			erros.add("Informe o calendário");
 		}
+		*/
 		if (p.getInicioPeriodo() == null) {
 			erros.add("Informe a data de início do período");
 		}
+		if (p.getTerminoPeriodo() == null) {
+			erros.add("Informe a data de término do período");
+		}
 		if (p.getInicioPeriodo() != null && p.getTerminoPeriodo() != null) {
 			if (p.getTerminoPeriodo().before(p.getInicioPeriodo())) {
-				erros.add("Data final não pode ser menor que a data inicial");
+				erros.add("Data final do período não pode ser menor que a data inicial");
 			}
 		}
 		if (p.getHoraFinal() != null && p.getHoraInicial() != null

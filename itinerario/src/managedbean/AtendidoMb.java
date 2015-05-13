@@ -10,20 +10,18 @@ import javax.faces.bean.ViewScoped;
 
 import modelo.Atendido;
 import modelo.Passageiro;
-import modelo.Pessoa;
 import modelo.PontoRota;
 import modelo.ProgramacaoRota;
 
 import org.primefaces.event.map.StateChangeEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
-import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
+import util.Paginador;
+import util.RotaMapModel;
 import facade.AtendidoFacade;
 import facade.PontoRotaFacade;
+import facade.RotaFacade;
 
 @ManagedBean
 @ViewScoped
@@ -42,15 +40,19 @@ public class AtendidoMb implements Serializable {
 	@EJB
 	private AtendidoFacade facade;
 	@EJB
+	private RotaFacade rotaFacade;
+	@EJB
 	private PontoRotaFacade pontoRotaFacade;
-	private MapModel mapModel;
-	private String centroMapa;
-	private Integer zoomMapa;
+	private Paginador paginador;
+	private RotaMapModel rotaMapModel;
 
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
-		resetarMapa();
+		this.paginador = new Paginador(10);
+		this.rotaMapModel = new RotaMapModel();
+		rotaMapModel.exibirPontoPassagem(false);
+		rotaMapModel.setDraggable(false);
 	}
 
 	public Atendido getAtendido() {
@@ -64,13 +66,13 @@ public class AtendidoMb implements Serializable {
 	public void listar() { 
 		try {
 			if (programacaoRotaPesquisa == null && passageiroPesquisa == null) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else if (programacaoRotaPesquisa != null && passageiroPesquisa == null) {
-				this.lista = facade.listar(programacaoRotaPesquisa);
+				this.lista = facade.listar(programacaoRotaPesquisa, paginador);
 			} else if (programacaoRotaPesquisa == null && passageiroPesquisa != null) {
-				this.lista = facade.listar(passageiroPesquisa);
+				this.lista = facade.listar(passageiroPesquisa, paginador);
 			} else if (programacaoRotaPesquisa != null && passageiroPesquisa != null) {
-				this.lista = facade.listar(programacaoRotaPesquisa, passageiroPesquisa);
+				this.lista = facade.listar(programacaoRotaPesquisa, passageiroPesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -87,14 +89,15 @@ public class AtendidoMb implements Serializable {
 	public void iniciarCriacao() {
 		this.estadoView = CRIACAO;
 		this.atendido = new Atendido();
-		sincronizarMarcadores();
+		sincronizarMarcadores(true);
 		sincronizarOpcoesDeParada();
 	}
 
 	public void iniciarAlteracao(Atendido atendido) {
 		this.atendido = atendido;
 		this.estadoView = ALTERACAO;
-		sincronizarMarcadores();
+		sincronizarMarcadores(true);
+		rotaMapModel.centralizarPeloPassageiro();
 		sincronizarOpcoesDeParada();
 	}
 
@@ -113,7 +116,8 @@ public class AtendidoMb implements Serializable {
 	public void iniciarExclusao(Atendido atendido) {
 		this.atendido = atendido;
 		this.estadoView = EXCLUSAO;
-		sincronizarMarcadores();
+		sincronizarMarcadores(true);
+		rotaMapModel.centralizarPeloPassageiro();
 		sincronizarOpcoesDeParada();
 	}
 
@@ -166,7 +170,6 @@ public class AtendidoMb implements Serializable {
 	}
 
 	public List<PontoRota> getParadas() {
-		System.out.println("getParadas() " + paradas);
 		return paradas;
 	}
 
@@ -183,111 +186,69 @@ public class AtendidoMb implements Serializable {
 	}
 
 	public void mapOnStateChange(StateChangeEvent event) {
-		zoomMapa = event.getZoomLevel();
-		centroMapa = event.getCenter().getLat() + ", " + event.getCenter().getLng();
+		rotaMapModel.onMapStateChange(event);
 	}
 
 	public MapModel getMapModel() {
-		return mapModel;
+		return rotaMapModel.getMapModel();
 	}
 
 	public String getCentroMapa() {
-		return centroMapa;
+		return rotaMapModel.getCentro();
 	}
 
 	public Integer getZoomMapa() {
-		return zoomMapa;
+		return rotaMapModel.getZoom();
 	}
 
 	public void programacaoRotaChange() {
 		sincronizarOpcoesDeParada();
-		sincronizarMarcadores();
+		sincronizarMarcadores(false);
+		rotaMapModel.centralizarPelaRota();
 	}
 
 	public void passageiroChange() {
-		sincronizarMarcadores();
+		sincronizarMarcadores(false);
+		rotaMapModel.centralizarPeloPassageiro();
 	}
 
 
-	private void resetarMapa() {
-		this.centroMapa = "-24.753573,-51.762526";
-		this.zoomMapa = 15;
-		this.mapModel = new DefaultMapModel();
-	}
-
-	private void sincronizarMarcadores() {
-		try {
-			mapModel = new DefaultMapModel();
-
-			if (atendido != null && atendido.getPassageiro() != null) {
-				criarMarcadorPassageiro(atendido.getPassageiro());
-				if (atendido.getPassageiro().getPessoa().getLat() != null && atendido.getPassageiro().getPessoa().getLng() != null) {
-					this.centroMapa = atendido.getPassageiro().getPessoa().getLat() + (", ") + (atendido.getPassageiro().getPessoa().getLng());
-				}
-			}
-
-			if (atendido != null && atendido.getProgramacaoRota() != null) {
-				//int cont = 1;
-				Polyline polyline = new Polyline();
-				List<PontoRota> pontos = pontoRotaFacade.recuperarPontos(atendido.getProgramacaoRota().getRota());
-				for (PontoRota ponto: pontos) {
-					LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
-					polyline.getPaths().add(latLng);
-					/*
-					if (cont == 1) {
-						criarMarcadorDeInicio(ponto);
-					} else if (cont == pontos.size()) {
-						criarMarcadorDeTermino(ponto);
-					} else if (ponto.getParada()) {
-						criarMarcadorDeParada(ponto);
-					}
-					cont++;
-					 */
-					if (ponto.getParada()) {
-						criarMarcadorDeParada(ponto);
-					}				
-				}
-				polyline.setStrokeWeight(7);  
-				polyline.setStrokeColor("#0000FF");  
-				polyline.setStrokeOpacity(0.3);  
-				mapModel.addOverlay(polyline);  
-			}
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao exibir marcadores no mapa: " + e.getMessage());
+	private void sincronizarMarcadores(boolean resetar) {
+		if (resetar) {
+			rotaMapModel.inicializarPropriedadesDeMapa();
 		}
-	}
-
-
-	private void criarMarcadorDeParada(PontoRota pontoRota) {
-		String numero = null;
-		if (pontoRota.getNumeroParada() < 10) {
-			numero = "0" + pontoRota.getNumeroParada();
+		rotaMapModel.setPassageiro(atendido.getPassageiro());
+		if (atendido.getProgramacaoRota() != null) {
+			try {
+				rotaMapModel.setRota(rotaFacade.recuperarParaEdicao(atendido.getProgramacaoRota().getRota().getId()));
+			} catch (Exception e) {
+				JsfUtil.addMsgErro("Erro ao exibir marcadores no mapa: " + e.getMessage());
+			}
 		} else {
-			numero = String.valueOf(pontoRota.getNumeroParada());
+			rotaMapModel.setRota(null);
 		}
-		String icone = "black" + numero+".png";
-		LatLng latLng = new LatLng(pontoRota.getLat(), 
-				pontoRota.getLng());
-		Marker marker = new Marker(latLng, "", pontoRota);
-		marker.setIcon("resources/icones/" + icone);
-		String titulo = "Parada " + pontoRota.getNumeroParada();
-		if (pontoRota.getDescricao() != null) {
-			titulo = titulo.concat("\n")
-					.concat(pontoRota.getDescricao());
-		}
-		marker.setTitle(titulo);
-		this.mapModel.addOverlay(marker);
 	}
 
-	private void criarMarcadorPassageiro(Passageiro passageiro) {
-		String icone;
-		icone = "male-2.png";
 
-		LatLng latLng = new LatLng(passageiro.getPessoa().getLat(), passageiro.getPessoa().getLng());
-		Marker marker = new Marker(latLng, "", passageiro);
-		marker.setIcon("resources/icones/" + icone);
-		String titulo = passageiro.getPessoa().getNome();
-		marker.setTitle(titulo);
-		this.mapModel.addOverlay(marker);
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
 	}
 }

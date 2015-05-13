@@ -26,6 +26,14 @@ extends GenericCrudFacade<AnaliseViagem> {
 		return dao;
 	}
 
+	public AnaliseViagem recuperarParaEdicao(Long id) throws Exception {
+		// TODO Refactoring
+		AnaliseViagem analise = recuperar(id);
+		analise.getAnalisesParada().size();
+		analise.getAnalisesPosicao().size();
+		return analise;
+	}
+
 	public AnaliseViagem recuperarAnaliseViagem(ProgramacaoRota programacao, Date dataViagem)
 			throws Exception {
 		try {
@@ -88,11 +96,26 @@ extends GenericCrudFacade<AnaliseViagem> {
 				+ " from AnaliseViagem as x" 
 				+ " where x.dataViagem between :dataInicial and :dataFinal"
 				+ " and x.rota = :rota"
-				+ " and x.fechamentoRota is null";
+				+ " and x.fechamentoRota is null"
+				+ " order by x.dataViagem";
 		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
 				.setParameter("dataInicial", dataInicialViagem)
 				.setParameter("dataFinal", dataFinalViagem)
 				.setParameter("rota", rota)
+				.getResultList();
+	}
+	
+	public List<AnaliseViagem> recuperarAnalisesViagemAFechar(Date dataInicialViagem, Date dataFinalViagem) 
+			throws Exception {
+
+		String sql = "select x"
+				+ " from AnaliseViagem as x" 
+				+ " where x.dataViagem between :dataInicial and :dataFinal"
+				+ " and x.fechamentoRota is null"
+				+ " order by x.dataViagem";
+		return (List<AnaliseViagem>) getEntityManager().createQuery(sql, AnaliseViagem.class)
+				.setParameter("dataInicial", dataInicialViagem)
+				.setParameter("dataFinal", dataFinalViagem)
 				.getResultList();
 	}
 	

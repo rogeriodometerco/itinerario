@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class AnaliseViagem {
@@ -16,6 +18,10 @@ public class AnaliseViagem {
 	@GeneratedValue
 	private Long id;
 	private Date dataViagem;
+	@Temporal(value=TemporalType.TIME)
+	private Date horaInicial;
+	@Temporal(value=TemporalType.TIME)
+	private Date horaFinal;
 	private Date dataAnalise;
 	@ManyToOne
 	private ProgramacaoRota programacao;
@@ -28,6 +34,8 @@ public class AnaliseViagem {
 	@ManyToOne
 	private Veiculo veiculo;
 	@ManyToOne
+	private Motorista motorista;
+	@ManyToOne
 	private Rota rota;
 	private Double kmPrevisto;
 	private Double kmRealizado;
@@ -39,6 +47,7 @@ public class AnaliseViagem {
 	private Double valorKm;
 	private Double valorPago;
 	private String observacao;
+	
 	public Long getId() {
 		return id;
 	}
@@ -50,6 +59,18 @@ public class AnaliseViagem {
 	}
 	public void setDataViagem(Date dataViagem) {
 		this.dataViagem = dataViagem;
+	}
+	public Date getHoraInicial() {
+		return horaInicial;
+	}
+	public void setHoraInicial(Date horaInicial) {
+		this.horaInicial = horaInicial;
+	}
+	public Date getHoraFinal() {
+		return horaFinal;
+	}
+	public void setHoraFinal(Date horaFinal) {
+		this.horaFinal = horaFinal;
 	}
 	public Date getDataAnalise() {
 		return dataAnalise;
@@ -86,6 +107,12 @@ public class AnaliseViagem {
 	}
 	public void setVeiculo(Veiculo veiculo) {
 		this.veiculo = veiculo;
+	}
+	public Motorista getMotorista() {
+		return motorista;
+	}
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
 	}
 	public Rota getRota() {
 		return rota;
@@ -134,12 +161,15 @@ public class AnaliseViagem {
 	}
 	public void setKmPago(Double kmPago) {
 		this.kmPago = kmPago;
+		calcularValorPago();
 	}
+	
 	public Double getValorKm() {
 		return valorKm;
 	}
 	public void setValorKm(Double valorKm) {
 		this.valorKm = valorKm;
+		calcularValorPago();
 	}
 	public Double getValorPago() {
 		return valorPago;
@@ -153,6 +183,14 @@ public class AnaliseViagem {
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
 	}
-	
+
+	private void calcularValorPago() {
+		if (valorKm != null && kmPago != null) {
+			this.valorPago = kmPago * valorKm;
+			this.valorPago = (double)Math.round(this.valorPago * 100) / 100;
+		} else {
+			this.valorPago = null;
+		}
+	}
 }
 	

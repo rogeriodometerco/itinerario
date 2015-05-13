@@ -18,6 +18,7 @@ import org.primefaces.event.FileUploadEvent;
 import util.ArquivoUtil;
 import util.JsfUtil;
 import util.Paginador;
+import facade.ArquivoImagemFacade;
 import facade.MotoristaFacade;
 
 @ManagedBean
@@ -32,8 +33,14 @@ public class MotoristaMb implements Serializable {
 	private List<Motorista> lista;
 	private String estadoView;
 	private String chavePesquisa;
+	private String caminhoImagem;
+	private ArquivoImagem arquivoImagem;
+
 	@EJB
 	private MotoristaFacade facade;
+	@EJB
+	private ArquivoImagemFacade arquivoImagemFacade;
+	
 	private Paginador paginador;
 
 
@@ -84,11 +91,21 @@ public class MotoristaMb implements Serializable {
 		this.motorista = new Motorista();
 		this.motorista.setPessoa(new Pessoa());
 		this.motorista.getPessoa().setImagens(new ArrayList<ArquivoImagem>());
+		this.caminhoImagem = null;
+		this.arquivoImagem = new ArquivoImagem();
 	}
 
 	public void iniciarAlteracao(Motorista motorista) {
 		try {
 			this.motorista = facade.recuperarParaEdicao(motorista.getId());
+			//this.arquivoImagem = facade.recuperarArquivoImagem(motorista.getId());
+			this.arquivoImagem = arquivoImagemFacade.recuperarImagemMotorista(motorista);
+			if (arquivoImagem == null) {
+				arquivoImagem = new ArquivoImagem();
+			}
+			if (arquivoImagem.getConteudo() != null) {
+				this.caminhoImagem = ArquivoUtil.criarArquivoParaExibicao(arquivoImagem);
+			}
 			this.estadoView = ALTERACAO;
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar motorista para edição: " + e.getMessage());
@@ -97,19 +114,37 @@ public class MotoristaMb implements Serializable {
 
 	public void terminarCriacaoOuAlteracao() {
 		try {
+			if (arquivoImagem.getConteudo() == null) {
+				motorista.getPessoa().getImagens().clear();
+			} else {
+				if (motorista.getPessoa().getImagens().size() == 0) {
+					arquivoImagem.setPessoa(motorista.getPessoa());
+					motorista.getPessoa().getImagens().add(0, arquivoImagem);
+				} else {
+					motorista.getPessoa().getImagens().get(0).setConteudo(arquivoImagem.getConteudo());
+				}
+			}
 			facade.salvar(motorista);
 			JsfUtil.addMsgSucesso("Informações salvas com sucesso.");
 			listar();
 			this.estadoView = LISTAGEM;
+			// TODO Remover arquivo de imagem.
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao salvar: " + e.getMessage());
 		}
-
 	}
 
 	public void iniciarExclusao(Motorista motorista) {
 		try {
 			this.motorista = facade.recuperarParaExclusao(motorista.getId());
+			//this.arquivoImagem = facade.recuperarArquivoImagem(motorista.getId());
+			this.arquivoImagem = arquivoImagemFacade.recuperarImagemMotorista(motorista);
+			if (arquivoImagem == null) {
+				arquivoImagem = new ArquivoImagem();
+			}
+			if (arquivoImagem.getConteudo() != null) {
+				this.caminhoImagem = ArquivoUtil.criarArquivoParaExibicao(arquivoImagem);
+			}
 			this.estadoView = EXCLUSAO;
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao recuperar motorista para exclusão: " + e.getMessage());
@@ -122,6 +157,7 @@ public class MotoristaMb implements Serializable {
 			JsfUtil.addMsgSucesso("Informações excluídas com sucesso.");
 			listar();
 			this.estadoView = LISTAGEM;
+			// TODO Remover arquivo de imagem.
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao excluir: " + e.getMessage());
 		}
@@ -148,11 +184,11 @@ public class MotoristaMb implements Serializable {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
 	}
 
-	public Boolean getTemPaginaAnterior() {
+	public Boolean temPaginaAnterior() {
 		return paginador.getPaginaAtual() > 1;
 	}
 
-	public Boolean getTemProximaPagina() {
+	public Boolean temProximaPagina() {
 		if (lista == null) {
 			return false;
 		} else {
@@ -178,21 +214,21 @@ public class MotoristaMb implements Serializable {
 		this.chavePesquisa = chave;
 	}
 
+	public String getCaminhoImagem() {
+		return caminhoImagem;
+	}
+
+	public void limparImagem() {
+		this.arquivoImagem.setConteudo(null);
+		this.caminhoImagem = "";
+	}
+
 	public void arquivoCarregado(FileUploadEvent event) {
+		arquivoImagem.setConteudo(event.getFile().getContents());
 		try {
-			ArquivoImagem arquivoImagem = ArquivoUtil.gravarArquivoImagem(event.getFile().getContents(),
-					event.getFile().getFileName());
-			arquivoImagem.setPessoa(motorista.getPessoa());
-			if (motorista.getPessoa().getImagens() == null) {
-				motorista.getPessoa().setImagens(new ArrayList<ArquivoImagem>());
-			}
-			if (motorista.getPessoa().getImagens().size() > 0) {
-				motorista.getPessoa().getImagens().set(0, arquivoImagem);
-			} else {
-				motorista.getPessoa().getImagens().add(arquivoImagem);
-			}
+			this.caminhoImagem = ArquivoUtil.criarArquivoParaExibicao(arquivoImagem);
 		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao carregar arquivo: " + e.getMessage());
+			JsfUtil.addMsgErro(e.getMessage());
 		}
 	}
 

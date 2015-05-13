@@ -19,6 +19,8 @@ public class FechamentoRota {
 
 	@ManyToOne
 	private Rota rota;
+	@ManyToOne
+	private Motorista motorista;
 	private Date dataInicial;
 	private Date dataFinal;
 	private Boolean concluido;
@@ -42,6 +44,14 @@ public class FechamentoRota {
 
 	public void setRota(Rota rota) {
 		this.rota = rota;
+	}
+
+	public Motorista getMotorista() {
+		return motorista;
+	}
+
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
 	}
 
 	public Date getDataInicial() {

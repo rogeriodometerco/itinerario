@@ -210,16 +210,18 @@ public class FechamentoRotaMb implements Serializable {
 
 	public void gerarRelatorio(FechamentoRota fechamentoRota) {
 		try {
-			System.out.println("gerarRelatorio() 1");
+			System.out.println("gerarRelatorio() 1"); 
 			FechamentoRotaReport f = facade.getFechamentoRotaReport(fechamentoRota);
 			//TODO retirar linha abaixo após testes.
-			multiplicarDados(f);
-			System.out.println("gerarRelatorio() 2 ");
-			System.out.println("getEscolasToString " + f.getEscolasToString());
+			//multiplicarDados(f);
+			//System.out.println("gerarRelatorio() 2 ");
+			//System.out.println("getEscolasToString " + f.getEscolasToString());
 			List<FechamentoRotaReport> lista = new ArrayList<FechamentoRotaReport>();
 			lista.add(f);
-			JasperReport report = JasperCompileManager.compileReport("c:/ambdev/teste/fechamentoRota.jrxml");
-			System.out.println("Compilou");
+			String arquivo = JsfUtil.getExternalContext().getRealPath("/resources/reports/fechamentoRota.jrxml");
+			//JasperReport report = JasperCompileManager.compileReport("c:/ambdev/teste/fechamentoRota.jrxml");
+			JasperReport report = JasperCompileManager.compileReport(arquivo);
+			System.out.println("Compilou relatório");
 			JasperPrint print = JasperFillManager
 					.fillReport(report, null, new JRBeanCollectionDataSource(
 							lista));
@@ -243,7 +245,6 @@ public class FechamentoRotaMb implements Serializable {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-
 	}
 
 	/*
@@ -251,7 +252,7 @@ public class FechamentoRotaMb implements Serializable {
 	 */
 	private void multiplicarDados(FechamentoRotaReport f) {
 		if (f.getFechamentoRota().getAnalisesViagem().size() > 0) {
-			while (f.getFechamentoRota().getAnalisesViagem().size() < 80 ) {
+			while (f.getFechamentoRota().getAnalisesViagem().size() < 83 ) {
 				f.getFechamentoRota().getAnalisesViagem().add(
 						f.getFechamentoRota().getAnalisesViagem().get(0));
 			}

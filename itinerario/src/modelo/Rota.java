@@ -24,6 +24,7 @@ public class Rota {
 	private String destino;
 	private Double quilometragem;
 	private Double valorKm;
+	private String responsavel;
 	private String observacao;
 	private Boolean ativa;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="rota", orphanRemoval=true)
@@ -73,6 +74,12 @@ public class Rota {
 	}
 	public void setValorKm(Double valorKm) {
 		this.valorKm = valorKm;
+	}
+	public String getResponsavel() {
+		return responsavel;
+	}
+	public void setResponsavel(String responsavel) {
+		this.responsavel = responsavel;
 	}
 	public String getObservacao() {
 		return observacao;

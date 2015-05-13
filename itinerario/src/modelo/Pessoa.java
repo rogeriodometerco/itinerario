@@ -22,6 +22,7 @@ public class Pessoa {
 	private Double lng;
 	private Date dataNascimento;
 	private String cnh;
+	private Date validadeCnh;
 	private String nomePai;
 	private String nomeMae;
 	@OneToMany(cascade=CascadeType.ALL, mappedBy="pessoa", orphanRemoval=true)
@@ -80,6 +81,12 @@ public class Pessoa {
 	}
 	public void setCnh(String cnh) {
 		this.cnh = cnh;
+	}
+	public Date getValidadeCnh() {
+		return validadeCnh;
+	}
+	public void setValidadeCnh(Date validadeCnh) {
+		this.validadeCnh = validadeCnh;
 	}
 	public String getNomePai() {
 		return nomePai;

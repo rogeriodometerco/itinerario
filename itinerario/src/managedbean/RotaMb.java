@@ -25,6 +25,7 @@ import org.primefaces.model.map.Marker;
 import org.primefaces.model.map.Polyline;
 
 import util.JsfUtil;
+import util.Paginador;
 import facade.RotaFacade;
 
 @ManagedBean
@@ -42,7 +43,7 @@ public class RotaMb implements Serializable {
 	private String chavePesquisa;
 	@EJB
 	private RotaFacade facade;
-
+	private Paginador paginador;
 	private MapModel mapModel;
 	private String centroMapa;
 	private Integer zoomMapa;
@@ -50,6 +51,7 @@ public class RotaMb implements Serializable {
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 		sincronizarMapModel();
 		System.out.println("RotaMb.inicializar()");
 	}
@@ -84,9 +86,9 @@ public class RotaMb implements Serializable {
 	public void listar() { 
 		try {
 			if (chavePesquisa == null || chavePesquisa.trim().length() == 0) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else {
-				this.lista = facade.autocomplete(chavePesquisa);
+				this.lista = facade.autocomplete(chavePesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -182,6 +184,28 @@ public class RotaMb implements Serializable {
 		this.chavePesquisa = chavePesquisa;
 	}
 
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
+	}
+
 	public void arquivoCarregado(FileUploadEvent event) {
 		UploadedFile arquivo = event.getFile();
 		System.out.println("Nome do arquivo: " + arquivo.getFileName());
@@ -259,6 +283,8 @@ public class RotaMb implements Serializable {
 					criarMarcadorDeTermino(ponto);
 				} else if (ponto.getParada()) {
 					criarMarcadorDeParada(ponto);
+				} else {
+					criarMarcadorIntermediario(ponto);
 				}
 				cont++;
 			}
@@ -318,6 +344,17 @@ public class RotaMb implements Serializable {
 		marker.setTitle(titulo);
 		this.mapModel.addOverlay(marker);
 	}	
+
+	private void criarMarcadorIntermediario(PontoRota pontoRota) {
+		String icone = "mm_20_green.png";
+		LatLng latLng = new LatLng(pontoRota.getLat(), 
+				pontoRota.getLng());
+		Marker marker = new Marker(latLng, "", pontoRota);
+		marker.setIcon("resources/icones/" + icone);
+		String titulo = "Ponto " + pontoRota.getSequencia();
+		marker.setTitle(titulo);
+		this.mapModel.addOverlay(marker);
+	}
 
 	public List<Rota> autocomplete(String chave) {
 		try {

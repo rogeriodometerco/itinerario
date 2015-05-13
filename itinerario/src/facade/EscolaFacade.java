@@ -8,8 +8,11 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import util.Paginador;
+
 import modelo.Escola;
 import modelo.EscolaRota;
+import modelo.Passageiro;
 import dao.EscolaDao;
 
 @Stateless
@@ -27,15 +30,30 @@ public class EscolaFacade extends GenericCrudFacade<Escola> {
 
 	public List<Escola> autocomplete(String chave) 
 			throws Exception {
-		TypedQuery<Escola> query = getEntityManager().createQuery(
-				"select x from Escola x where" +
-						" (upper(x.codigo) like :chave" +
-						" or upper(x.nome) like :chave" +
-						" or upper(x.localidade) like :chave)", Escola.class);
-		query.setParameter("chave", "%" + chave.toUpperCase() + "%");
-		return query.getResultList();
+		String sql = "select x from Escola x where" +
+				" (upper(x.codigo) like :chave" +
+				" or upper(x.nome) like :chave" +
+				" or upper(x.localidade) like :chave)"; 
+		return getEntityManager()
+				.createQuery(sql, Escola.class)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.getResultList();
 	}
 	
+	public List<Escola> autocomplete(String chave, Paginador paginador) 
+			throws Exception {
+		String sql = "select x from Escola x where" +
+				" (upper(x.codigo) like :chave" +
+				" or upper(x.nome) like :chave" +
+				" or upper(x.localidade) like :chave)"; 
+		return getEntityManager()
+				.createQuery(sql, Escola.class)
+				.setParameter("chave", "%" + chave.toUpperCase() + "%")
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
+				.getResultList();
+	}
+
 	public List<Escola> listarPorNomeContendo(String parteDoNome) 
 			throws Exception {
 		TypedQuery<Escola> query = getEntityManager().createQuery(

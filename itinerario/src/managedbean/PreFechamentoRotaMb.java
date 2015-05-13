@@ -1,7 +1,6 @@
 package managedbean;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -12,27 +11,21 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import modelo.AnalisePosicao;
 import modelo.AnaliseViagem;
-import modelo.FechamentoRota;
-import modelo.PontoRota;
 import modelo.Rota;
 
 import org.primefaces.event.map.StateChangeEvent;
-import org.primefaces.model.map.DefaultMapModel;
-import org.primefaces.model.map.LatLng;
 import org.primefaces.model.map.MapModel;
-import org.primefaces.model.map.Marker;
-import org.primefaces.model.map.Polyline;
-
-import dto.PreFechamentoRota;
 
 import util.AnoMes;
 import util.JsfUtil;
+import util.RotaMapModel;
+import dto.PreFechamentoRota;
 import facade.AnalisePosicaoFacade;
 import facade.AnaliseViagemFacade;
 import facade.FechamentoRotaFacade;
 import facade.PontoRotaFacade;
+import facade.RotaFacade;
 
 @ManagedBean
 @ViewScoped
@@ -52,9 +45,7 @@ public class PreFechamentoRotaMb implements Serializable {
 	private Rota rotaPesquisa;
 	private Date dataInicialPesquisa;
 	private Date dataFinalPesquisa;
-	private MapModel mapModel;
-	private String centroMapa;
-	private Integer zoomMapa;
+	private RotaMapModel rotaMapModel;
 	private double[] total;
 	@EJB
 	private FechamentoRotaFacade facade;
@@ -64,17 +55,20 @@ public class PreFechamentoRotaMb implements Serializable {
 	private PontoRotaFacade pontoRotaFacade;
 	@EJB
 	private AnalisePosicaoFacade analisePosicaoFacade;
+	@EJB
+	private RotaFacade rotaFacade;
 	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
 		this.anomes = new AnoMes();
+		this.rotaMapModel = new RotaMapModel();
+		rotaMapModel.setDraggable(false);
 		Calendar c = Calendar.getInstance();
 		c.set(2013, 10, 1);
 		dataInicialPesquisa = new Date(c.getTimeInMillis());
 		c.set(2013, 10, 30);
 		dataFinalPesquisa = new Date(c.getTimeInMillis());
-		resetarMapa();
 	}
 
 	public PreFechamentoRota getPreFechamentoRota() {
@@ -99,8 +93,7 @@ public class PreFechamentoRotaMb implements Serializable {
 			if (rotaPesquisa == null) {
 				this.lista = facade.getPreFechamentosRota(dataInicialPesquisa, dataFinalPesquisa);
 			} else {
-				this.lista = new ArrayList<PreFechamentoRota>();
-				lista.add(facade.getPreFechamentoRota(rotaPesquisa, dataInicialPesquisa, dataFinalPesquisa));
+				this.lista = facade.getPreFechamentosRota(rotaPesquisa, dataInicialPesquisa, dataFinalPesquisa);
 			}
 			//multiplicarDados(); // simula quantidade de dados real
 			totalizar();
@@ -173,24 +166,6 @@ public class PreFechamentoRotaMb implements Serializable {
 
 	}
 
-	/*
-	public void iniciarExclusao(FechamentoRota fechamentoRota) {
-		this.preFechamentoRota = fechamentoRota;
-		this.estadoView = EXCLUSAO;
-	}
-
-	public void terminarExclusao() {
-		try {
-			facade.excluir(preFechamentoRota);
-			JsfUtil.addMsgSucesso("Informações excluídas com sucesso.");
-			listar();
-			this.estadoView = LISTAGEM;
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao excluir: " + e.getMessage());
-		}
-	}
-	*/
-	
 	public void cancelar() {
 		listar();
 		this.estadoView = LISTAGEM;
@@ -252,130 +227,38 @@ public class PreFechamentoRotaMb implements Serializable {
 		this.analisesViagem = analisesViagem;
 	}  
 
-	/*	public void onRowToggle(ToggleEvent event) {
-    	analisesViagem = ((FechamentoRota)event.getData()).getAnalisesViagem();
-    }
-	 */
-	
-	/*
-	public void salvar(List<AnaliseViagem> lista) {
-		try {
-			System.out.println("salvar(lista) "  +lista.get(0).getKmPago());
-			System.out.println("salvar(lista) "  +this.lista.get(0).getAnalisesViagem().get(0).getKmPago());
-			analiseViagemFacade.salvar(lista);
-			JsfUtil.addMsgSucesso("Informações salvas com sucesso");
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao salvar análises: " + e.getMessage());
-		}
-	} 
-	*/
-	
 	public void onStateChange(StateChangeEvent event) {
-		zoomMapa = event.getZoomLevel();
-		centroMapa = event.getCenter().getLat() + ", " + event.getCenter().getLng();
+		rotaMapModel.onMapStateChange(event);
 	}
 
 	public MapModel getMapModel() {
-		return mapModel;
+		return rotaMapModel.getMapModel();
 	}
 
 	public String getCentroMapa() {
-		return centroMapa;
+		return rotaMapModel.getCentro();
 	}
 
 	public Integer getZoomMapa() {
-		return zoomMapa;
+		return rotaMapModel.getZoom();
 	}
 
 	public void exibirMapa(AnaliseViagem analise) {
-		this.analiseNoMapa = analise;
-		this.estadoView = MAPA;
-		this.mapModel = new DefaultMapModel();
-		resetarMapa();
-		criarMarcadores();
-		criarLinhas();
+		try {
+			this.analiseNoMapa = analise;
+			rotaMapModel.setAnaliseViagem(analiseViagemFacade.recuperarParaEdicao(analiseNoMapa.getId()));
+			rotaMapModel.setRota(rotaFacade.recuperarParaEdicao(analise.getRota().getId()));
+			this.estadoView = MAPA;
+			rotaMapModel.inicializarPropriedadesDeMapa();
+		} catch (Exception e) {
+			JsfUtil.addMsgErro("Erro ao exibir mapa: " + e.getMessage());
+		}
 	}
 
 	public void exibirTabela() {
 		this.estadoView = ALTERACAO;
 	}
 	
-	private void criarLinhas() {
-		try {
-		Polyline polyline = new Polyline();
-		for (PontoRota ponto: pontoRotaFacade.recuperarPontos(analiseNoMapa.getProgramacao().getRota())) {
-			LatLng latLng = new LatLng(ponto.getLat(), ponto.getLng());
-			polyline.getPaths().add(latLng);
-		}
-		polyline.setStrokeWeight(7);  
-		polyline.setStrokeColor("#0000FF");  
-		polyline.setStrokeOpacity(0.3);  
-		mapModel.addOverlay(polyline);
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar linhas: " + e.getMessage());
-		}
-	}
-
-	private void criarMarcadores() {
-		try {
-		for (AnalisePosicao analise: analisePosicaoFacade.recuperarAnalisesPosicao(analiseNoMapa)) {
-			criarMarcador(analise);
-		}
-		} catch (Exception e) {
-			JsfUtil.addMsgErro("Erro ao criar marcadores: " + e.getMessage());
-			e.printStackTrace();
-		}
-	}
-
-	private void resetarMapa() {
-		this.centroMapa = "-24.753573,-51.762526";
-		PontoRota primeiro = null;
-		if (analiseNoMapa != null) {
-			try {
-				primeiro = pontoRotaFacade.recuperarPontos(analiseNoMapa.getProgramacao().getRota()).get(0);
-				this.centroMapa = 
-						primeiro.getLat() + ", " + primeiro.getLng();
-			} catch (Exception e) {
-				JsfUtil.addMsgErro("Um erro ocorreu ao posicionar o mapa: " + e.getMessage());
-			}
-		}
-		this.zoomMapa = 15;
-	}
-
-	private void criarMarcador(AnalisePosicao analise) {
-		String icone;
-		String legenda;
-		if (analise.getNoTrajeto()) {
-			if (analise.getPosicaoVeiculo().getVelocidade() > 0) {
-				// TODO Ícone que representa veículo parado.
-				icone = "mm_20_green.png";
-				legenda = "No trajeto";
-			} else {
-				icone = "mm_20_white.png";
-				legenda = "No trajeto, parado";
-			}
-		} else {
-			icone = "mm_20_red.png";
-			legenda = "Fora do trajeto";
-		}
-		LatLng latLng = new LatLng(analise.getPosicaoVeiculo().getLat(), 
-				analise.getPosicaoVeiculo().getLng());
-		Marker marker = new Marker(latLng, "", analise);
-		marker.setIcon("resources/icones/" + icone);
-		String titulo = marker.getLatlng().toString()
-				+ "\n" + legenda
-				+ "\nVeículo: "
-				+ analise.getPosicaoVeiculo().getVeiculo().getPlaca()
-				+ "\nData e hora: " 
-				+ new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
-		.format(analise.getPosicaoVeiculo().getDataHora())
-		+ "\nVelocidade: " 
-		+ analise.getPosicaoVeiculo().getVelocidade() + " km/h";
-		marker.setTitle(titulo);
-		this.mapModel.addOverlay(marker);
-	}
-
-
 	public AnoMes getAnomes() {
 		return anomes;
 	}

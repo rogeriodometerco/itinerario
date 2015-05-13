@@ -47,6 +47,7 @@ public class CargaDadosMb implements Serializable {
 		}
 		UploadedFile arquivo = event.getFile(); 
 		int numLinha = 0;
+		int importadas = 0;
 		try {
 			List<PosicaoVeiculo> posicoes = new ArrayList<PosicaoVeiculo>();
 			Scanner s = new Scanner(arquivo.getInputstream());
@@ -63,11 +64,15 @@ public class CargaDadosMb implements Serializable {
 				posicao.setLng(mensagem.getLng());
 				posicao.setVelocidade(mensagem.getVelocidade());
 				posicao.setDataHora(mensagem.getDataHora());
-				posicoes.add(posicao);
+				if (posicaoFacade.recuperarPosicao(posicao.getVeiculo(), posicao.getDataHora()) == null) {
+					posicoes.add(posicao);
+					importadas++;
+					
+				}
 			}
 			posicaoFacade.salvar(posicoes);
 			JsfUtil.addMsgSucesso(arquivo.getFileName() 
-					+ " carregado com sucesso. " + numLinha + " linhas importadas.");
+					+ " carregado com sucesso. " + numLinha + " linhas processadas. " + importadas + " linhas importadas.");
 
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao importar arquivo. Linha " + numLinha + ". " + e.getMessage());

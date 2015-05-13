@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import modelo.Escola;
 import modelo.EscolaRota;
 import modelo.Rota;
+import util.Paginador;
 import dao.EscolaRotaDao;
 
 @Stateless
@@ -27,10 +28,22 @@ public class EscolaRotaFacade extends GenericCrudFacade<EscolaRota> {
 		String sql = "select x"
 				+ " from EscolaRota as x" 
 				+ " where x.rota = :rota";
-
 		return getEntityManager()
 				.createQuery(sql, EscolaRota.class)
 				.setParameter("rota", rota)
+				.getResultList();
+	}
+
+	public List<EscolaRota> listar(Rota rota, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from EscolaRota as x" 
+				+ " where x.rota = :rota";
+		return getEntityManager()
+				.createQuery(sql, EscolaRota.class)
+				.setParameter("rota", rota)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 
@@ -39,10 +52,22 @@ public class EscolaRotaFacade extends GenericCrudFacade<EscolaRota> {
 		String sql = "select x"
 				+ " from EscolaRota as x" 
 				+ " where x.escola = :escola";
-
 		return getEntityManager()
 				.createQuery(sql, EscolaRota.class)
 				.setParameter("escola", escola)
+				.getResultList();
+	}
+
+	public List<EscolaRota> listar(Escola escola, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from EscolaRota as x" 
+				+ " where x.escola = :escola";
+		return getEntityManager()
+				.createQuery(sql, EscolaRota.class)
+				.setParameter("escola", escola)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 
@@ -52,11 +77,25 @@ public class EscolaRotaFacade extends GenericCrudFacade<EscolaRota> {
 				+ " from EscolaRota as x" 
 				+ " where x.rota = :rota"
 				+ " and x.escola = :escola";
-
 		return getEntityManager()
 				.createQuery(sql, EscolaRota.class)
 				.setParameter("escola", escola)
 				.setParameter("rota", rota)
+				.getResultList();
+	}
+
+	public List<EscolaRota> listar(Rota rota, Escola escola, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from EscolaRota as x" 
+				+ " where x.rota = :rota"
+				+ " and x.escola = :escola";
+		return getEntityManager()
+				.createQuery(sql, EscolaRota.class)
+				.setParameter("escola", escola)
+				.setParameter("rota", rota)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
 				.getResultList();
 	}
 

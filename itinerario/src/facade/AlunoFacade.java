@@ -8,9 +8,8 @@ import javax.ejb.Stateless;
 
 import modelo.Aluno;
 import modelo.Escola;
-import modelo.MotoristaVeiculo;
-import modelo.Pessoa;
-import modelo.Rota;
+import modelo.Passageiro;
+import util.Paginador;
 import dao.AlunoDao;
 
 @Stateless
@@ -36,50 +35,78 @@ public class AlunoFacade extends GenericCrudFacade<Aluno> {
 				.getResultList();
 	}
 
-	public List<Aluno> listar(Pessoa pessoa) 
+	public List<Aluno> listar(Escola escola, Paginador paginador) 
 			throws Exception {
 		String sql = "select x"
 				+ " from Aluno as x" 
-				+ " where x.pessoa = :pessoa";
-
-		return getEntityManager()
-				.createQuery(sql, Aluno.class)
-				.setParameter("pessoa", pessoa)
-				.getResultList();
-	}
-
-	public List<Aluno> listar(Escola escola, Pessoa pessoa) 
-			throws Exception {
-		String sql = "select x"
-				+ " from Aluno as x" 
-				+ " where x.escola = :escola"
-				+ " and x.pessoa = :pessoa";
+				+ " where x.escola = :escola";
 
 		return getEntityManager()
 				.createQuery(sql, Aluno.class)
 				.setParameter("escola", escola)
-				.setParameter("pessoa", pessoa)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
+				.getResultList();
+	}
+
+	public List<Aluno> listar(Passageiro passageiro) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Aluno as x" 
+				+ " where x.passageiro = :passageiro";
+
+		return getEntityManager()
+				.createQuery(sql, Aluno.class)
+				.setParameter("passageiro", passageiro)
+				.getResultList();
+	}
+
+	public List<Aluno> listar(Passageiro passageiro, Paginador paginador) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Aluno as x" 
+				+ " where x.passageiro = :passageiro";
+
+		return getEntityManager()
+				.createQuery(sql, Aluno.class)
+				.setParameter("passageiro", passageiro)
+				.setFirstResult(paginador.primeiroRegistro())
+				.setMaxResults(paginador.getTamanhoPagina())
+				.getResultList();
+	}
+
+	public List<Aluno> listar(Escola escola, Passageiro passageiro) 
+			throws Exception {
+		String sql = "select x"
+				+ " from Aluno as x" 
+				+ " where x.escola = :escola"
+				+ " and x.passageiro = :passageiro";
+
+		return getEntityManager()
+				.createQuery(sql, Aluno.class)
+				.setParameter("escola", escola)
+				.setParameter("passageiro", passageiro)
 				.getResultList();
 	}
 
 	@Override
 	protected void validar(Aluno entidade) throws Exception {
 		List<String> erros = new ArrayList<String>();
-		if (entidade.getPessoa() == null) {
-			erros.add("Informe a pessoa");
+		if (entidade.getPassageiro() == null) {
+			erros.add("Informe o passageiro");
 		}
 		if (entidade.getEscola() == null) {
 			erros.add("Informe a escola");
 		}
-		if (listar(entidade.getEscola(), entidade.getPessoa()).size() > 0) {
-			erros.add("Esta pessoa já está cadastrada como aluno desta escola");
+		if (listar(entidade.getEscola(), entidade.getPassageiro()).size() > 0) {
+			erros.add("Este passageiro já está cadastrado como aluno desta escola");
 		}
 		if (entidade.getId() != null) {
 			Aluno aluno = recuperar(entidade.getId());
 			if (aluno.getId().equals(entidade.getId())) {
-				if (entidade.getPessoa() != null) {
-					if (!aluno.getPessoa().getId().equals(entidade.getPessoa().getId())) {
-						erros.add("Pessoa não pode ser alterada, exclua o registro ou cadastre um novo");
+				if (entidade.getPassageiro() != null) {
+					if (!aluno.getPassageiro().getId().equals(entidade.getPassageiro().getId())) {
+						erros.add("Passageiro não pode ser alterado, exclua o registro ou cadastre um novo");
 					}
 				}
 				if (entidade.getEscola() != null) {

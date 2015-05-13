@@ -2,7 +2,6 @@ package managedbean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,7 +11,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import javax.faces.model.SelectItem;
 
-import modelo.CalendarioEnum;
 import modelo.PontoRota;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
@@ -327,8 +325,8 @@ public class RotaMbAntigo2 implements Serializable {
 
 	public List<SelectItem> getOpcoesTipoPeriodo() {
 		List<SelectItem> opcoes = new ArrayList<SelectItem>();
-		opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
-		opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
+		//opcoes.add(new SelectItem(CalendarioEnum.LETIVO, "Letivo"));
+		//opcoes.add(new SelectItem(CalendarioEnum.NORMAL, "Normal"));
 		return opcoes;
 	}
 

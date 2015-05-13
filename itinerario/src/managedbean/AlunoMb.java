@@ -8,10 +8,11 @@ import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
-import modelo.Escola;
 import modelo.Aluno;
-import modelo.Pessoa;
+import modelo.Escola;
+import modelo.Passageiro;
 import util.JsfUtil;
+import util.Paginador;
 import facade.AlunoFacade;
 
 @ManagedBean
@@ -25,14 +26,16 @@ public class AlunoMb implements Serializable {
 	private Aluno aluno;
 	private List<Aluno> lista;
 	private String estadoView;
-	private Pessoa pessoaPesquisa;
+	private Passageiro passageiroPesquisa;
 	private Escola escolaPesquisa;
 	@EJB
 	private AlunoFacade facade;
-
+	private Paginador paginador;
+	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 	}
 
 	public Aluno getAluno() {
@@ -45,14 +48,14 @@ public class AlunoMb implements Serializable {
 
 	public void listar() { 
 		try {
-			if (pessoaPesquisa == null && escolaPesquisa == null) {
+			if (passageiroPesquisa == null && escolaPesquisa == null) {
 				this.lista = facade.listar();
-			} else if (pessoaPesquisa != null && escolaPesquisa == null) {
-				this.lista = facade.listar(pessoaPesquisa);
-			} else if (pessoaPesquisa == null && escolaPesquisa != null) {
-				this.lista = facade.listar(escolaPesquisa);
-			} else if (pessoaPesquisa != null && escolaPesquisa != null) {
-				this.lista = facade.listar(escolaPesquisa, pessoaPesquisa);
+			} else if (passageiroPesquisa != null && escolaPesquisa == null) {
+				this.lista = facade.listar(passageiroPesquisa, paginador);
+			} else if (passageiroPesquisa == null && escolaPesquisa != null) {
+				this.lista = facade.listar(escolaPesquisa, paginador);
+			} else if (passageiroPesquisa != null && escolaPesquisa != null) {
+				this.lista = facade.listar(escolaPesquisa, passageiroPesquisa);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -125,12 +128,12 @@ public class AlunoMb implements Serializable {
 		return this.estadoView != null && this.estadoView.equals(EXCLUSAO);
 	}
 
-	public Pessoa getPessoaPesquisa() {
-		return pessoaPesquisa;
+	public Passageiro getPassageiroPesquisa() {
+		return passageiroPesquisa;
 	}
 
-	public void setPessoaPesquisa(Pessoa pessoa) { 
-		this.pessoaPesquisa = pessoa;
+	public void setPassageiroPesquisa(Passageiro passageiro) { 
+		this.passageiroPesquisa = passageiro;
 	}
 
 	public Escola getEscolaPesquisa() {
@@ -141,4 +144,25 @@ public class AlunoMb implements Serializable {
 		this.escolaPesquisa = veiculo;
 	}
 
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
+	}
 }

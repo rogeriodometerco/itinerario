@@ -26,6 +26,7 @@ public class PontoRotaConverter implements Converter {
 				return facade.recuperar(Long.parseLong(submittedValue));
 			}
 			catch (Exception e) {
+				System.out.println("Erro ao recuperar ponto de rota: " + submittedValue);
 				JsfUtil.addMsgErro("Erro ao recuperar ponto de rota: " + e.getCause());
 			}
 		}

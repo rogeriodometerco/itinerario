@@ -1,14 +1,20 @@
 package facade;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.faces.context.FacesContext;
 import javax.persistence.NoResultException;
 
+import modelo.ArquivoImagem;
 import modelo.Motorista;
 import modelo.Pessoa;
+import util.JsfUtil;
 import util.Paginador;
 import dao.MotoristaDao;
 
@@ -32,17 +38,29 @@ public class MotoristaFacade extends GenericCrudFacade<Motorista> {
 	}
 
 	private Motorista recuperarParaEdicaoOuExclusao(Long id) throws Exception {
-		//TODO Refactoring
+		//TODO Ver por que não busca a imagem.
 		String sql = "select x"
-				+ " from Motorista x "
+				+ " from Motorista as x" 
+				+ " join fetch x.pessoa p"
+				+ " left join fetch p.imagens"
 				+ " where x.id = :id";
-		Motorista motorista = getEntityManager().createQuery(sql, Motorista.class)
+		return getEntityManager()
+				.createQuery(sql, Motorista.class)
 				.setParameter("id", id)
 				.getSingleResult();
-		motorista.getPessoa().getImagens().size();
-		return motorista;
-
 	}
+
+	/*
+	public ArquivoImagem recuperarArquivoImagem(Long motoristaId) throws Exception {
+		// TODO Refactoring
+		Motorista m = this.recuperar(motoristaId);
+		if (m.getPessoa().getImagens().size() > 0) {
+			return m.getPessoa().getImagens().get(0);
+		}
+		return null;
+	}
+	*/
+	
 	public Motorista recuperar(Pessoa pessoa) throws Exception {
 		String sql = "select x"
 				+ " from Motorista as x" 

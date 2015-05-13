@@ -14,6 +14,7 @@ import modelo.ProgramacaoRota;
 import modelo.Rota;
 import modelo.Veiculo;
 import util.JsfUtil;
+import util.Paginador;
 import facade.ProgramacaoRotaFacade;
 
 @ManagedBean
@@ -31,10 +32,12 @@ public class ProgramacaoRotaMb implements Serializable {
 	private Veiculo veiculoPesquisa;
 	@EJB
 	private ProgramacaoRotaFacade facade;
-
+	private Paginador paginador;
+	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 	}
 
 	public ProgramacaoRota getProgramacaoRota() {
@@ -167,6 +170,28 @@ public class ProgramacaoRotaMb implements Serializable {
 		if (programacaoRota.getVeiculo() != null) {
 			programacaoRota.setMotorista(programacaoRota.getVeiculo().getMotorista());
 		}
+	}
+
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
 	}
 	
 }

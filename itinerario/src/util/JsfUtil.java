@@ -1,7 +1,13 @@
 package util;
 
+import java.security.Principal;
+
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 public class JsfUtil {
 	/*
@@ -33,4 +39,34 @@ public class JsfUtil {
 		FacesContext.getCurrentInstance().addMessage(null, facesMsg);
 	}
 	
+	public static void invalidarSessao() throws Exception {
+		getExternalContext().invalidateSession();
+		HttpServletRequest request = (HttpServletRequest) getExternalContext().getRequest();
+		getExternalContext().redirect(request.getContextPath());
+
+		/*
+		((HttpSession) getExternalContext().getSession(true)).invalidate();
+		HttpServletResponse response = (HttpServletResponse) getExternalContext().getResponse();
+		HttpServletRequest request = (HttpServletRequest) getExternalContext().getRequest();
+		response.sendRedirect(request.getContextPath());
+		*/
+	}
+	
+	/**
+	 * Recupera o login do usuário autenticado.
+	 * @return
+	 */
+	public static String getLogin() {
+		String login = null;
+		Principal p = FacesContext.getCurrentInstance()
+				.getExternalContext().getUserPrincipal();
+		if (p != null) {
+			login = p.getName();
+		}
+		return login;
+	}
+
+	public static ExternalContext getExternalContext() {
+		return FacesContext.getCurrentInstance().getExternalContext();
+	}
 }

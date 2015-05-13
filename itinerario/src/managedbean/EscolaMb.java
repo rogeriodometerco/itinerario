@@ -10,6 +10,7 @@ import javax.faces.bean.ViewScoped;
 
 import modelo.Escola;
 import util.JsfUtil;
+import util.Paginador;
 import facade.EscolaFacade;
 
 @ManagedBean
@@ -26,10 +27,12 @@ public class EscolaMb implements Serializable {
 	private String chavePesquisa;
 	@EJB
 	private EscolaFacade facade;
+	private Paginador paginador;
 	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 	}
 	
 	public Escola getescola() {
@@ -43,9 +46,9 @@ public class EscolaMb implements Serializable {
 	public void listar() { 
 		try {
 			if (chavePesquisa == null || chavePesquisa.trim().isEmpty()) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else {
-				this.lista = facade.autocomplete(chavePesquisa);
+				this.lista = facade.autocomplete(chavePesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -133,5 +136,27 @@ public class EscolaMb implements Serializable {
 
 	public void setChavePesquisa(String chavePesquisa) {
 		this.chavePesquisa = chavePesquisa;
+	}
+
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
 	}
 }

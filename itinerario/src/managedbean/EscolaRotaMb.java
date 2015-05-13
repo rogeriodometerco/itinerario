@@ -12,6 +12,7 @@ import modelo.Escola;
 import modelo.EscolaRota;
 import modelo.Rota;
 import util.JsfUtil;
+import util.Paginador;
 import facade.EscolaRotaFacade;
 
 @ManagedBean
@@ -29,10 +30,12 @@ public class EscolaRotaMb implements Serializable {
 	private Escola escolaPesquisa;
 	@EJB
 	private EscolaRotaFacade facade;
-
+	private Paginador paginador;
+	
 	@PostConstruct
 	private void inicializar() {
 		this.estadoView = LISTAGEM;
+		this.paginador = new Paginador(10);
 	}
 
 	public EscolaRota getEscolaRota() {
@@ -46,13 +49,13 @@ public class EscolaRotaMb implements Serializable {
 	public void listar() { 
 		try {
 			if (rotaPesquisa == null && escolaPesquisa == null) {
-				this.lista = facade.listar();
+				this.lista = facade.listar(paginador);
 			} else if (rotaPesquisa != null && escolaPesquisa == null) {
-				this.lista = facade.listar(rotaPesquisa);
+				this.lista = facade.listar(rotaPesquisa, paginador);
 			} else if (rotaPesquisa == null && escolaPesquisa != null) {
-				this.lista = facade.listar(escolaPesquisa);
+				this.lista = facade.listar(escolaPesquisa, paginador);
 			} else if (rotaPesquisa != null && escolaPesquisa != null) {
-				this.lista = facade.listar(rotaPesquisa, escolaPesquisa);
+				this.lista = facade.listar(rotaPesquisa, escolaPesquisa, paginador);
 			}
 		} catch (Exception e) {
 			JsfUtil.addMsgErro("Erro ao listar: " + e.getMessage());
@@ -141,4 +144,25 @@ public class EscolaRotaMb implements Serializable {
 		this.escolaPesquisa = veiculo;
 	}
 
+	public Boolean temPaginaAnterior() {
+		return paginador.getPaginaAtual() > 1;
+	}
+
+	public Boolean temProximaPagina() {
+		if (lista == null) {
+			return false;
+		} else {
+			return paginador.getTamanhoPagina() <= lista.size();
+		}
+	}
+
+	public void paginaAnterior() {
+		paginador.anterior();
+		listar();
+	}
+
+	public void proximaPagina() {
+		paginador.proxima();
+		listar();
+	}
 }

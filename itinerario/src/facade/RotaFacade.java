@@ -8,8 +8,12 @@ import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import util.Paginador;
+
+import modelo.ArquivoImagem;
 import modelo.Calendario;
 import modelo.EscolaRota;
+import modelo.Motorista;
 import modelo.ProgramacaoRota;
 import modelo.Rota;
 import dao.RotaDao;
@@ -43,10 +47,12 @@ public class RotaFacade
 				+ " from Rota x "
 				+ " left join fetch x.pontos " 
 				+ " where x.id = :id";
-		return getEntityManager().createQuery(sql, Rota.class)
+		Rota rota = getEntityManager().createQuery(sql, Rota.class)
 				.setParameter("id", id)
 				.getSingleResult();
-
+		// TODO Refactoring
+		rota.getImagens().size();
+		return rota;
 	}
 	
 	public List<Rota> autocomplete(String chave) 
@@ -59,6 +65,21 @@ public class RotaFacade
 						" or upper(x.destino) like :chave" +
 				")", Rota.class);
 		query.setParameter("chave", "%" + chave.toUpperCase() + "%");
+		return query.getResultList();
+	}
+	 
+	public List<Rota> autocomplete(String chave, Paginador paginador) 
+			throws Exception {
+		TypedQuery<Rota> query = getEntityManager().createQuery(
+				"select x from Rota x where (" +
+						"upper(x.codigo) like :chave" +
+						" or upper(x.nome) like :chave" +
+						" or upper(x.origem) like :chave" +
+						" or upper(x.destino) like :chave" +
+				")", Rota.class);
+		query.setParameter("chave", "%" + chave.toUpperCase() + "%");
+		query.setFirstResult(paginador.primeiroRegistro());
+		query.setMaxResults(paginador.getTamanhoPagina());
 		return query.getResultList();
 	}
 	 
